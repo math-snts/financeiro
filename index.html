@@ -312,43 +312,67 @@
     document.getElementById('despData').value="";
     save();
   };
+  // Função editada 20/08/2025 
   function renderDesp(){
     ensurePeriod(currentPeriod);
-    const tb=document.querySelector('#tblDesp tbody'); tb.innerHTML="";
-    state.periodos[currentPeriod].despesas.forEach(d=>{
-      const tr=document.createElement('tr');
-      tr.innerHTML=`<td>${d.nome}</td><td>${new Date(d.data).toLocaleDateString()}</td><td>${d.tipo}</td><td class="right">${fmtBRL(d.valor)}</td><td><button class="btn ghost">X</button></td>`;
-      tr.querySelector('button').onclick=()=>{state.periodos[currentPeriod].despesas=state.periodos[currentPeriod].despesas.filter(x=>x.id!==d.id); save();};
+    const tb = document.querySelector('#tblDesp tbody');
+    tb.innerHTML = "";
+    state.periodos[currentPeriod].despesas.forEach(d => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${d.nome}</td>
+        <td>${new Date(d.data).toLocaleDateString()}</td>
+        <td>${d.tipo}</td>
+        <td class="right">${fmtBRL(d.valor)}</td>
+        <td><button class="btn ghost">X</button></td>
+      `;
+      // Ação de remover essa despesa
+      tr.querySelector('button').onclick = () => {
+        state.periodos[currentPeriod].despesas =
+          state.periodos[currentPeriod].despesas.filter(x => x.id !== d.id);
+        save();
+      };
       tb.appendChild(tr);
     });
   }
 
-  // ======= CARTÕES =======
-  document.getElementById('btnAddCC').onclick=()=>{
-    const nome=document.getElementById('ccNome').value.trim();
-    const valor=parseN(document.getElementById('ccValor').value);
-    const venc=document.getElementById('ccVenc').value;
-    if(!nome||!valor||!venc){alert("Preencha os campos");return;}
-    const p=getPeriod(venc);
-    ensurePeriod(p);
-    state.periodos[p].cartoes.push({id:Date.now(),nome,valor,venc});
-    currentPeriod=p;
-    document.getElementById('ccNome').value="";
-    document.getElementById('ccValor').value="";
-    document.getElementById('ccVenc').value="";
-    save();
+  // ====== Cartões editado 20/08
+  document.getElementById('btnAddCC').onclick = () => {
+  const nome = document.getElementById('ccNome').value.trim();
+  const venc = document.getElementById('ccVenc').value;
+  const valor = parseN(document.getElementById('ccValor').value);
+  if (!nome || !venc || !valor) { alert("Preencha os campos"); return; }
+  const p = getPeriod(venc);
+  ensurePeriod(p);
+  state.periodos[p].cartoes.push({ id: Date.now(), nome, venc, valor });
+  currentPeriod = p;
+  document.getElementById('ccNome').value = "";
+  document.getElementById('ccVenc').value = "";
+  document.getElementById('ccValor').value = "";
+  save();
   };
+
   function renderCC(){
     ensurePeriod(currentPeriod);
-    const tb=document.querySelector('#tblCC tbody'); tb.innerHTML="";
-    state.periodos[currentPeriod].cartoes.forEach(c=>{
-      const tr=document.createElement('tr');
-      tr.innerHTML=`<td>${c.nome}</td><td>${new Date(c.venc).toLocaleDateString()}</td><td class="right">${fmtBRL(c.valor)}</td><td><button class="btn ghost">X</button></td>`;
-      tr.querySelector('button').onclick=()=>{state.periodos[currentPeriod].cartoes=state.periodos[currentPeriod].cartoes.filter(x=>x.id!==c.id); save();};
+    const tb = document.querySelector('#tblCC tbody');
+    tb.innerHTML = "";
+    state.periodos[currentPeriod].cartoes.forEach(c => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${c.nome}</td>
+        <td>${new Date(c.venc).toLocaleDateString()}</td>
+        <td class="right">${fmtBRL(c.valor)}</td>
+        <td><button class="btn ghost">X</button></td>
+      `;
+      tr.querySelector('button').onclick = () => {
+        state.periodos[currentPeriod].cartoes =
+          state.periodos[currentPeriod].cartoes.filter(x => x.id !== c.id);
+        save();
+      };
       tb.appendChild(tr);
     });
   }
-
+  
   // ======= DASHBOARD =======
   function renderDashboard(){
     ensurePeriod(currentPeriod);
@@ -367,6 +391,18 @@
     futuros.sort((a,b)=>new Date(a.data)-new Date(b.data));
     document.getElementById('kpiVencimento').textContent=futuros.length? new Date(futuros[0].data).toLocaleDateString()+" - "+futuros[0].nome:"—";
   }
+
+  // Dentro de renderPeriods():
+  const btnVoltar = document.createElement('button');
+  btnVoltar.textContent = '📅 Hoje';
+  btnVoltar.className = 'btn ghost';
+  btnVoltar.onclick = () => {
+    currentPeriod = getPeriod();
+    ensurePeriod(currentPeriod);
+    renderAll();
+  };
+  sel.parentElement.appendChild(btnVoltar);
+  
 
   // ======= Config Dados =======
   document.getElementById('btnReset').onclick=()=>{ if(confirm("Apagar todos os dados?")){localStorage.removeItem('fin-state'); location.reload();} };
@@ -407,3 +443,4 @@
 
 </body>
 </html>
+
