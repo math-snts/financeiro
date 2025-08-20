@@ -339,16 +339,6 @@
   };    
   function renderCC(){
     ensurePeriod(currentPeriod);
-    const tb=document.querySelector('#tblCC tbody'); tb.innerHTML="";
-    state.periodos[currentPeriod].cartoes.forEach(c=>{
-      const tr=document.createElement('tr');
-      tr.innerHTML=`<td>${c.nome}</td><td>${new Date(c.venc).toLocaleDateString()}</td><td class="right">${fmtBRL(c.valor)}</td><td><button class="btn ghost">X</button></td>`;
-      tr.querySelector('button').onclick=()=>{state.periodos[currentPeriod].cartoes=state.periodos[currentPeriod].cartoes.filter(x=>x.id!==c.id); save();};
-      tb.appendChild(tr);
-    });
-  }
-  function renderCC(){
-    ensurePeriod(currentPeriod);
     const tb = document.querySelector('#tblCC tbody');
     tb.innerHTML = "";
     state.periodos[currentPeriod].cartoes.forEach(c => {
@@ -438,6 +428,7 @@
 
 </body>
 </html>
+
 
 
 
