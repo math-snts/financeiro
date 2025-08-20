@@ -322,6 +322,7 @@
       tb.appendChild(tr);
     });
   }
+
   // ======= CARTÕES =======
   document.getElementById('btnAddCC').onclick=()=>{
     const nome=document.getElementById('ccNome').value.trim();
@@ -336,28 +337,18 @@
     document.getElementById('ccValor').value="";
     document.getElementById('ccVenc').value="";
     save();
-  };    
+  };
   function renderCC(){
     ensurePeriod(currentPeriod);
-    const tb = document.querySelector('#tblCC tbody');
-    tb.innerHTML = "";
-    state.periodos[currentPeriod].cartoes.forEach(c => {
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td>${c.nome}</td>
-        <td>${new Date(c.venc).toLocaleDateString()}</td>
-        <td class="right">${fmtBRL(c.valor)}</td>
-        <td><button class="btn ghost">X</button></td>
-      `;
-      tr.querySelector('button').onclick = () => {
-        state.periodos[currentPeriod].cartoes =
-          state.periodos[currentPeriod].cartoes.filter(x => x.id !== c.id);
-        save();
-      };
+    const tb=document.querySelector('#tblCC tbody'); tb.innerHTML="";
+    state.periodos[currentPeriod].cartoes.forEach(c=>{
+      const tr=document.createElement('tr');
+      tr.innerHTML=`<td>${c.nome}</td><td>${new Date(c.venc).toLocaleDateString()}</td><td class="right">${fmtBRL(c.valor)}</td><td><button class="btn ghost">X</button></td>`;
+      tr.querySelector('button').onclick=()=>{state.periodos[currentPeriod].cartoes=state.periodos[currentPeriod].cartoes.filter(x=>x.id!==c.id); save();};
       tb.appendChild(tr);
     });
   }
-  
+
   // ======= DASHBOARD =======
   function renderDashboard(){
     ensurePeriod(currentPeriod);
@@ -376,18 +367,6 @@
     futuros.sort((a,b)=>new Date(a.data)-new Date(b.data));
     document.getElementById('kpiVencimento').textContent=futuros.length? new Date(futuros[0].data).toLocaleDateString()+" - "+futuros[0].nome:"—";
   }
-
-  // Dentro de renderPeriods():
-  const btnVoltar = document.createElement('button');
-  btnVoltar.textContent = '📅 Hoje';
-  btnVoltar.className = 'btn ghost';
-  btnVoltar.onclick = () => {
-    currentPeriod = getPeriod();
-    ensurePeriod(currentPeriod);
-    renderAll();
-  };
-  sel.parentElement.appendChild(btnVoltar);
-  
 
   // ======= Config Dados =======
   document.getElementById('btnReset').onclick=()=>{ if(confirm("Apagar todos os dados?")){localStorage.removeItem('fin-state'); location.reload();} };
@@ -428,7 +407,3 @@
 
 </body>
 </html>
-
-
-
-
