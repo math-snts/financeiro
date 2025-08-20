@@ -312,8 +312,7 @@
     document.getElementById('despData').value="";
     save();
   };
-
-    function renderDesp(){
+  function renderDesp(){
     ensurePeriod(currentPeriod);
     const tb=document.querySelector('#tblDesp tbody'); tb.innerHTML="";
     state.periodos[currentPeriod].despesas.forEach(d=>{
@@ -337,8 +336,7 @@
     document.getElementById('ccValor').value="";
     document.getElementById('ccVenc').value="";
     save();
-  };
-    
+  };    
   function renderCC(){
     ensurePeriod(currentPeriod);
     const tb=document.querySelector('#tblCC tbody'); tb.innerHTML="";
@@ -349,9 +347,6 @@
       tb.appendChild(tr);
     });
   }
-    
-
-
   function renderCC(){
     ensurePeriod(currentPeriod);
     const tb = document.querySelector('#tblCC tbody');
@@ -443,5 +438,6 @@
 
 </body>
 </html>
+
 
 
