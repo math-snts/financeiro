@@ -121,6 +121,40 @@
     }
     input:checked + .slider::before { transform: translateX(22px) }
     input:checked + .slider { background: var(--accent-2) }
+
+    /*inicia aqui a alteração da tabela */
+    .table-container {
+      overflow-x: auto; /* se a tabela passar da largura, rola só ela */
+    }
+  
+    #tblDesp {
+      width: 100%;
+      border-collapse: collapse;
+    }
+  
+    #tblDesp th, 
+    #tblDesp td {
+      padding: 6px 8px;
+      text-align: left;
+      white-space: nowrap; /* impede quebra feia */
+    }
+  
+    #tblDesp th.right, 
+    #tblDesp td.right {
+      text-align: right;
+    }
+
+  /* ---- RESPONSIVO ---- */
+  @media (max-width: 600px) {
+    /* Esconde Data e Tipo no celular */
+    #tblDesp th:nth-child(2),
+    #tblDesp td:nth-child(2), /* Data */
+    #tblDesp th:nth-child(3),
+    #tblDesp td:nth-child(3)  /* Tipo */ {
+      display: none;
+    }
+  }
+    
   </style>
 </head>
 <body>
@@ -199,10 +233,48 @@
         <button id="btnAddDesp" class="btn">Adicionar</button>
       </div>
       <div class="space-top">
-        <table id="tblDesp"><thead><tr><th>Descrição</th><th>Data</th><th>Tipo</th><th class="right">Valor</th><th></th></tr></thead><tbody></tbody></table>
+        <!-- <table id="tblDesp"><thead><tr><th>Descrição</th><th>Data</th><th>Tipo</th><th class="right">Valor</th><th></th></tr></thead><tbody></tbody></table> -->
+        <div class="space-top table-container">
+          <table id="tblDesp">
+            <thead>
+              <tr>
+                <th>Descrição</th>
+                <th>Data</th>
+                <th>Tipo</th>
+                <th class="right">Valor</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>QTA</td>
+                <td>07/09/2025</td>
+                <td>Moradia</td>
+                <td class="right">R$ 1.070,36</td>
+                <td><button class="btn-del">X</button></td>
+              </tr>
+              <tr>
+                <td>Água e luz</td>
+                <td>07/09/2025</td>
+                <td>Moradia</td>
+                <td class="right">R$ 150,00</td>
+                <td><button class="btn-del">X</button></td>
+              </tr>
+              <tr>
+                <td>Mensalidade</td>
+                <td>20/09/2025</td>
+                <td>Faculdade</td>
+                <td class="right">R$ 187,36</td>
+                <td><button class="btn-del">X</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </section>
+    <!-- alterado até aqui -->
 
+    
     <!-- CARTÕES -->
     <section id="tab-cartoes" class="tab card" hidden>
       <h2>💳 Cartões</h2>
@@ -407,3 +479,4 @@
 
 </body>
 </html>
+
