@@ -312,45 +312,45 @@
     document.getElementById('despData').value="";
     save();
   };
-  // Função editada 20/08/2025 
-  function renderDesp(){
+
+    function renderDesp(){
     ensurePeriod(currentPeriod);
-    const tb = document.querySelector('#tblDesp tbody');
-    tb.innerHTML = "";
-    state.periodos[currentPeriod].despesas.forEach(d => {
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td>${d.nome}</td>
-        <td>${new Date(d.data).toLocaleDateString()}</td>
-        <td>${d.tipo}</td>
-        <td class="right">${fmtBRL(d.valor)}</td>
-        <td><button class="btn ghost">X</button></td>
-      `;
-      // Ação de remover essa despesa
-      tr.querySelector('button').onclick = () => {
-        state.periodos[currentPeriod].despesas =
-          state.periodos[currentPeriod].despesas.filter(x => x.id !== d.id);
-        save();
-      };
+    const tb=document.querySelector('#tblDesp tbody'); tb.innerHTML="";
+    state.periodos[currentPeriod].despesas.forEach(d=>{
+      const tr=document.createElement('tr');
+      tr.innerHTML=`<td>${d.nome}</td><td>${new Date(d.data).toLocaleDateString()}</td><td>${d.tipo}</td><td class="right">${fmtBRL(d.valor)}</td><td><button class="btn ghost">X</button></td>`;
+      tr.querySelector('button').onclick=()=>{state.periodos[currentPeriod].despesas=state.periodos[currentPeriod].despesas.filter(x=>x.id!==d.id); save();};
       tb.appendChild(tr);
     });
   }
-
-  // ====== Cartões editado 20/08
-  document.getElementById('btnAddCC').onclick = () => {
-  const nome = document.getElementById('ccNome').value.trim();
-  const venc = document.getElementById('ccVenc').value;
-  const valor = parseN(document.getElementById('ccValor').value);
-  if (!nome || !venc || !valor) { alert("Preencha os campos"); return; }
-  const p = getPeriod(venc);
-  ensurePeriod(p);
-  state.periodos[p].cartoes.push({ id: Date.now(), nome, venc, valor });
-  currentPeriod = p;
-  document.getElementById('ccNome').value = "";
-  document.getElementById('ccVenc').value = "";
-  document.getElementById('ccValor').value = "";
-  save();
+  // ======= CARTÕES =======
+  document.getElementById('btnAddCC').onclick=()=>{
+    const nome=document.getElementById('ccNome').value.trim();
+    const valor=parseN(document.getElementById('ccValor').value);
+    const venc=document.getElementById('ccVenc').value;
+    if(!nome||!valor||!venc){alert("Preencha os campos");return;}
+    const p=getPeriod(venc);
+    ensurePeriod(p);
+    state.periodos[p].cartoes.push({id:Date.now(),nome,valor,venc});
+    currentPeriod=p;
+    document.getElementById('ccNome').value="";
+    document.getElementById('ccValor').value="";
+    document.getElementById('ccVenc').value="";
+    save();
   };
+    
+  function renderCC(){
+    ensurePeriod(currentPeriod);
+    const tb=document.querySelector('#tblCC tbody'); tb.innerHTML="";
+    state.periodos[currentPeriod].cartoes.forEach(c=>{
+      const tr=document.createElement('tr');
+      tr.innerHTML=`<td>${c.nome}</td><td>${new Date(c.venc).toLocaleDateString()}</td><td class="right">${fmtBRL(c.valor)}</td><td><button class="btn ghost">X</button></td>`;
+      tr.querySelector('button').onclick=()=>{state.periodos[currentPeriod].cartoes=state.periodos[currentPeriod].cartoes.filter(x=>x.id!==c.id); save();};
+      tb.appendChild(tr);
+    });
+  }
+    
+
 
   function renderCC(){
     ensurePeriod(currentPeriod);
@@ -443,4 +443,5 @@
 
 </body>
 </html>
+
 
