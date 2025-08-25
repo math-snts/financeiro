@@ -534,7 +534,11 @@
 
   // ======= LÓGICA FREE VS PREMIUM =======
   (function(){
-    const plano = "premium"; // altere para "premium" quando necessário
+    // pega o parâmetro "plano" da URL (ex: ?plano=free)
+    const urlParams = new URLSearchParams(window.location.search);
+    const plano = urlParams.get("plano") || "free"; 
+    // valor padrão é "free" caso não venha nada na URL
+
     const select = (sel) => document.querySelector(sel);
     const remove = (sel) => { const el=select(sel); if(el) el.remove(); };
 
@@ -553,17 +557,6 @@
     }
   })();
 
-  // ======= RENDER ALL =======
-  renderTabs();
-  applyTheme();
-  renderAll();
-  </script>
-  <script>
-  if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("service-worker.js")
-      .then(() => console.log("Service Worker registrado"));
-  }
   </script>
 </body>
 </html>
-
