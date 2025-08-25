@@ -7,7 +7,124 @@
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#0f172a">
   <style>
-    /* Seus estilos originais aqui */
+    :root {
+      --bg: #3f3f3f;
+      --card: #5c5c5c;
+      --muted: #1f2937;
+      --text: #e5e7eb;
+      --text-dim: #9ca3af;
+      --accent: #22c55e;
+      --accent-2: #3b82f6;
+      --danger: #ef4444;
+      --warn: #f59e0b;
+      --radius: 18px;
+    }
+    body.light {
+      --bg: #f9fafb;
+      --card: #ffffff;
+      --muted: #e5e7eb;
+      --text: #111827;
+      --text-dim: #374151;
+      --accent: #22c55e;
+      --accent-2: #2563eb;
+      --danger: #dc2626;
+      --warn: #d97706;
+    }
+    * { box-sizing: border-box }
+    html, body { height: 100% }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, system-ui, Segoe UI, Roboto, Arial, sans-serif;
+    }
+    header {
+      position: sticky;
+      top: 0;
+      background: rgba(56, 56, 56, 0.8);
+      backdrop-filter: saturate(180%) blur(8px);
+      border-bottom: 1px solid var(--muted);
+      z-index: 10;
+    }
+    body.light header { background: rgba(249,250,251,.8); }
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 18px }
+    .row { display: flex; gap: 12px; flex-wrap: wrap }
+    .grow { flex: 1 1 280px }
+    h1 { font-size: 22px; margin: 0; font-weight: 700 }
+    nav { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px }
+    nav button {
+      background: var(--bg);
+      border: 1px solid var(--muted);
+      color: var(--text);
+      padding: 10px 14px;
+      border-radius: 999px;
+      cursor: pointer;
+    }
+    nav button.active {
+      background: var(--accent-2);
+      border-color: transparent;
+      color: #fff;
+    }
+    main { max-width: 1100px; margin: 16px auto; padding: 0 18px 70px }
+    .grid { display: grid; gap: 14px }
+    .grid.cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)) }
+    @media (max-width:900px){.grid.cols-3{grid-template-columns:1fr}}
+    .card {
+      background: var(--card);
+      border: 1px solid var(--muted);
+      border-radius: var(--radius);
+      padding: 16px;
+      box-shadow: 0 6px 30px rgba(255, 255, 255, 0.25);
+    }
+    .card h2 { margin: 0 0 12px; font-size: 18px }
+    .muted { color: var(--text-dim) }
+    .kpi { font-size: 26px; font-weight: 800 }
+    .row-inline { display: flex; gap: 10px; align-items: center; }
+    label { font-size: 12px; color: var(--text-dim) }
+    input,select {
+      width: 100%; padding: 10px 12px; background: var(--bg);
+      border: 1px solid var(--muted); border-radius: 12px; color: var(--text)
+    }
+    .btn {
+      background: var(--accent-2);
+      color: white; border: none;
+      padding: 10px 14px; border-radius: 12px;
+      cursor: pointer; font-weight: 600
+    }
+    .btn.ghost { background: var(--bg); border: 1px solid var(--muted); color: var(--text) }
+    .btn.warn { background: var(--warn) }
+    .btn.danger { background: var(--danger) }
+    table { width: 100%; border-collapse: collapse }
+    th, td { padding: 10px; border-bottom: 1px solid var(--muted); text-align: left }
+    th { color: var(--text-dim); font-weight: 600; font-size: 12px; text-transform: uppercase }
+    tfoot td { font-weight: 700 }
+    .tag { padding: 4px 8px; border-radius: 999px; font-size: 11px; border: 1px solid var(--muted) }
+    .right { text-align: right }
+    .space-top { margin-top: 12px }
+    .note { font-size: 12px; color: var(--text-dim) }
+    footer { position: fixed; bottom: 10px; left: 0; right: 0; display: flex; justify-content: center; pointer-events: none }
+    .dock { pointer-events: auto; background: var(--bg); border: 1px solid var(--muted); border-radius: 999px; padding: 8px 10px; display: flex; gap: 8px; box-shadow: 0 10px 30px rgba(0,0,0,.35) }
+    .switch { position: relative; display: inline-flex; align-items: center; gap:6px; cursor: pointer; }
+    .switch input { display:none }
+    .slider {
+      width: 46px; height: 24px; background: var(--muted); border-radius: 999px;
+      position: relative; transition:.3s;
+    }
+    .slider::before {
+      content:""; position:absolute; top:2px; left:2px;
+      width:20px; height:20px; border-radius:50%;
+      background:#fff; transition:.3s;
+    }
+    input:checked + .slider::before { transform: translateX(22px) }
+    input:checked + .slider { background: var(--accent-2) }
+    .table-container { overflow-x: auto; }
+    #tblDesp { width: 100%; border-collapse: collapse; }
+    #tblDesp th, #tblDesp td { padding: 6px 8px; text-align: left; white-space: nowrap; }
+    #tblDesp th.right, #tblDesp td.right { text-align: right; }
+    @media (max-width: 600px) {
+      #tblDesp th:nth-child(2), #tblDesp td:nth-child(2),
+      #tblDesp th:nth-child(3), #tblDesp td:nth-child(3) { display: none; }
+    }
   </style>
 </head>
 <body>
@@ -50,6 +167,17 @@
           <div class="muted">Sobra</div>
           <div class="kpi" id="kpiSobra">R$ 0,00</div>
           <div class="note">Saldo após todas as despesas</div>
+        </div>
+        <!-- Card: Soma por tipos -->
+        <div class="card" id="cardSomaTipos">
+          <div class="muted">Soma por tipo</div>
+          <select id="filtroDespesa" style="width:100%;margin-bottom:6px"></select>
+          <div class="row-inline">
+            <label for="chk6meses">Somar últimos 6 meses</label>
+            <input type="checkbox" id="chk6meses">
+          </div>
+          <div class="kpi" id="kpiSomaTipo">R$ 0,00</div>
+          <div class="note">Baseado no filtro</div>
         </div>
       </div>
     </section>
@@ -170,9 +298,265 @@
       </div>
     </section>
   </main>
-
   <script>
-    // JavaScript igual ao da versão anterior (com renderAll corrigido e sem a função de soma por tipos)
+  // ======= FUNÇÕES GERAIS =======
+  const fmtBRL = (n) => (n||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+  const parseN = (v) => Number(String(v).replace(',','.'))||0;
+  const today = () => new Date();
+  const getPeriod = (d) => {
+    const date=new Date(d||today());
+    return date.getFullYear()+"-"+String(date.getMonth()+1).padStart(2,'0');
+  };
+
+  let state = JSON.parse(localStorage.getItem('fin-state')||'{}');
+  if(!state.periodos) state={periodos:{},tipos:["Moradia","Transporte","Alimentação","Saúde","Serviços","Educação","Outros"]};
+  let currentPeriod;
+
+  function ensurePeriod(p){
+    if(!state.periodos[p]) state.periodos[p]={rendas:[],despesas:[],cartoes:[]};
+  }
+  function save(){ localStorage.setItem('fin-state',JSON.stringify(state)); renderAll(); }
+
+  // ======= PERIODOS =======
+  function renderPeriods(){
+    const sel=document.getElementById('periodSelect'); sel.innerHTML="";
+    const ps=Object.keys(state.periodos).sort();
+    ps.forEach(p=>{
+      const opt=document.createElement('option');
+      opt.value=p; opt.textContent=p; sel.appendChild(opt);
+    });
+    if(!currentPeriod){currentPeriod=getPeriod(); ensurePeriod(currentPeriod);}
+    if(!ps.includes(currentPeriod)){ensurePeriod(currentPeriod);}
+    sel.value=currentPeriod;
+    sel.onchange=()=>{currentPeriod=sel.value; renderAll();};
+  }
+
+  // ======= RENDAS =======
+  document.getElementById('btnAddRenda').onclick=()=>{
+    const nome=document.getElementById('rendaNome').value.trim();
+    const valor=parseN(document.getElementById('rendaValor').value);
+    const data=document.getElementById('rendaData').value;
+    const meses=parseInt(document.getElementById('rendaRecorrente').value);
+    if(!nome||!valor||!data){alert("Preencha os campos");return;}
+
+    const p=getPeriod(data);
+    ensurePeriod(p);
+    state.periodos[p].rendas.push({id:Date.now(),nome,valor,data,recorrente:meses>0});
+    currentPeriod=p;
+
+    if(meses>0){
+      for(let i=1;i<meses;i++){
+        let d=new Date(data); d.setMonth(d.getMonth()+i);
+        const pi=getPeriod(d);
+        ensurePeriod(pi);
+        state.periodos[pi].rendas.push({id:Date.now()+i,nome,valor,data:d.toISOString(),recorrente:true});
+      }
+    }
+
+    document.getElementById('rendaNome').value="";
+    document.getElementById('rendaValor').value="";
+    document.getElementById('rendaData').value="";
+    document.getElementById('rendaRecorrente').value="0";
+    save();
+  };
+  function renderRenda(){
+    ensurePeriod(currentPeriod);
+    const tb=document.querySelector('#tblRenda tbody'); tb.innerHTML="";
+    state.periodos[currentPeriod].rendas.forEach(r=>{
+      const tr=document.createElement('tr');
+      tr.innerHTML=`<td>${r.nome}</td><td>${new Date(r.data).toLocaleDateString()}</td><td class="right">${fmtBRL(r.valor)}</td><td><button class="btn ghost">X</button></td>`;
+      tr.querySelector('button').onclick=()=>{state.periodos[currentPeriod].rendas=state.periodos[currentPeriod].rendas.filter(x=>x.id!==r.id); save();};
+      tb.appendChild(tr);
+    });
+  }
+
+  // ======= TIPOS DESPESAS =======
+  function renderTipos(){
+    const sel=document.getElementById('despTipo'); sel.innerHTML="";
+    state.tipos.forEach(t=>{const o=document.createElement('option'); o.textContent=t; sel.appendChild(o);});
+  }
+  document.getElementById('btnAddTipo').onclick=()=>{
+    const v=document.getElementById('novoTipo').value.trim();
+    if(v){state.tipos.push(v); document.getElementById('novoTipo').value=""; save();}
+  };
+
+  // ======= DESPESAS =======
+  document.getElementById('btnAddDesp').onclick=()=>{
+    const nome=document.getElementById('despNome').value.trim();
+    const valor=parseN(document.getElementById('despValor').value);
+    const data=document.getElementById('despData').value;
+    const tipo=document.getElementById('despTipo').value;
+    const meses=parseInt(document.getElementById('despRecorrente').value);
+    if(!nome||!valor||!data){alert("Preencha os campos");return;}
+
+    const p=getPeriod(data);
+    ensurePeriod(p);
+    state.periodos[p].despesas.push({id:Date.now(),nome,valor,data,tipo,recorrente:meses>0});
+    currentPeriod=p;
+
+    if(meses>0){
+      for(let i=1;i<meses;i++){
+        let d=new Date(data); d.setMonth(d.getMonth()+i);
+        const pi=getPeriod(d);
+        ensurePeriod(pi);
+        state.periodos[pi].despesas.push({id:Date.now()+i,nome,valor,data:d.toISOString(),tipo,recorrente:true});
+      }
+    }
+
+    document.getElementById('despNome').value="";
+    document.getElementById('despValor').value="";
+    document.getElementById('despData').value="";
+    document.getElementById('despRecorrente').value="0";
+    save();
+  };
+  function renderDesp(){
+    ensurePeriod(currentPeriod);
+    const tb=document.querySelector('#tblDesp tbody'); tb.innerHTML="";
+    state.periodos[currentPeriod].despesas.forEach(d=>{
+      const tr=document.createElement('tr');
+      tr.innerHTML=`<td>${d.nome}</td><td>${new Date(d.data).toLocaleDateString()}</td><td>${d.tipo}</td><td class="right">${fmtBRL(d.valor)}</td><td><button class="btn ghost">X</button></td>`;
+      tr.querySelector('button').onclick=()=>{state.periodos[currentPeriod].despesas=state.periodos[currentPeriod].despesas.filter(x=>x.id!==d.id); save();};
+      tb.appendChild(tr);
+    });
+  }
+
+  // ======= CARTÕES =======
+  document.getElementById('btnAddCC').onclick=()=>{
+    const nome=document.getElementById('ccNome').value.trim();
+    const valor=parseN(document.getElementById('ccValor').value);
+    const venc=document.getElementById('ccVenc').value;
+    if(!nome||!valor||!venc){alert("Preencha os campos");return;}
+    const p=getPeriod(venc);
+    ensurePeriod(p);
+    state.periodos[p].cartoes.push({id:Date.now(),nome,valor,venc});
+    currentPeriod=p;
+    document.getElementById('ccNome').value="";
+    document.getElementById('ccValor').value="";
+    document.getElementById('ccVenc').value="";
+    save();
+  };
+  function renderCC(){
+    ensurePeriod(currentPeriod);
+    const tb=document.querySelector('#tblCC tbody'); tb.innerHTML="";
+    state.periodos[currentPeriod].cartoes.forEach(c=>{
+      const tr=document.createElement('tr');
+      tr.innerHTML=`<td>${c.nome}</td><td>${new Date(c.venc).toLocaleDateString()}</td><td class="right">${fmtBRL(c.valor)}</td><td><button class="btn ghost">X</button></td>`;
+      tr.querySelector('button').onclick=()=>{state.periodos[currentPeriod].cartoes=state.periodos[currentPeriod].cartoes.filter(x=>x.id!==c.id); save();};
+      tb.appendChild(tr);
+    });
+  }
+
+  // ======= DASHBOARD =======
+  function renderDashboard(){
+    ensurePeriod(currentPeriod);
+    const rendas=state.periodos[currentPeriod].rendas||[];
+    const despesas=state.periodos[currentPeriod].despesas||[];
+    const cartoes=state.periodos[currentPeriod].cartoes||[];
+    const totalR=rendas.reduce((s,x)=>s+x.valor,0);
+    const totalD=despesas.reduce((s,x)=>s+x.valor,0);
+    const totalC=cartoes.reduce((s,x)=>s+x.valor,0);
+    const saldo=totalR;
+    document.getElementById('kpiSaldo').textContent=fmtBRL(saldo);
+    document.getElementById('kpiSobra').textContent=fmtBRL(saldo-totalD-totalC);
+
+    const eventos=[...despesas.map(d=>({data:d.data,nome:d.nome})),...cartoes.map(c=>({data:c.venc,nome:c.nome}))];
+    const futuros=eventos.filter(e=>new Date(e.data)>=today());
+    futuros.sort((a,b)=>new Date(a.data)-new Date(b.data));
+    document.getElementById('kpiVencimento').textContent=futuros.length? new Date(futuros[0].data).toLocaleDateString()+" - "+futuros[0].nome:"—";
+
+    renderSomaTipo();
+  }
+
+  // ======= Dashboard: Soma por tipos =======
+  function renderSomaTipo(){
+    const filtro = document.getElementById("filtroDespesa").value;
+    const ult6 = document.getElementById("chk6meses").checked;
+
+    let despesas = [];
+    if(ult6){
+      let base=new Date();
+      for(let i=0;i<6;i++){
+        let p=getPeriod(new Date(base.getFullYear(), base.getMonth()-i, 1));
+        if(state.periodos[p]) despesas = despesas.concat(state.periodos[p].despesas);
+      }
+    } else {
+      ensurePeriod(currentPeriod);
+      despesas = state.periodos[currentPeriod].despesas;
+    }
+
+    const tiposUsados = [...new Set(despesas.map(d=>d.tipo))];
+    const sel=document.getElementById("filtroDespesa");
+    sel.innerHTML='<option value="">Todos</option>';
+    tiposUsados.forEach(t=>{
+      const o=document.createElement("option");
+      o.value=t; o.textContent=t;
+      if(t===filtro) o.selected=true;
+      sel.appendChild(o);
+    });
+
+    let filtradas = filtro ? despesas.filter(d=>d.tipo===filtro) : despesas;
+    const total = filtradas.reduce((s,d)=>s+d.valor,0);
+    document.getElementById("kpiSomaTipo").textContent = fmtBRL(total);
+  }
+  document.getElementById("filtroDespesa").onchange=renderSomaTipo;
+  document.getElementById("chk6meses").onchange=renderSomaTipo;
+
+  // ======= Config Dados =======
+  document.getElementById('btnReset').onclick=()=>{ if(confirm("Apagar todos os dados?")){localStorage.removeItem('fin-state'); location.reload();} };
+
+  // ======= TABS =======
+  const tabNames=[["dashboard","Dashboard"],["renda","Renda"],["despesas","Despesas"],["cartoes","Cartões"],["relatorios","Config Dados"]];
+  function renderTabs(){
+    const nav=document.getElementById('tabs'); nav.innerHTML="";
+    tabNames.forEach(([id,label],i)=>{
+      const b=document.createElement('button'); b.textContent=label; if(i==0) b.classList.add('active');
+      b.onclick=()=>{document.querySelectorAll('.tab').forEach(t=>t.hidden=true); document.getElementById('tab-'+id).hidden=false; document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active')); b.classList.add('active');};
+      nav.appendChild(b);
+    });
+    document.getElementById('tab-dashboard').hidden=false;
+  }
+
+  // ======= TEMA (claro/escuro) =======
+  const themeToggle=document.getElementById('themeToggle');
+  const themeIcon=document.getElementById('themeIcon');
+  function applyTheme(){
+    if(localStorage.getItem('theme')==='light'){
+      document.body.classList.add('light');
+      themeToggle.checked=false;
+      themeIcon.textContent='🌞';
+    } else {
+      document.body.classList.remove('light');
+      themeToggle.checked=true;
+      themeIcon.textContent='🌙';
+    }
+  }
+  themeToggle.onchange=()=>{localStorage.setItem('theme', themeToggle.checked?'dark':'light'); applyTheme();};
+
+  // ======= LÓGICA FREE VS PREMIUM =======
+  (function(){
+    const plano = "premium"; // altere para "premium" quando necessário
+    const select = (sel) => document.querySelector(sel);
+    const remove = (sel) => { const el=select(sel); if(el) el.remove(); };
+
+    if(plano === "free"){
+      remove("#cardSomaTipos");
+      remove("#periodSelect");
+      remove("#novoTipo");
+      remove("#btnAddTipo");
+      remove("#boxRendaRec");
+      remove("#boxDespRec");
+
+      const tabBtn = Array.from(document.querySelectorAll("nav button"))
+        .find(btn => btn.textContent.includes("Cartões"));
+      if(tabBtn) tabBtn.remove();
+      remove("#tab-cartoes");
+    }
+  })();
+
+  // ======= RENDER ALL =======
+  renderTabs();
+  applyTheme();
+  renderAll();
   </script>
   <script>
   if ("serviceWorker" in navigator) {
