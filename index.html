@@ -8,8 +8,8 @@
   <meta name="theme-color" content="#0f172a">
   <style>
     :root {
-      --bg: #0f172a;
-      --card: #111827;
+      --bg: #3f3f3f;
+      --card: #5c5c5c;
       --muted: #1f2937;
       --text: #e5e7eb;
       --text-dim: #9ca3af;
@@ -41,14 +41,12 @@
     header {
       position: sticky;
       top: 0;
-      background: rgba(15,23,42,.8);
+      background: rgba(56, 56, 56, 0.8);
       backdrop-filter: saturate(180%) blur(8px);
       border-bottom: 1px solid var(--muted);
       z-index: 10;
     }
-    body.light header {
-      background: rgba(249,250,251,.8);
-    }
+    body.light header { background: rgba(249,250,251,.8); }
     .wrap { max-width: 1100px; margin: 0 auto; padding: 18px }
     .row { display: flex; gap: 12px; flex-wrap: wrap }
     .grow { flex: 1 1 280px }
@@ -76,12 +74,12 @@
       border: 1px solid var(--muted);
       border-radius: var(--radius);
       padding: 16px;
-      box-shadow: 0 6px 30px rgba(0,0,0,.25);
+      box-shadow: 0 6px 30px rgba(255, 255, 255, 0.25);
     }
     .card h2 { margin: 0 0 12px; font-size: 18px }
     .muted { color: var(--text-dim) }
     .kpi { font-size: 26px; font-weight: 800 }
-    .row-inline { display: flex; gap: 10px; align-items: center; flex-wrap: wrap }
+    .row-inline { display: flex; gap: 10px; align-items: center; gap: 6px; }
     label { font-size: 12px; color: var(--text-dim) }
     input,select {
       width: 100%; padding: 10px 12px; background: var(--bg);
@@ -106,8 +104,6 @@
     .note { font-size: 12px; color: var(--text-dim) }
     footer { position: fixed; bottom: 10px; left: 0; right: 0; display: flex; justify-content: center; pointer-events: none }
     .dock { pointer-events: auto; background: var(--bg); border: 1px solid var(--muted); border-radius: 999px; padding: 8px 10px; display: flex; gap: 8px; box-shadow: 0 10px 30px rgba(0,0,0,.35) }
-
-    /* Switch iOS */
     .switch { position: relative; display: inline-flex; align-items: center; gap:6px; cursor: pointer; }
     .switch input { display:none }
     .slider {
@@ -121,40 +117,14 @@
     }
     input:checked + .slider::before { transform: translateX(22px) }
     input:checked + .slider { background: var(--accent-2) }
-
-    /*inicia aqui a alteração da tabela */
-    .table-container {
-      overflow-x: auto; /* se a tabela passar da largura, rola só ela */
+    .table-container { overflow-x: auto; }
+    #tblDesp { width: 100%; border-collapse: collapse; }
+    #tblDesp th, #tblDesp td { padding: 6px 8px; text-align: left; white-space: nowrap; }
+    #tblDesp th.right, #tblDesp td.right { text-align: right; }
+    @media (max-width: 600px) {
+      #tblDesp th:nth-child(2), #tblDesp td:nth-child(2),
+      #tblDesp th:nth-child(3), #tblDesp td:nth-child(3) { display: none; }
     }
-  
-    #tblDesp {
-      width: 100%;
-      border-collapse: collapse;
-    }
-  
-    #tblDesp th, 
-    #tblDesp td {
-      padding: 6px 8px;
-      text-align: left;
-      white-space: nowrap; /* impede quebra feia */
-    }
-  
-    #tblDesp th.right, 
-    #tblDesp td.right {
-      text-align: right;
-    }
-
-  /* ---- RESPONSIVO ---- */
-  @media (max-width: 600px) {
-    /* Esconde Data e Tipo no celular */
-    #tblDesp th:nth-child(2),
-    #tblDesp td:nth-child(2), /* Data */
-    #tblDesp th:nth-child(3),
-    #tblDesp td:nth-child(3)  /* Tipo */ {
-      display: none;
-    }
-  }
-    
   </style>
 </head>
 <body>
@@ -178,7 +148,6 @@
       <nav id="tabs"></nav>
     </div>
   </header>
-
   <main>
     <!-- DASHBOARD -->
     <section id="tab-dashboard" class="tab card" hidden>
@@ -199,6 +168,17 @@
           <div class="kpi" id="kpiSobra">R$ 0,00</div>
           <div class="note">Saldo após todas as despesas</div>
         </div>
+        <!-- Card: Soma por tipos -->
+        <div class="card" id="cardSomaTipos">
+          <div class="muted">Soma por tipo</div>
+          <select id="filtroDespesa" style="width:100%;margin-bottom:6px"></select>
+          <div class="row-inline">
+            <label for="chk6meses">Somar últimos 6 meses</label>
+            <input type="checkbox" id="chk6meses">
+          </div>
+          <div class="kpi" id="kpiSomaTipo">R$ 0,00</div>
+          <div class="note">Baseado no filtro</div>
+        </div>
       </div>
     </section>
 
@@ -209,10 +189,33 @@
         <div class="grow"><label>Descrição</label><input id="rendaNome" placeholder="Salário, Extra..."></div>
         <div class="grow"><label>Valor</label><input id="rendaValor" type="number" step="0.01"></div>
         <div class="grow"><label>Data</label><input id="rendaData" type="date"></div>
+        <div class="row-inline" id="boxRendaRec">
+          <label for="rendaRecorrente">Recorrente</label>
+          <select id="rendaRecorrente">
+            <option value="0">Não</option>
+            <option value="1">1 mês</option>
+            <option value="2">2 meses</option>
+            <option value="3">3 meses</option>
+            <option value="4">4 meses</option>
+            <option value="5">5 meses</option>
+            <option value="6">6 meses</option>
+            <option value="7">7 meses</option>
+            <option value="8">8 meses</option>
+            <option value="9">9 meses</option>
+            <option value="10">10 meses</option>
+            <option value="11">11 meses</option>
+            <option value="12">12 meses</option>
+          </select>
+        </div>
         <button id="btnAddRenda" class="btn">Adicionar</button>
       </div>
       <div class="space-top">
-        <table id="tblRenda"><thead><tr><th>Descrição</th><th>Data</th><th class="right">Valor</th><th></th></tr></thead><tbody></tbody></table>
+        <table id="tblRenda">
+          <thead>
+            <tr><th>Descrição</th><th>Data</th><th class="right">Valor</th><th></th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
       </div>
     </section>
 
@@ -230,51 +233,42 @@
           <input id="novoTipo" placeholder="Novo tipo" style="width:120px">
           <button id="btnAddTipo" class="btn ghost">+</button>
         </div>
+        <div class="row-inline" id="boxDespRec">
+          <label for="despRecorrente">Recorrente</label>
+          <select id="despRecorrente">
+            <option value="0">Não</option>
+            <option value="1">1 mês</option>
+            <option value="2">2 meses</option>
+            <option value="3">3 meses</option>
+            <option value="4">4 meses</option>
+            <option value="5">5 meses</option>
+            <option value="6">6 meses</option>
+            <option value="7">7 meses</option>
+            <option value="8">8 meses</option>
+            <option value="9">9 meses</option>
+            <option value="10">10 meses</option>
+            <option value="11">11 meses</option>
+            <option value="12">12 meses</option>
+          </select>
+        </div>
         <button id="btnAddDesp" class="btn">Adicionar</button>
       </div>
-      <div class="space-top">
-        <!-- <table id="tblDesp"><thead><tr><th>Descrição</th><th>Data</th><th>Tipo</th><th class="right">Valor</th><th></th></tr></thead><tbody></tbody></table> -->
-        <div class="space-top table-container">
-          <table id="tblDesp">
-            <thead>
-              <tr>
-                <th>Descrição</th>
-                <th>Data</th>
-                <th>Tipo</th>
-                <th class="right">Valor</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>QTA</td>
-                <td>07/09/2025</td>
-                <td>Moradia</td>
-                <td class="right">R$ 1.070,36</td>
-                <td><button class="btn-del">X</button></td>
-              </tr>
-              <tr>
-                <td>Água e luz</td>
-                <td>07/09/2025</td>
-                <td>Moradia</td>
-                <td class="right">R$ 150,00</td>
-                <td><button class="btn-del">X</button></td>
-              </tr>
-              <tr>
-                <td>Mensalidade</td>
-                <td>20/09/2025</td>
-                <td>Faculdade</td>
-                <td class="right">R$ 187,36</td>
-                <td><button class="btn-del">X</button></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+      <div class="space-top table-container">
+        <table id="tblDesp">
+          <thead>
+            <tr>
+              <th>Descrição</th>
+              <th>Data</th>
+              <th>Tipo</th>
+              <th class="right">Valor</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
       </div>
     </section>
-    <!-- alterado até aqui -->
 
-    
     <!-- CARTÕES -->
     <section id="tab-cartoes" class="tab card" hidden>
       <h2>💳 Cartões</h2>
@@ -285,7 +279,12 @@
         <button id="btnAddCC" class="btn">Adicionar</button>
       </div>
       <div class="space-top">
-        <table id="tblCC"><thead><tr><th>Cartão</th><th>Vencimento</th><th class="right">Valor usado</th><th></th></tr></thead><tbody></tbody></table>
+        <table id="tblCC">
+          <thead>
+            <tr><th>Cartão</th><th>Vencimento</th><th class="right">Valor usado</th><th></th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
       </div>
     </section>
 
@@ -337,14 +336,27 @@
     const nome=document.getElementById('rendaNome').value.trim();
     const valor=parseN(document.getElementById('rendaValor').value);
     const data=document.getElementById('rendaData').value;
+    const meses=parseInt(document.getElementById('rendaRecorrente').value);
     if(!nome||!valor||!data){alert("Preencha os campos");return;}
+
     const p=getPeriod(data);
     ensurePeriod(p);
-    state.periodos[p].rendas.push({id:Date.now(),nome,valor,data});
+    state.periodos[p].rendas.push({id:Date.now(),nome,valor,data,recorrente:meses>0});
     currentPeriod=p;
+
+    if(meses>0){
+      for(let i=1;i<meses;i++){
+        let d=new Date(data); d.setMonth(d.getMonth()+i);
+        const pi=getPeriod(d);
+        ensurePeriod(pi);
+        state.periodos[pi].rendas.push({id:Date.now()+i,nome,valor,data:d.toISOString(),recorrente:true});
+      }
+    }
+
     document.getElementById('rendaNome').value="";
     document.getElementById('rendaValor').value="";
     document.getElementById('rendaData').value="";
+    document.getElementById('rendaRecorrente').value="0";
     save();
   };
   function renderRenda(){
@@ -374,14 +386,27 @@
     const valor=parseN(document.getElementById('despValor').value);
     const data=document.getElementById('despData').value;
     const tipo=document.getElementById('despTipo').value;
+    const meses=parseInt(document.getElementById('despRecorrente').value);
     if(!nome||!valor||!data){alert("Preencha os campos");return;}
+
     const p=getPeriod(data);
     ensurePeriod(p);
-    state.periodos[p].despesas.push({id:Date.now(),nome,valor,data,tipo});
+    state.periodos[p].despesas.push({id:Date.now(),nome,valor,data,tipo,recorrente:meses>0});
     currentPeriod=p;
+
+    if(meses>0){
+      for(let i=1;i<meses;i++){
+        let d=new Date(data); d.setMonth(d.getMonth()+i);
+        const pi=getPeriod(d);
+        ensurePeriod(pi);
+        state.periodos[pi].despesas.push({id:Date.now()+i,nome,valor,data:d.toISOString(),tipo,recorrente:true});
+      }
+    }
+
     document.getElementById('despNome').value="";
     document.getElementById('despValor').value="";
     document.getElementById('despData').value="";
+    document.getElementById('despRecorrente').value="0";
     save();
   };
   function renderDesp(){
@@ -430,7 +455,7 @@
     const totalR=rendas.reduce((s,x)=>s+x.valor,0);
     const totalD=despesas.reduce((s,x)=>s+x.valor,0);
     const totalC=cartoes.reduce((s,x)=>s+x.valor,0);
-    const saldo=totalR; //alterei aqui
+    const saldo=totalR;
     document.getElementById('kpiSaldo').textContent=fmtBRL(saldo);
     document.getElementById('kpiSobra').textContent=fmtBRL(saldo-totalD-totalC);
 
@@ -438,7 +463,43 @@
     const futuros=eventos.filter(e=>new Date(e.data)>=today());
     futuros.sort((a,b)=>new Date(a.data)-new Date(b.data));
     document.getElementById('kpiVencimento').textContent=futuros.length? new Date(futuros[0].data).toLocaleDateString()+" - "+futuros[0].nome:"—";
+
+    renderSomaTipo();
   }
+
+  // ======= Dashboard: Soma por tipos =======
+  function renderSomaTipo(){
+    const filtro = document.getElementById("filtroDespesa").value;
+    const ult6 = document.getElementById("chk6meses").checked;
+
+    let despesas = [];
+    if(ult6){
+      let base=new Date();
+      for(let i=0;i<6;i++){
+        let p=getPeriod(new Date(base.getFullYear(), base.getMonth()-i, 1));
+        if(state.periodos[p]) despesas = despesas.concat(state.periodos[p].despesas);
+      }
+    } else {
+      ensurePeriod(currentPeriod);
+      despesas = state.periodos[currentPeriod].despesas;
+    }
+
+    const tiposUsados = [...new Set(despesas.map(d=>d.tipo))];
+    const sel=document.getElementById("filtroDespesa");
+    sel.innerHTML='<option value="">Todos</option>';
+    tiposUsados.forEach(t=>{
+      const o=document.createElement("option");
+      o.value=t; o.textContent=t;
+      if(t===filtro) o.selected=true;
+      sel.appendChild(o);
+    });
+
+    let filtradas = filtro ? despesas.filter(d=>d.tipo===filtro) : despesas;
+    const total = filtradas.reduce((s,d)=>s+d.valor,0);
+    document.getElementById("kpiSomaTipo").textContent = fmtBRL(total);
+  }
+  document.getElementById("filtroDespesa").onchange=renderSomaTipo;
+  document.getElementById("chk6meses").onchange=renderSomaTipo;
 
   // ======= Config Dados =======
   document.getElementById('btnReset').onclick=()=>{ if(confirm("Apagar todos os dados?")){localStorage.removeItem('fin-state'); location.reload();} };
@@ -455,20 +516,47 @@
     document.getElementById('tab-dashboard').hidden=false;
   }
 
-  // ======= TEMA =======
+  // ======= TEMA (claro/escuro) =======
   const themeToggle=document.getElementById('themeToggle');
   const themeIcon=document.getElementById('themeIcon');
   function applyTheme(){
-    if(localStorage.getItem('theme')==='light'){document.body.classList.add('light'); themeToggle.checked=false; themeIcon.textContent='🌞';}
-    else {document.body.classList.remove('light'); themeToggle.checked=true; themeIcon.textContent='🌙';}
+    if(localStorage.getItem('theme')==='light'){
+      document.body.classList.add('light');
+      themeToggle.checked=false;
+      themeIcon.textContent='🌞';
+    } else {
+      document.body.classList.remove('light');
+      themeToggle.checked=true;
+      themeIcon.textContent='🌙';
+    }
   }
   themeToggle.onchange=()=>{localStorage.setItem('theme', themeToggle.checked?'dark':'light'); applyTheme();};
 
-  // ======= RENDER ALL =======
-  function renderAll(){ renderPeriods(); renderRenda(); renderDesp(); renderCC(); renderDashboard(); renderTipos(); }
+  // ======= LÓGICA FREE VS PREMIUM =======
+  (function(){
+    const plano = "free"; // altere para "premium" quando necessário
+    const select = (sel) => document.querySelector(sel);
+    const remove = (sel) => { const el=select(sel); if(el) el.remove(); };
 
-  // init
-  renderTabs(); applyTheme(); renderAll();
+    if(plano === "free"){
+      remove("#cardSomaTipos");
+      remove("#periodSelect");
+      remove("#novoTipo");
+      remove("#btnAddTipo");
+      remove("#boxRendaRec");
+      remove("#boxDespRec");
+
+      const tabBtn = Array.from(document.querySelectorAll("nav button"))
+        .find(btn => btn.textContent.includes("Cartões"));
+      if(tabBtn) tabBtn.remove();
+      remove("#tab-cartoes");
+    }
+  })();
+
+  // ======= RENDER ALL =======
+  renderTabs();
+  applyTheme();
+  renderAll();
   </script>
   <script>
   if ("serviceWorker" in navigator) {
@@ -476,7 +564,5 @@
       .then(() => console.log("Service Worker registrado"));
   }
   </script>
-
 </body>
 </html>
-
