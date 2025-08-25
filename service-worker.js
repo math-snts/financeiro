@@ -1,7 +1,7 @@
 const CACHE_NAME = "financeiro-v1";
 const urlsToCache = [
   "/",
-  "/index.html",
+  "/indexpremium.html",
   "/manifest.json"
 ];
 
@@ -27,3 +27,4 @@ self.addEventListener("fetch", (event) => {
     caches.match(event.request).then((resp) => resp || fetch(event.request))
   );
 });
+
