@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -19,6 +20,7 @@
       --warn: #f59e0b;
       --radius: 18px;
     }
+
     body.light {
       --bg: #f9fafb;
       --card: #ffffff;
@@ -30,14 +32,38 @@
       --danger: #dc2626;
       --warn: #d97706;
     }
-    * { box-sizing: border-box }
-    html, body { height: 100% }
+
+    * {
+      box-sizing: border-box
+    }
+
+    html,
+    body {
+      height: 100%
+    }
+
     body {
       margin: 0;
       background: var(--bg);
       color: var(--text);
       font-family: Inter, system-ui, Segoe UI, Roboto, Arial, sans-serif;
     }
+
+    /* icone de configuração */
+    .icon-config {
+      cursor: pointer;
+      font-size: 18px;
+      line-height: 1;
+      user-select: none;
+      padding: 8px;
+      /* só pra dar área de clique */
+    }
+
+    .icon-config:hover {
+      opacity: 0.7;
+    }
+
+
     header {
       position: sticky;
       top: 0;
@@ -46,12 +72,40 @@
       border-bottom: 1px solid var(--muted);
       z-index: 10;
     }
-    body.light header { background: rgba(249,250,251,.8); }
-    .wrap { max-width: 1100px; margin: 0 auto; padding: 18px }
-    .row { display: flex; gap: 12px; flex-wrap: wrap }
-    .grow { flex: 1 1 280px }
-    h1 { font-size: 22px; margin: 0; font-weight: 700 }
-    nav { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px }
+
+    body.light header {
+      background: rgba(249, 250, 251, .8);
+    }
+
+    .wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 18px
+    }
+
+    .row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap
+    }
+
+    .grow {
+      flex: 1 1 280px
+    }
+
+    h1 {
+      font-size: 22px;
+      margin: 0;
+      font-weight: 700
+    }
+
+    nav {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 12px
+    }
+
     nav button {
       background: var(--bg);
       border: 1px solid var(--muted);
@@ -60,100 +114,392 @@
       border-radius: 999px;
       cursor: pointer;
     }
+
     nav button.active {
       background: var(--accent-2);
       border-color: transparent;
       color: #fff;
     }
-    main { max-width: 1100px; margin: 16px auto; padding: 0 18px 70px }
-    .grid { display: grid; gap: 14px }
-    .grid.cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)) }
-    @media (max-width:900px){.grid.cols-3{grid-template-columns:1fr}}
+
+    main {
+      max-width: 1100px;
+      margin: 16px auto;
+      padding: 0 18px 70px
+    }
+
+    .grid {
+      display: grid;
+      gap: 14px
+    }
+
+    .grid.cols-3 {
+      grid-template-columns: repeat(3, minmax(0, 1fr))
+    }
+
+    @media (max-width:900px) {
+      .grid.cols-3 {
+        grid-template-columns: 1fr
+      }
+    }
+
     .card {
       background: var(--card);
       border: 1px solid var(--muted);
       border-radius: var(--radius);
       padding: 16px;
-      box-shadow: 0 6px 30px rgba(0,0,0,.25);
+      box-shadow: 0 6px 30px rgba(0, 0, 0, .25);
     }
-    .card h2 { margin: 0 0 12px; font-size: 18px }
-    .muted { color: var(--text-dim) }
-    .kpi { font-size: 26px; font-weight: 800 }
-    .row-inline { display: flex; align-items: center; gap: 6px; flex-wrap: wrap }
-    label { font-size: 12px; color: var(--text-dim) }
-    input,select,textarea {
-      width: 100%; padding: 10px 12px; background: var(--bg);
-      border: 1px solid var(--muted); border-radius: 12px; color: var(--text)
+
+    .card h2 {
+      margin: 0 0 12px;
+      font-size: 18px
     }
-    textarea { resize: vertical; min-height: 100px }
+
+    .muted {
+      color: var(--text-dim)
+    }
+
+    .kpi {
+      font-size: 26px;
+      font-weight: 800
+    }
+
+    .row-inline {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap
+    }
+
+    label {
+      font-size: 12px;
+      color: var(--text-dim)
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      padding: 10px 12px;
+      background: var(--bg);
+      border: 1px solid var(--muted);
+      border-radius: 12px;
+      color: var(--text)
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 100px
+    }
+
     .btn {
       background: var(--accent-2);
-      color: white; border: none;
-      padding: 10px 14px; border-radius: 12px;
-      cursor: pointer; font-weight: 600
+      color: white;
+      border: none;
+      padding: 10px 14px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 600
     }
-    .btn.ghost { background: var(--bg); border: 1px solid var(--muted); color: var(--text) }
-    .btn.warn { background: var(--warn) }
-    .btn.danger { background: var(--danger) }
-    table { width: 100%; border-collapse: collapse }
-    th, td { padding: 10px; border-bottom: 1px solid var(--muted); text-align: left }
-    th { color: var(--text-dim); font-weight: 600; font-size: 12px; text-transform: uppercase }
-    tfoot td { font-weight: 700 }
-    .tag { padding: 4px 8px; border-radius: 999px; font-size: 11px; border: 1px solid var(--muted) }
-    .right { text-align: right }
-    .space-top { margin-top: 12px }
-    .note { font-size: 12px; color: var(--text-dim) }
-    footer { position: fixed; bottom: 10px; left: 0; right: 0; display: flex; justify-content: center; pointer-events: none }
-    .dock { pointer-events: auto; background: var(--bg); border: 1px solid var(--muted); border-radius: 999px; padding: 8px 10px; display: flex; gap: 8px; box-shadow: 0 10px 30px rgba(0,0,0,.35) }
-    .switch { position: relative; display: inline-flex; align-items: center; gap:6px; cursor: pointer; }
-    .switch input { display:none }
+
+    .btn.ghost {
+      background: var(--bg);
+      border: 1px solid var(--muted);
+      color: var(--text)
+    }
+
+    .btn.warn {
+      background: var(--warn)
+    }
+
+    .btn.danger {
+      background: var(--danger)
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse
+    }
+
+    th,
+    td {
+      padding: 10px;
+      border-bottom: 1px solid var(--muted);
+      text-align: left
+    }
+
+    th {
+      color: var(--text-dim);
+      font-weight: 600;
+      font-size: 12px;
+      text-transform: uppercase
+    }
+
+    tfoot td {
+      font-weight: 700
+    }
+
+    .tag {
+      padding: 4px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      border: 1px solid var(--muted)
+    }
+
+    .right {
+      text-align: right
+    }
+
+    .space-top {
+      margin-top: 12px
+    }
+
+    .note {
+      font-size: 12px;
+      color: var(--text-dim)
+    }
+
+    footer {
+      position: fixed;
+      bottom: 10px;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: center;
+      pointer-events: none
+    }
+
+    .dock {
+      pointer-events: auto;
+      background: var(--bg);
+      border: 1px solid var(--muted);
+      border-radius: 999px;
+      padding: 8px 10px;
+      display: flex;
+      gap: 8px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, .35)
+    }
+
+    .switch {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+    }
+
+    .switch input {
+      display: none
+    }
+
     .slider {
-      width: 46px; height: 24px; background: var(--muted); border-radius: 999px;
-      position: relative; transition:.3s;
+      width: 46px;
+      height: 24px;
+      background: var(--muted);
+      border-radius: 999px;
+      position: relative;
+      transition: .3s;
     }
+
     .slider::before {
-      content:""; position:absolute; top:2px; left:2px;
-      width:20px; height:20px; border-radius:50%;
-      background:#fff; transition:.3s;
+      content: "";
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #fff;
+      transition: .3s;
     }
-    input:checked + .slider::before { transform: translateX(22px) }
-    input:checked + .slider { background: var(--accent-2) }
-    .table-container { overflow-x: auto; }
-    #tblDesp { width: 100%; border-collapse: collapse; }
-    #tblDesp th, #tblDesp td { padding: 6px 8px; text-align: left; white-space: nowrap; }
-    #tblDesp th.right, #tblDesp td.right { text-align: right; }
+
+    input:checked+.slider::before {
+      transform: translateX(22px)
+    }
+
+    input:checked+.slider {
+      background: var(--accent-2)
+    }
+
+    .table-container {
+      overflow-x: auto;
+    }
+
+    #tblDesp {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    #tblDesp th,
+    #tblDesp td {
+      padding: 6px 8px;
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    #tblDesp th.right,
+    #tblDesp td.right {
+      text-align: right;
+    }
+
     @media (max-width: 600px) {
-      #tblDesp th:nth-child(2), #tblDesp td:nth-child(2),
-      #tblDesp th:nth-child(3), #tblDesp td:nth-child(3) { display: none; }
+
+      #tblDesp th:nth-child(2),
+      #tblDesp td:nth-child(2),
+      #tblDesp th:nth-child(3),
+      #tblDesp td:nth-child(3) {
+        display: none;
+      }
     }
 
     /* === Metas === */
-    .goals-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 14px }
-    @media (max-width:900px){.goals-grid{grid-template-columns:1fr}}
-    .goal-card { position: relative; }
-    .goal-close { position:absolute; top:8px; right:8px; background: transparent; border:none; color: var(--text-dim); cursor:pointer; font-weight:700 }
-    .progress { height: 12px; background: var(--muted); border-radius: 999px; overflow:hidden; }
-    .progress > span { display:block; height:100%; width:0%; transition: width .3s ease; }
-    .p-red { background:#ef4444 }
-    .p-orange { background:#f59e0b }
-    .p-green { background:#22c55e }
-    .p-gold { background:linear-gradient(90deg,#f59e0b,#fbbf24,#f59e0b) }
-    .goal-nums { display:flex; justify-content:space-between; font-size:12px; color:var(--text-dim) }
+    .goals-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px
+    }
+
+    @media (max-width:900px) {
+      .goals-grid {
+        grid-template-columns: 1fr
+      }
+    }
+
+    .goal-card {
+      position: relative;
+    }
+
+    .goal-close {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: transparent;
+      border: none;
+      color: var(--text-dim);
+      cursor: pointer;
+      font-weight: 700
+    }
+
+    .progress {
+      height: 12px;
+      background: var(--muted);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress>span {
+      display: block;
+      height: 100%;
+      width: 0%;
+      transition: width .3s ease;
+    }
+
+    .p-red {
+      background: #ef4444
+    }
+
+    .p-orange {
+      background: #f59e0b
+    }
+
+    .p-green {
+      background: #22c55e
+    }
+
+    .p-gold {
+      background: linear-gradient(90deg, #f59e0b, #fbbf24, #f59e0b)
+    }
+
+    .goal-nums {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: var(--text-dim)
+    }
 
     /* === Listas (post-it) === */
-    .notes-header { display:flex; justify-content:space-between; align-items:center; gap:8px }
-    .notes-grid { display:grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap:14px; margin-top:12px }
-    @media(max-width:1100px){.notes-grid{grid-template-columns:repeat(2,1fr)}}
-    @media(max-width:600px){.notes-grid{grid-template-columns:1fr}}
-    .note-item { position:relative; background:#fef08a; color:#111; border-radius: 10px; padding:14px; box-shadow: 0 10px 25px rgba(0,0,0,.25); min-height: 160px; }
-    body.light .note-item { color:#111 }
-    .note-delete { position:absolute; top:6px; right:8px; background: transparent; border:none; font-weight:700; cursor:pointer }
-    .note-text { width:100%; background: transparent; border:none; outline:none; color: inherit; font: inherit; min-height: 100px; resize: none }
-    .note-footer { position:absolute; left:8px; bottom:8px; display:flex; align-items:center; gap:6px }
-    .note-done { width:18px; height:18px }
-    .note-item.done { opacity:.7; text-decoration: line-through; }
+    .notes-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px
+    }
+
+    .notes-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 12px
+    }
+
+    @media(max-width:1100px) {
+      .notes-grid {
+        grid-template-columns: repeat(2, 1fr)
+      }
+    }
+
+    @media(max-width:600px) {
+      .notes-grid {
+        grid-template-columns: 1fr
+      }
+    }
+
+    .note-item {
+      position: relative;
+      background: #fef08a;
+      color: #111;
+      border-radius: 10px;
+      padding: 14px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, .25);
+      min-height: 160px;
+    }
+
+    body.light .note-item {
+      color: #111
+    }
+
+    .note-delete {
+      position: absolute;
+      top: 6px;
+      right: 8px;
+      background: transparent;
+      border: none;
+      font-weight: 700;
+      cursor: pointer
+    }
+
+    .note-text {
+      width: 100%;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: inherit;
+      font: inherit;
+      min-height: 100px;
+      resize: none
+    }
+
+    .note-footer {
+      position: absolute;
+      left: 8px;
+      bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px
+    }
+
+    .note-done {
+      width: 18px;
+      height: 18px
+    }
+
+    .note-item.done {
+      opacity: .7;
+      text-decoration: line-through;
+    }
   </style>
 </head>
+
 <body>
   <header>
     <div class="wrap">
@@ -231,7 +577,12 @@
       <div class="space-top">
         <table id="tblRenda">
           <thead>
-            <tr><th>Descrição</th><th>Data</th><th class="right">Valor</th><th></th></tr>
+            <tr>
+              <th>Descrição</th>
+              <th>Data</th>
+              <th class="right">Valor</th>
+              <th></th>
+            </tr>
           </thead>
           <tbody></tbody>
         </table>
@@ -300,7 +651,12 @@
       <div class="space-top">
         <table id="tblCC">
           <thead>
-            <tr><th>Cartão</th><th>Vencimento</th><th class="right">Valor usado</th><th></th></tr>
+            <tr>
+              <th>Cartão</th>
+              <th>Vencimento</th>
+              <th class="right">Valor usado</th>
+              <th></th>
+            </tr>
           </thead>
           <tbody></tbody>
         </table>
@@ -312,7 +668,8 @@
       <h2>🎯 Metas</h2>
       <div class="row">
         <div class="grow"><label>Descrição</label><input id="metaDesc" placeholder="Ex.: Notebook, Viagem..."></div>
-        <div class="grow"><label>Valor da meta</label><input id="metaValor" type="number" step="0.01" placeholder="0,00"></div>
+        <div class="grow"><label>Valor da meta</label><input id="metaValor" type="number" step="0.01"
+            placeholder="0,00"></div>
         <button id="btnAddMeta" class="btn">Adicionar meta</button>
       </div>
       <div class="space-top goals-grid" id="goalsGrid"></div>
@@ -321,7 +678,7 @@
     <!-- LISTAS -->
     <section id="tab-listas" class="tab card" hidden>
       <div class="notes-header">
-        <h2>🗒️ Post-it</h2>
+        <h2>🗒️ Post-its</h2>
         <button id="btnNovaNota" class="btn" style="margin-left:auto">➕ Nova nota</button>
       </div>
       <div class="notes-grid" id="notesGrid"></div>
@@ -329,230 +686,233 @@
 
     <!-- CONFIG -->
     <section id="tab-relatorios" class="tab card" hidden>
-      <h2>⚙️ Configuração</h2>
+      <h2>
+        <span id="btnConfig" class="icon-config">⚙️</span> Configuração
+      </h2>
       <div id="listaReservas"></div>
       <div class="space-top">
         <button id="btnReset" class="btn danger">Limpar dados</button>
         <div class="note">Dados salvos no seu dispositivo (localStorage)</div>
       </div>
     </section>
+
   </main>
   <script>
-  // ======= Helpers =======
-  const fmtBRL = (n) => (n||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
-  const parseN = (v) => Number(String(v).replace(',','.'))||0;
-  const today = () => new Date();
-  const getPeriod = (d) => {
-    const date=new Date(d||today());
-    return date.getFullYear()+"-"+String(date.getMonth()+1).padStart(2,'0');
-  };
+    // ======= Helpers =======
+    const fmtBRL = (n) => (n || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    const parseN = (v) => Number(String(v).replace(',', '.')) || 0;
+    const today = () => new Date();
+    const getPeriod = (d) => {
+      const date = new Date(d || today());
+      return date.getFullYear() + "-" + String(date.getMonth() + 1).padStart(2, '0');
+    };
 
-  // Corrige problema de datas (fuso local)
-  function parseLocalDate(inputDate){
-    const [y,m,d] = inputDate.split("-").map(Number);
-    const now = new Date();
-    return new Date(y, m-1, d, now.getHours(), now.getMinutes(), now.getSeconds());
-  }
-
-  // ======= Estado =======
-  let state = JSON.parse(localStorage.getItem('fin-state')||'{}');
-  if(!state.periodos) state={periodos:{},tipos:["Moradia","Transporte","Alimentação","Saúde","Serviços","Educação","Outros"], metas:[], notas:[]};
-  if(!state.metas) state.metas=[];
-  if(!state.notas) state.notas=[];
-  let currentPeriod;
-  function ensurePeriod(p){ if(!state.periodos[p]) state.periodos[p]={rendas:[],despesas:[],cartoes:[]}; }
-  function save(){ localStorage.setItem('fin-state',JSON.stringify(state)); renderAll(); }
-
-  // ======= Periodos =======
-  function renderPeriods(){
-    const sel=document.getElementById('periodSelect'); sel.innerHTML="";
-    const ps=Object.keys(state.periodos).sort();
-    ps.forEach(p=>{
-      const opt=document.createElement('option');
-      opt.value=p; opt.textContent=p; sel.appendChild(opt);
-    });
-    if(!currentPeriod){currentPeriod=getPeriod(); ensurePeriod(currentPeriod);}    
-    if(!ps.includes(currentPeriod)){ensurePeriod(currentPeriod);}    
-    sel.value=currentPeriod;
-    sel.onchange=()=>{currentPeriod=sel.value; renderAll();};
-  }
-
-  // ======= Rendas =======
-  document.getElementById('btnAddRenda').onclick=()=>{
-    const nome=document.getElementById('rendaNome').value.trim();
-    const valor=parseN(document.getElementById('rendaValor').value);
-    const data=document.getElementById('rendaData').value;
-    const meses=parseInt(document.getElementById('rendaRecorrente').value);
-    if(!nome||!valor||!data){alert("Preencha os campos");return;}
-
-    const d=parseLocalDate(data);
-    const p=getPeriod(d);
-    ensurePeriod(p);
-    state.periodos[p].rendas.push({id:Date.now(),nome,valor,data:d.toISOString(),recorrente:meses>0});
-    currentPeriod=p;
-
-    if(meses>0){
-      for(let i=1;i<meses;i++){
-        let d2=new Date(d); d2.setMonth(d2.getMonth()+i);
-        const pi=getPeriod(d2);
-        ensurePeriod(pi);
-        state.periodos[pi].rendas.push({id:Date.now()+i,nome,valor,data:d2.toISOString(),recorrente:true});
-      }
+    // Corrige problema de datas (fuso local)
+    function parseLocalDate(inputDate) {
+      const [y, m, d] = inputDate.split("-").map(Number);
+      const now = new Date();
+      return new Date(y, m - 1, d, now.getHours(), now.getMinutes(), now.getSeconds());
     }
-    document.getElementById('rendaNome').value="";
-    document.getElementById('rendaValor').value="";
-    document.getElementById('rendaData').value="";
-    document.getElementById('rendaRecorrente').value="0";
-    save();
-  };
-  function renderRenda(){
-    ensurePeriod(currentPeriod);
-    const tb=document.querySelector('#tblRenda tbody'); tb.innerHTML="";
-    state.periodos[currentPeriod].rendas.forEach(r=>{
-      const tr=document.createElement('tr');
-      tr.innerHTML=`<td>${r.nome}</td><td>${new Date(r.data).toLocaleDateString()}</td><td class="right">${fmtBRL(r.valor)}</td><td><button class="btn ghost">X</button></td>`;
-      tr.querySelector('button').onclick=()=>{state.periodos[currentPeriod].rendas=state.periodos[currentPeriod].rendas.filter(x=>x.id!==r.id); save();};
-      tb.appendChild(tr);
-    });
-  }
 
-  // ======= Tipos =======
-  function renderTipos(){
-    const sel=document.getElementById('despTipo'); sel.innerHTML="";
-    state.tipos.forEach(t=>{const o=document.createElement('option'); o.textContent=t; sel.appendChild(o);});
-  }
-  document.getElementById('btnAddTipo').onclick=()=>{
-    const v=document.getElementById('novoTipo').value.trim();
-    if(v){state.tipos.push(v); document.getElementById('novoTipo').value=""; save();}
-  };
+    // ======= Estado =======
+    let state = JSON.parse(localStorage.getItem('fin-state') || '{}');
+    if (!state.periodos) state = { periodos: {}, tipos: ["Moradia", "Transporte", "Alimentação", "Saúde", "Serviços", "Educação", "Outros"], metas: [], notas: [] };
+    if (!state.metas) state.metas = [];
+    if (!state.notas) state.notas = [];
+    let currentPeriod;
+    function ensurePeriod(p) { if (!state.periodos[p]) state.periodos[p] = { rendas: [], despesas: [], cartoes: [] }; }
+    function save() { localStorage.setItem('fin-state', JSON.stringify(state)); renderAll(); }
 
-  // ======= Despesas =======
-  document.getElementById('btnAddDesp').onclick=()=>{
-    const nome=document.getElementById('despNome').value.trim();
-    const valor=parseN(document.getElementById('despValor').value);
-    const data=document.getElementById('despData').value;
-    const tipo=document.getElementById('despTipo').value;
-    const meses=parseInt(document.getElementById('despRecorrente').value);
-    if(!nome||!valor||!data){alert("Preencha os campos");return;}
-
-    const d=parseLocalDate(data);
-    const p=getPeriod(d);
-    ensurePeriod(p);
-    state.periodos[p].despesas.push({id:Date.now(),nome,valor,data:d.toISOString(),tipo,recorrente:meses>0});
-    currentPeriod=p;
-
-    if(meses>0){
-      for(let i=1;i<meses;i++){
-        let d2=new Date(d); d2.setMonth(d2.getMonth()+i);
-        const pi=getPeriod(d2);
-        ensurePeriod(pi);
-        state.periodos[pi].despesas.push({id:Date.now()+i,nome,valor,data:d2.toISOString(),tipo,recorrente:true});
-      }
+    // ======= Periodos =======
+    function renderPeriods() {
+      const sel = document.getElementById('periodSelect'); sel.innerHTML = "";
+      const ps = Object.keys(state.periodos).sort();
+      ps.forEach(p => {
+        const opt = document.createElement('option');
+        opt.value = p; opt.textContent = p; sel.appendChild(opt);
+      });
+      if (!currentPeriod) { currentPeriod = getPeriod(); ensurePeriod(currentPeriod); }
+      if (!ps.includes(currentPeriod)) { ensurePeriod(currentPeriod); }
+      sel.value = currentPeriod;
+      sel.onchange = () => { currentPeriod = sel.value; renderAll(); };
     }
-    document.getElementById('despNome').value="";
-    document.getElementById('despValor').value="";
-    document.getElementById('despData').value="";
-    document.getElementById('despRecorrente').value="0";
-    save();
-  };
-  function renderDesp(){
-    ensurePeriod(currentPeriod);
-    const tb=document.querySelector('#tblDesp tbody'); tb.innerHTML="";
-    state.periodos[currentPeriod].despesas.forEach(d=>{
-      const tr=document.createElement('tr');
-      tr.innerHTML=`<td>${d.nome}</td><td>${new Date(d.data).toLocaleDateString()}</td><td>${d.tipo}</td><td class="right">${fmtBRL(d.valor)}</td><td><button class="btn ghost">X</button></td>`;
-      tr.querySelector('button').onclick=()=>{state.periodos[currentPeriod].despesas=state.periodos[currentPeriod].despesas.filter(x=>x.id!==d.id); save();};
-      tb.appendChild(tr);
-    });
-  }
 
-  // ======= Cartões =======
-  document.getElementById('btnAddCC').onclick=()=>{
-    const nome=document.getElementById('ccNome').value.trim();
-    const valor=parseN(document.getElementById('ccValor').value);
-    const venc=document.getElementById('ccVenc').value;
-    if(!nome||!valor||!venc){alert("Preencha os campos");return;}
+    // ======= Rendas =======
+    document.getElementById('btnAddRenda').onclick = () => {
+      const nome = document.getElementById('rendaNome').value.trim();
+      const valor = parseN(document.getElementById('rendaValor').value);
+      const data = document.getElementById('rendaData').value;
+      const meses = parseInt(document.getElementById('rendaRecorrente').value);
+      if (!nome || !valor || !data) { alert("Preencha os campos"); return; }
 
-    const d=parseLocalDate(venc);
-    const p=getPeriod(d);
-    ensurePeriod(p);
-    state.periodos[p].cartoes.push({id:Date.now(),nome,valor,venc:d.toISOString()});
-    currentPeriod=p;
+      const d = parseLocalDate(data);
+      const p = getPeriod(d);
+      ensurePeriod(p);
+      state.periodos[p].rendas.push({ id: Date.now(), nome, valor, data: d.toISOString(), recorrente: meses > 0 });
+      currentPeriod = p;
 
-    document.getElementById('ccNome').value="";
-    document.getElementById('ccValor').value="";
-    document.getElementById('ccVenc').value="";
-    save();
-  };
-  function renderCC(){
-    ensurePeriod(currentPeriod);
-    const tb=document.querySelector('#tblCC tbody'); tb.innerHTML="";
-    state.periodos[currentPeriod].cartoes.forEach(c=>{
-      const tr=document.createElement('tr');
-      tr.innerHTML=`<td>${c.nome}</td><td>${new Date(c.venc).toLocaleDateString()}</td><td class="right">${fmtBRL(c.valor)}</td><td><button class="btn ghost">X</button></td>`;
-      tr.querySelector('button').onclick=()=>{state.periodos[currentPeriod].cartoes=state.periodos[currentPeriod].cartoes.filter(x=>x.id!==c.id); save();};
-      tb.appendChild(tr);
-    });
-  }
+      if (meses > 0) {
+        for (let i = 1; i < meses; i++) {
+          let d2 = new Date(d); d2.setMonth(d2.getMonth() + i);
+          const pi = getPeriod(d2);
+          ensurePeriod(pi);
+          state.periodos[pi].rendas.push({ id: Date.now() + i, nome, valor, data: d2.toISOString(), recorrente: true });
+        }
+      }
+      document.getElementById('rendaNome').value = "";
+      document.getElementById('rendaValor').value = "";
+      document.getElementById('rendaData').value = "";
+      document.getElementById('rendaRecorrente').value = "0";
+      save();
+    };
+    function renderRenda() {
+      ensurePeriod(currentPeriod);
+      const tb = document.querySelector('#tblRenda tbody'); tb.innerHTML = "";
+      state.periodos[currentPeriod].rendas.forEach(r => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${r.nome}</td><td>${new Date(r.data).toLocaleDateString()}</td><td class="right">${fmtBRL(r.valor)}</td><td><button class="btn ghost">X</button></td>`;
+        tr.querySelector('button').onclick = () => { state.periodos[currentPeriod].rendas = state.periodos[currentPeriod].rendas.filter(x => x.id !== r.id); save(); };
+        tb.appendChild(tr);
+      });
+    }
 
-  // ======= Dashboard =======
-  function renderDashboard(){
-    ensurePeriod(currentPeriod);
-    const rendas=state.periodos[currentPeriod].rendas||[];
-    const despesas=state.periodos[currentPeriod].despesas||[];
-    const cartoes=state.periodos[currentPeriod].cartoes||[];
-    const totalR=rendas.reduce((s,x)=>s+x.valor,0);
-    const totalD=despesas.reduce((s,x)=>s+x.valor,0);
-    const totalC=cartoes.reduce((s,x)=>s+x.valor,0);
-    const saldo=totalR;
-    document.getElementById('kpiSaldo').textContent=fmtBRL(saldo);
-    document.getElementById('kpiSobra').textContent=fmtBRL(saldo-totalD-totalC);
-  
+    // ======= Tipos =======
+    function renderTipos() {
+      const sel = document.getElementById('despTipo'); sel.innerHTML = "";
+      state.tipos.forEach(t => { const o = document.createElement('option'); o.textContent = t; sel.appendChild(o); });
+    }
+    document.getElementById('btnAddTipo').onclick = () => {
+      const v = document.getElementById('novoTipo').value.trim();
+      if (v) { state.tipos.push(v); document.getElementById('novoTipo').value = ""; save(); }
+    };
 
-    // Corrigido: mostra próximo vencimento e total despesas
-    const eventos=[...despesas.map(d=>({data:d.data,nome:d.nome})),...cartoes.map(c=>({data:c.venc,nome:c.nome}))];
-    const futuros=eventos.filter(e=>new Date(e.data)>=today());
-    futuros.sort((a,b)=>new Date(a.data)-new Date(b.data));
+    // ======= Despesas =======
+    document.getElementById('btnAddDesp').onclick = () => {
+      const nome = document.getElementById('despNome').value.trim();
+      const valor = parseN(document.getElementById('despValor').value);
+      const data = document.getElementById('despData').value;
+      const tipo = document.getElementById('despTipo').value;
+      const meses = parseInt(document.getElementById('despRecorrente').value);
+      if (!nome || !valor || !data) { alert("Preencha os campos"); return; }
 
-    const proximo = futuros.length ? new Date(futuros[0].data).toLocaleDateString()+" - "+futuros[0].nome : "—";
-    const somadivt = totalD+totalC
-    const resumo = `Próximo vencimento: ${proximo}`;
-    const totaldiv = `R$ ${somadivt}`;
-    document.getElementById('kpiVencimento').textContent=resumo;
-    document.getElementById('kpisomadiv').textContent=totaldiv;
+      const d = parseLocalDate(data);
+      const p = getPeriod(d);
+      ensurePeriod(p);
+      state.periodos[p].despesas.push({ id: Date.now(), nome, valor, data: d.toISOString(), tipo, recorrente: meses > 0 });
+      currentPeriod = p;
 
-  }
+      if (meses > 0) {
+        for (let i = 1; i < meses; i++) {
+          let d2 = new Date(d); d2.setMonth(d2.getMonth() + i);
+          const pi = getPeriod(d2);
+          ensurePeriod(pi);
+          state.periodos[pi].despesas.push({ id: Date.now() + i, nome, valor, data: d2.toISOString(), tipo, recorrente: true });
+        }
+      }
+      document.getElementById('despNome').value = "";
+      document.getElementById('despValor').value = "";
+      document.getElementById('despData').value = "";
+      document.getElementById('despRecorrente').value = "0";
+      save();
+    };
+    function renderDesp() {
+      ensurePeriod(currentPeriod);
+      const tb = document.querySelector('#tblDesp tbody'); tb.innerHTML = "";
+      state.periodos[currentPeriod].despesas.forEach(d => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${d.nome}</td><td>${new Date(d.data).toLocaleDateString()}</td><td>${d.tipo}</td><td class="right">${fmtBRL(d.valor)}</td><td><button class="btn ghost">X</button></td>`;
+        tr.querySelector('button').onclick = () => { state.periodos[currentPeriod].despesas = state.periodos[currentPeriod].despesas.filter(x => x.id !== d.id); save(); };
+        tb.appendChild(tr);
+      });
+    }
 
-  // ======= Metas =======
-  function addMeta(){
-    const desc = document.getElementById('metaDesc').value.trim();
-    const alvo = parseN(document.getElementById('metaValor').value);
-    if(!desc || !alvo){ alert('Informe descrição e valor da meta'); return; }
-    state.metas.push({ id: Date.now(), desc, alvo, acumulado: 0 });
-    document.getElementById('metaDesc').value='';
-    document.getElementById('metaValor').value='';
-    save();
-  }
-  document.getElementById('btnAddMeta').onclick = addMeta;
+    // ======= Cartões =======
+    document.getElementById('btnAddCC').onclick = () => {
+      const nome = document.getElementById('ccNome').value.trim();
+      const valor = parseN(document.getElementById('ccValor').value);
+      const venc = document.getElementById('ccVenc').value;
+      if (!nome || !valor || !venc) { alert("Preencha os campos"); return; }
 
-  function renderMetas(){
-    const grid = document.getElementById('goalsGrid');
-    grid.innerHTML='';
-    state.metas.forEach(m=>{
-      const pct = m.alvo>0 ? Math.min(100, Math.round((m.acumulado/m.alvo)*100)) : 0;
-      let cls = 'p-red';
-      if (pct>33 && pct<=77) cls='p-orange';
-      else if (pct>77 && pct<100) cls='p-green';
-      else if (pct>=100) cls='p-gold';
+      const d = parseLocalDate(venc);
+      const p = getPeriod(d);
+      ensurePeriod(p);
+      state.periodos[p].cartoes.push({ id: Date.now(), nome, valor, venc: d.toISOString() });
+      currentPeriod = p;
 
-      const card = document.createElement('div');
-      card.className='card goal-card';
-      card.innerHTML = `
+      document.getElementById('ccNome').value = "";
+      document.getElementById('ccValor').value = "";
+      document.getElementById('ccVenc').value = "";
+      save();
+    };
+    function renderCC() {
+      ensurePeriod(currentPeriod);
+      const tb = document.querySelector('#tblCC tbody'); tb.innerHTML = "";
+      state.periodos[currentPeriod].cartoes.forEach(c => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${c.nome}</td><td>${new Date(c.venc).toLocaleDateString()}</td><td class="right">${fmtBRL(c.valor)}</td><td><button class="btn ghost">X</button></td>`;
+        tr.querySelector('button').onclick = () => { state.periodos[currentPeriod].cartoes = state.periodos[currentPeriod].cartoes.filter(x => x.id !== c.id); save(); };
+        tb.appendChild(tr);
+      });
+    }
+
+    // ======= Dashboard =======
+    function renderDashboard() {
+      ensurePeriod(currentPeriod);
+      const rendas = state.periodos[currentPeriod].rendas || [];
+      const despesas = state.periodos[currentPeriod].despesas || [];
+      const cartoes = state.periodos[currentPeriod].cartoes || [];
+      const totalR = rendas.reduce((s, x) => s + x.valor, 0);
+      const totalD = despesas.reduce((s, x) => s + x.valor, 0);
+      const totalC = cartoes.reduce((s, x) => s + x.valor, 0);
+      const saldo = totalR;
+      document.getElementById('kpiSaldo').textContent = fmtBRL(saldo);
+      document.getElementById('kpiSobra').textContent = fmtBRL(saldo - totalD - totalC);
+
+
+      // Corrigido: mostra próximo vencimento e total despesas
+      const eventos = [...despesas.map(d => ({ data: d.data, nome: d.nome })), ...cartoes.map(c => ({ data: c.venc, nome: c.nome }))];
+      const futuros = eventos.filter(e => new Date(e.data) >= today());
+      futuros.sort((a, b) => new Date(a.data) - new Date(b.data));
+
+      const proximo = futuros.length ? new Date(futuros[0].data).toLocaleDateString() + " - " + futuros[0].nome : "—";
+      const somadivt = totalD + totalC
+      const resumo = `Próximo vencimento: ${proximo}`;
+      const totaldiv = `R$ ${somadivt}`;
+      document.getElementById('kpiVencimento').textContent = resumo;
+      document.getElementById('kpisomadiv').textContent = totaldiv;
+
+    }
+
+    // ======= Metas =======
+    function addMeta() {
+      const desc = document.getElementById('metaDesc').value.trim();
+      const alvo = parseN(document.getElementById('metaValor').value);
+      if (!desc || !alvo) { alert('Informe descrição e valor da meta'); return; }
+      state.metas.push({ id: Date.now(), desc, alvo, acumulado: 0 });
+      document.getElementById('metaDesc').value = '';
+      document.getElementById('metaValor').value = '';
+      save();
+    }
+    document.getElementById('btnAddMeta').onclick = addMeta;
+
+    function renderMetas() {
+      const grid = document.getElementById('goalsGrid');
+      grid.innerHTML = '';
+      state.metas.forEach(m => {
+        const pct = m.alvo > 0 ? Math.min(100, Math.round((m.acumulado / m.alvo) * 100)) : 0;
+        let cls = 'p-red';
+        if (pct > 33 && pct <= 77) cls = 'p-orange';
+        else if (pct > 77 && pct < 100) cls = 'p-green';
+        else if (pct >= 100) cls = 'p-gold';
+
+        const card = document.createElement('div');
+        card.className = 'card goal-card';
+        card.innerHTML = `
         <button class="goal-close" title="Excluir">×</button>
         <h3 style="margin:0 0 6px">${m.desc}</h3>
         <div class="goal-nums"><span>Alvo: <strong>${fmtBRL(m.alvo)}</strong></span><span>Acumulado: <strong>${fmtBRL(m.acumulado)}</strong></span></div>
         <div class="progress space-top"><span class="${cls}" style="width:${pct}%"></span></div>
-        <div class="goal-nums" style="margin-top:6px"><span>${pct}%</span><span>Falta: <strong>${fmtBRL(Math.max(0,m.alvo-m.acumulado))}</strong></span></div>
+        <div class="goal-nums" style="margin-top:6px"><span>${pct}%</span><span>Falta: <strong>${fmtBRL(Math.max(0, m.alvo - m.acumulado))}</strong></span></div>
         <div class="row" style="margin-top:10px">
           <div class="grow"><input type="number" step="0.01" placeholder="Valor" class="metaMov"></div>
           <button class="btn">+ Adicionar</button>
@@ -560,171 +920,181 @@
         </div>
       `;
 
-      // Excluir meta
-      card.querySelector('.goal-close').onclick = ()=>{
-        if(confirm('Deseja realmente excluir esta meta?')){
-          state.metas = state.metas.filter(x=>x.id!==m.id); save();
-        }
-      };
-      // Adicionar/Retirar valores
-      const input = card.querySelector('.metaMov');
-      card.querySelectorAll('button.btn').forEach((b,i)=>{
-        b.onclick = ()=>{
-          const v = parseN(input.value);
-          if(!v){ alert('Informe um valor'); return; }
-          if(i===0){ // adicionar
-            m.acumulado = Math.max(0, m.acumulado + v);
-          } else { // retirar
-            m.acumulado = Math.max(0, m.acumulado - v);
+        // Excluir meta
+        card.querySelector('.goal-close').onclick = () => {
+          if (confirm('Deseja realmente excluir esta meta?')) {
+            state.metas = state.metas.filter(x => x.id !== m.id); save();
           }
-          input.value='';
-          save();
         };
+        // Adicionar/Retirar valores
+        const input = card.querySelector('.metaMov');
+        card.querySelectorAll('button.btn').forEach((b, i) => {
+          b.onclick = () => {
+            const v = parseN(input.value);
+            if (!v) { alert('Informe um valor'); return; }
+            if (i === 0) { // adicionar
+              m.acumulado = Math.max(0, m.acumulado + v);
+            } else { // retirar
+              m.acumulado = Math.max(0, m.acumulado - v);
+            }
+            input.value = '';
+            save();
+          };
+        });
+
+        grid.appendChild(card);
       });
+    }
 
-      grid.appendChild(card);
-    });
-  }
+    // ======= Listas (post-it) =======
+    function novaNota() {
+      state.notas.push({ id: Date.now(), texto: '', done: false });
+      save();
+    }
+    document.getElementById('btnNovaNota').onclick = novaNota;
 
-  // ======= Listas (post-it) =======
-  function novaNota(){
-    state.notas.push({ id: Date.now(), texto: '', done: false });
-    save();
-  }
-  document.getElementById('btnNovaNota').onclick = novaNota;
+    function renderNotas() {
+      const grid = document.getElementById('notesGrid');
 
-  function renderNotas() {
-  const grid = document.getElementById('notesGrid');
+      // Salvar foco e posição do cursor antes de recriar
+      const active = document.activeElement;
+      let caretPos = null;
+      let activeId = null;
+      if (active && active.classList.contains("note-text")) {
+        caretPos = active.selectionStart;
+        activeId = active.dataset.id;
+      }
 
-  // Salvar foco e posição do cursor antes de recriar
-  const active = document.activeElement;
-  let caretPos = null;
-  let activeId = null;
-  if (active && active.classList.contains("note-text")) {
-    caretPos = active.selectionStart;
-    activeId = active.dataset.id;
-  }
-
-  grid.innerHTML = '';
-  state.notas.forEach(n => {
-    const el = document.createElement('div');
-    el.className = 'note-item' + (n.done ? ' done' : '');
-    el.innerHTML = `
+      grid.innerHTML = '';
+      state.notas.forEach(n => {
+        const el = document.createElement('div');
+        el.className = 'note-item' + (n.done ? ' done' : '');
+        el.innerHTML = `
       <button class="note-delete">×</button>
       <textarea class="note-text" placeholder="Escreva sua anotação..." data-id="${n.id}"></textarea>
       <div class="note-footer"><input type="checkbox" class="note-done"></div>
     `;
-    const txt = el.querySelector('.note-text');
-    const chk = el.querySelector('.note-done');
-    txt.value = n.texto;
-    chk.checked = n.done;
+        const txt = el.querySelector('.note-text');
+        const chk = el.querySelector('.note-done');
+        txt.value = n.texto;
+        chk.checked = n.done;
 
-    // Salvar texto ao digitar
-    txt.addEventListener('input', () => { 
-      n.texto = txt.value; 
-      save(); 
-    });
-    // Toggle done
-    chk.addEventListener('change', () => { 
-      n.done = chk.checked; 
-      save(); 
-    });
-    // Excluir com confirmação somente se houver texto
-    el.querySelector('.note-delete').onclick = () => {
-      if (n.texto.trim().length > 0) {
-        if (!confirm('Esta nota possui conteúdo. Deseja realmente excluir?')) return;
+        // Salvar texto ao digitar
+        txt.addEventListener('input', () => {
+          n.texto = txt.value;
+          save();
+        });
+        // Toggle done
+        chk.addEventListener('change', () => {
+          n.done = chk.checked;
+          save();
+        });
+        // Excluir com confirmação somente se houver texto
+        el.querySelector('.note-delete').onclick = () => {
+          if (n.texto.trim().length > 0) {
+            if (!confirm('Esta nota possui conteúdo. Deseja realmente excluir?')) return;
+          }
+          state.notas = state.notas.filter(x => x.id !== n.id);
+          save();
+        };
+
+        grid.appendChild(el);
+
+        // Restaurar foco no textarea que estava ativo
+        if (activeId && n.id == activeId) {
+          txt.focus();
+          if (caretPos !== null) {
+            txt.setSelectionRange(caretPos, caretPos);
+          }
+        }
+      });
+    }
+
+
+    // ======= Config =======
+    document.getElementById('btnReset').onclick = () => {
+      if (confirm("Apagar todos os dados?")) {
+        localStorage.removeItem('fin-state');
+        location.reload();
       }
-      state.notas = state.notas.filter(x => x.id !== n.id); 
-      save();
     };
 
-    grid.appendChild(el);
+    // ======= Tabs =======
+    const tabNames = [
+      ["dashboard", "Dashboard"],
+      ["metas", "Metas"],
+      ["listas", "Post-its"],
+      ["renda", "Renda"],
+      ["despesas", "Despesas"],
+      ["cartoes", "Cartões"],
 
-    // Restaurar foco no textarea que estava ativo
-    if (activeId && n.id == activeId) {
-      txt.focus();
-      if (caretPos !== null) {
-        txt.setSelectionRange(caretPos, caretPos);
+
+      ["relatorios", "icon"]   // ícone no menu
+    ];
+    function renderTabs() {
+      const nav = document.getElementById('tabs'); nav.innerHTML = "";
+      tabNames.forEach(([id, label], i) => {
+        let el;
+        if (label === "icon") {
+          el = document.createElement("span");
+          el.textContent = "⚙️";
+          el.className = "icon-config";
+        } else {
+          el = document.createElement("button");
+          el.textContent = label;
+          if (i == 0) el.classList.add("active");
+        }
+        el.onclick = () => {
+          document.querySelectorAll(".tab").forEach(t => t.hidden = true);
+          document.getElementById("tab-" + id).hidden = false;
+          document.querySelectorAll("nav button").forEach(x => x.classList.remove("active"));
+          if (el.tagName === "BUTTON") el.classList.add("active");
+        };
+        nav.appendChild(el);
+      });
+      document.getElementById("tab-dashboard").hidden = false;
+    }
+
+
+    // ======= Tema =======
+    const themeToggle = document.getElementById('themeToggle');
+    const themeIcon = document.getElementById('themeIcon');
+    function applyTheme() {
+      if (localStorage.getItem('theme') === 'light') {
+        document.body.classList.add('light');
+        themeToggle.checked = false;
+        themeIcon.textContent = '🌞';
+      } else {
+        document.body.classList.remove('light');
+        themeToggle.checked = true;
+        themeIcon.textContent = '🌙';
       }
     }
-  });
-}
+    themeToggle.onchange = () => { localStorage.setItem('theme', themeToggle.checked ? 'dark' : 'light'); applyTheme(); };
 
-
-  // ======= Config =======
-  document.getElementById('btnReset').onclick=()=>{ 
-    if(confirm("Apagar todos os dados?")){
-      localStorage.removeItem('fin-state'); 
-      location.reload();
-    } 
-  };
-
-  // ======= Tabs =======
-  const tabNames = [
-    ["dashboard", "Dashboard"],
-    ["metas", "Metas"],
-    ["listas", "Post-it"],
-    ["renda", "Renda"],
-    ["despesas", "Despesas"],
-    ["cartoes", "Cartões"],
-    ["relatorios", "⚙️"]   // ícone no menu
-  ];
-  function renderTabs(){
-    const nav=document.getElementById('tabs'); nav.innerHTML="";
-    tabNames.forEach(([id,label],i)=>{
-      const b=document.createElement('button'); 
-      b.textContent=label; 
-      if(i==0) b.classList.add('active');
-      b.onclick=()=>{
-        document.querySelectorAll('.tab').forEach(t=>t.hidden=true); 
-        document.getElementById('tab-'+id).hidden=false; 
-        document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active')); 
-        b.classList.add('active');
-      };
-      nav.appendChild(b);
-    });
-    document.getElementById('tab-dashboard').hidden=false;
-  }
-
-  // ======= Tema =======
-  const themeToggle=document.getElementById('themeToggle');
-  const themeIcon=document.getElementById('themeIcon');
-  function applyTheme(){
-    if(localStorage.getItem('theme')==='light'){
-      document.body.classList.add('light');
-      themeToggle.checked=false;
-      themeIcon.textContent='🌞';
-    } else {
-      document.body.classList.remove('light');
-      themeToggle.checked=true;
-      themeIcon.textContent='🌙';
+    // ======= Render All =======
+    function renderAll() {
+      renderPeriods();
+      renderRenda();
+      renderDesp();
+      renderCC();
+      renderDashboard();
+      renderTipos();
+      renderMetas();
+      renderNotas();
     }
-  }
-  themeToggle.onchange=()=>{localStorage.setItem('theme', themeToggle.checked?'dark':'light'); applyTheme();};
 
-  // ======= Render All =======
-  function renderAll(){ 
-    renderPeriods(); 
-    renderRenda(); 
-    renderDesp(); 
-    renderCC(); 
-    renderDashboard(); 
-    renderTipos(); 
-    renderMetas();
-    renderNotas();
-  }
-
-  // init
-  renderTabs(); 
-  applyTheme(); 
-  renderAll();
+    // init
+    renderTabs();
+    applyTheme();
+    renderAll();
   </script>
   <script>
-  if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("service-worker.js")
-      .then(() => console.log("Service Worker registrado"));
-  }
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("service-worker.js")
+        .then(() => console.log("Service Worker registrado"));
+    }
   </script>
 </body>
-</html>
 
+</html>
