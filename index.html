@@ -81,10 +81,11 @@
     .kpi { font-size: 26px; font-weight: 800 }
     .row-inline { display: flex; align-items: center; gap: 6px; flex-wrap: wrap }
     label { font-size: 12px; color: var(--text-dim) }
-    input,select {
+    input,select,textarea {
       width: 100%; padding: 10px 12px; background: var(--bg);
       border: 1px solid var(--muted); border-radius: 12px; color: var(--text)
     }
+    textarea { resize: vertical; min-height: 100px }
     .btn {
       background: var(--accent-2);
       color: white; border: none;
@@ -125,6 +126,32 @@
       #tblDesp th:nth-child(2), #tblDesp td:nth-child(2),
       #tblDesp th:nth-child(3), #tblDesp td:nth-child(3) { display: none; }
     }
+
+    /* === Metas === */
+    .goals-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 14px }
+    @media (max-width:900px){.goals-grid{grid-template-columns:1fr}}
+    .goal-card { position: relative; }
+    .goal-close { position:absolute; top:8px; right:8px; background: transparent; border:none; color: var(--text-dim); cursor:pointer; font-weight:700 }
+    .progress { height: 12px; background: var(--muted); border-radius: 999px; overflow:hidden; }
+    .progress > span { display:block; height:100%; width:0%; transition: width .3s ease; }
+    .p-red { background:#ef4444 }
+    .p-orange { background:#f59e0b }
+    .p-green { background:#22c55e }
+    .p-gold { background:linear-gradient(90deg,#f59e0b,#fbbf24,#f59e0b) }
+    .goal-nums { display:flex; justify-content:space-between; font-size:12px; color:var(--text-dim) }
+
+    /* === Listas (post-it) === */
+    .notes-header { display:flex; justify-content:space-between; align-items:center; gap:8px }
+    .notes-grid { display:grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap:14px; margin-top:12px }
+    @media(max-width:1100px){.notes-grid{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:600px){.notes-grid{grid-template-columns:1fr}}
+    .note-item { position:relative; background:#fef08a; color:#111; border-radius: 10px; padding:14px; box-shadow: 0 10px 25px rgba(0,0,0,.25); min-height: 160px; }
+    body.light .note-item { color:#111 }
+    .note-delete { position:absolute; top:6px; right:8px; background: transparent; border:none; font-weight:700; cursor:pointer }
+    .note-text { width:100%; background: transparent; border:none; outline:none; color: inherit; font: inherit; min-height: 100px; resize: none }
+    .note-footer { position:absolute; left:8px; bottom:8px; display:flex; align-items:center; gap:6px }
+    .note-done { width:18px; height:18px }
+    .note-item.done { opacity:.7; text-decoration: line-through; }
   </style>
 </head>
 <body>
@@ -280,6 +307,26 @@
       </div>
     </section>
 
+    <!-- METAS -->
+    <section id="tab-metas" class="tab card" hidden>
+      <h2>🎯 Metas</h2>
+      <div class="row">
+        <div class="grow"><label>Descrição</label><input id="metaDesc" placeholder="Ex.: Notebook, Viagem..."></div>
+        <div class="grow"><label>Valor da meta</label><input id="metaValor" type="number" step="0.01" placeholder="0,00"></div>
+        <button id="btnAddMeta" class="btn">Adicionar meta</button>
+      </div>
+      <div class="space-top goals-grid" id="goalsGrid"></div>
+    </section>
+
+    <!-- LISTAS -->
+    <section id="tab-listas" class="tab card" hidden>
+      <div class="notes-header">
+        <h2>🗒️ Listas</h2>
+        <button id="btnNovaNota" class="btn" style="margin-left:auto">➕ Nova nota</button>
+      </div>
+      <div class="notes-grid" id="notesGrid"></div>
+    </section>
+
     <!-- CONFIG -->
     <section id="tab-relatorios" class="tab card" hidden>
       <h2>⚙️ Configuração</h2>
@@ -309,7 +356,9 @@
 
   // ======= Estado =======
   let state = JSON.parse(localStorage.getItem('fin-state')||'{}');
-  if(!state.periodos) state={periodos:{},tipos:["Moradia","Transporte","Alimentação","Saúde","Serviços","Educação","Outros"]};
+  if(!state.periodos) state={periodos:{},tipos:["Moradia","Transporte","Alimentação","Saúde","Serviços","Educação","Outros"], metas:[], notas:[]};
+  if(!state.metas) state.metas=[];
+  if(!state.notas) state.notas=[];
   let currentPeriod;
   function ensurePeriod(p){ if(!state.periodos[p]) state.periodos[p]={rendas:[],despesas:[],cartoes:[]}; }
   function save(){ localStorage.setItem('fin-state',JSON.stringify(state)); renderAll(); }
@@ -322,8 +371,8 @@
       const opt=document.createElement('option');
       opt.value=p; opt.textContent=p; sel.appendChild(opt);
     });
-    if(!currentPeriod){currentPeriod=getPeriod(); ensurePeriod(currentPeriod);}
-    if(!ps.includes(currentPeriod)){ensurePeriod(currentPeriod);}
+    if(!currentPeriod){currentPeriod=getPeriod(); ensurePeriod(currentPeriod);}    
+    if(!ps.includes(currentPeriod)){ensurePeriod(currentPeriod);}    
     sel.value=currentPeriod;
     sel.onchange=()=>{currentPeriod=sel.value; renderAll();};
   }
@@ -473,6 +522,135 @@
     document.getElementById('kpisomadiv').textContent=totaldiv;
 
   }
+
+  // ======= Metas =======
+  function addMeta(){
+    const desc = document.getElementById('metaDesc').value.trim();
+    const alvo = parseN(document.getElementById('metaValor').value);
+    if(!desc || !alvo){ alert('Informe descrição e valor da meta'); return; }
+    state.metas.push({ id: Date.now(), desc, alvo, acumulado: 0 });
+    document.getElementById('metaDesc').value='';
+    document.getElementById('metaValor').value='';
+    save();
+  }
+  document.getElementById('btnAddMeta').onclick = addMeta;
+
+  function renderMetas(){
+    const grid = document.getElementById('goalsGrid');
+    grid.innerHTML='';
+    state.metas.forEach(m=>{
+      const pct = m.alvo>0 ? Math.min(100, Math.round((m.acumulado/m.alvo)*100)) : 0;
+      let cls = 'p-red';
+      if (pct>33 && pct<=77) cls='p-orange';
+      else if (pct>77 && pct<100) cls='p-green';
+      else if (pct>=100) cls='p-gold';
+
+      const card = document.createElement('div');
+      card.className='card goal-card';
+      card.innerHTML = `
+        <button class="goal-close" title="Excluir">×</button>
+        <h3 style="margin:0 0 6px">${m.desc}</h3>
+        <div class="goal-nums"><span>Alvo: <strong>${fmtBRL(m.alvo)}</strong></span><span>Acumulado: <strong>${fmtBRL(m.acumulado)}</strong></span></div>
+        <div class="progress space-top"><span class="${cls}" style="width:${pct}%"></span></div>
+        <div class="goal-nums" style="margin-top:6px"><span>${pct}%</span><span>Falta: <strong>${fmtBRL(Math.max(0,m.alvo-m.acumulado))}</strong></span></div>
+        <div class="row" style="margin-top:10px">
+          <div class="grow"><input type="number" step="0.01" placeholder="Valor" class="metaMov"></div>
+          <button class="btn">+ Adicionar</button>
+          <button class="btn warn">- Retirar</button>
+        </div>
+      `;
+
+      // Excluir meta
+      card.querySelector('.goal-close').onclick = ()=>{
+        if(confirm('Deseja realmente excluir esta meta?')){
+          state.metas = state.metas.filter(x=>x.id!==m.id); save();
+        }
+      };
+      // Adicionar/Retirar valores
+      const input = card.querySelector('.metaMov');
+      card.querySelectorAll('button.btn').forEach((b,i)=>{
+        b.onclick = ()=>{
+          const v = parseN(input.value);
+          if(!v){ alert('Informe um valor'); return; }
+          if(i===0){ // adicionar
+            m.acumulado = Math.max(0, m.acumulado + v);
+          } else { // retirar
+            m.acumulado = Math.max(0, m.acumulado - v);
+          }
+          input.value='';
+          save();
+        };
+      });
+
+      grid.appendChild(card);
+    });
+  }
+
+  // ======= Listas (post-it) =======
+  function novaNota(){
+    state.notas.push({ id: Date.now(), texto: '', done: false });
+    save();
+  }
+  document.getElementById('btnNovaNota').onclick = novaNota;
+
+  function renderNotas() {
+  const grid = document.getElementById('notesGrid');
+
+  // Salvar foco e posição do cursor antes de recriar
+  const active = document.activeElement;
+  let caretPos = null;
+  let activeId = null;
+  if (active && active.classList.contains("note-text")) {
+    caretPos = active.selectionStart;
+    activeId = active.dataset.id;
+  }
+
+  grid.innerHTML = '';
+  state.notas.forEach(n => {
+    const el = document.createElement('div');
+    el.className = 'note-item' + (n.done ? ' done' : '');
+    el.innerHTML = `
+      <button class="note-delete">×</button>
+      <textarea class="note-text" placeholder="Escreva sua anotação..." data-id="${n.id}"></textarea>
+      <div class="note-footer"><input type="checkbox" class="note-done"></div>
+    `;
+    const txt = el.querySelector('.note-text');
+    const chk = el.querySelector('.note-done');
+    txt.value = n.texto;
+    chk.checked = n.done;
+
+    // Salvar texto ao digitar
+    txt.addEventListener('input', () => { 
+      n.texto = txt.value; 
+      save(); 
+    });
+    // Toggle done
+    chk.addEventListener('change', () => { 
+      n.done = chk.checked; 
+      save(); 
+    });
+    // Excluir com confirmação somente se houver texto
+    el.querySelector('.note-delete').onclick = () => {
+      if (n.texto.trim().length > 0) {
+        if (!confirm('Esta nota possui conteúdo. Deseja realmente excluir?')) return;
+      }
+      state.notas = state.notas.filter(x => x.id !== n.id); 
+      save();
+    };
+
+    grid.appendChild(el);
+
+    // Restaurar foco no textarea que estava ativo
+    if (activeId && n.id == activeId) {
+      txt.focus();
+      if (caretPos !== null) {
+        txt.setSelectionRange(caretPos, caretPos);
+      }
+    }
+  });
+}
+
+
   // ======= Config =======
   document.getElementById('btnReset').onclick=()=>{ 
     if(confirm("Apagar todos os dados?")){
@@ -487,6 +665,8 @@
     ["renda","Renda"],
     ["despesas","Despesas"],
     ["cartoes","Cartões"],
+    ["metas","Metas"],
+    ["listas","Listas"],
     ["relatorios","⚙️"]   // ícone no menu
   ];
   function renderTabs(){
@@ -530,6 +710,8 @@
     renderCC(); 
     renderDashboard(); 
     renderTipos(); 
+    renderMetas();
+    renderNotas();
   }
 
   // init
