@@ -321,7 +321,7 @@
     <!-- LISTAS -->
     <section id="tab-listas" class="tab card" hidden>
       <div class="notes-header">
-        <h2>🗒️ Listas</h2>
+        <h2>🗒️ Post-it</h2>
         <button id="btnNovaNota" class="btn" style="margin-left:auto">➕ Nova nota</button>
       </div>
       <div class="notes-grid" id="notesGrid"></div>
@@ -660,14 +660,14 @@
   };
 
   // ======= Tabs =======
-  const tabNames=[
-    ["dashboard","Dashboard"],
-    ["renda","Renda"],
-    ["despesas","Despesas"],
-    ["cartoes","Cartões"],
-    ["metas","Metas"],
-    ["listas","Listas"],
-    ["relatorios","⚙️"]   // ícone no menu
+  const tabNames = [
+    ["dashboard", "Dashboard"],
+    ["metas", "Metas"],
+    ["listas", "Post-it"],
+    ["renda", "Renda"],
+    ["despesas", "Despesas"],
+    ["cartoes", "Cartões"],
+    ["relatorios", "⚙️"]   // ícone no menu
   ];
   function renderTabs(){
     const nav=document.getElementById('tabs'); nav.innerHTML="";
@@ -727,3 +727,4 @@
   </script>
 </body>
 </html>
+
