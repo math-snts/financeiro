@@ -1,7 +1,7 @@
 {
   "name": "Meu Controle Financeiro",
   "short_name": "Financeiro",
-  "start_url": "/financeiro/index.html",
+  "start_url": "/financeiro-pessoal/index.html",
   "display": "standalone",
   "background_color": "#0f172a",
   "theme_color": "#0f172a",
@@ -19,6 +19,7 @@
     }
   ]
 }
+
 
 
 
