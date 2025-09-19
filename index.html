@@ -4,301 +4,177 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Meu Controle Financeiro</title>
+  <title>💰 Meu Financeiro Pro</title>
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#0f172a">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     :root {
-      --bg: #3f3f3f;
-      --card: #444444;
-      --muted: #1f2937;
-      --text: #e5e7eb;
-      --text-dim: #9ca3af;
-      --accent: #22c55e;
+      --bg: #0f172a;
+      --card: #1e293b;
+      --muted: #334155;
+      --text: #f1f5f9;
+      --text-dim: #94a3b8;
+      --accent: #10b981;
       --accent-2: #3b82f6;
       --danger: #ef4444;
       --warn: #f59e0b;
-      --radius: 18px;
+      --success: #22c55e;
+      --gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      --shadow-lg: 0 35px 60px -12px rgba(0, 0, 0, 0.35);
+      --radius: 16px;
+      --radius-lg: 20px;
     }
 
     body.light {
-      --bg: #f9fafb;
+      --bg: #f8fafc;
       --card: #ffffff;
-      --muted: #e5e7eb;
-      --text: #111827;
-      --text-dim: #374151;
-      --accent: #22c55e;
+      --muted: #e2e8f0;
+      --text: #0f172a;
+      --text-dim: #64748b;
+      --accent: #10b981;
       --accent-2: #2563eb;
       --danger: #dc2626;
       --warn: #d97706;
+      --success: #16a34a;
+      --gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     }
 
     * {
-      box-sizing: border-box
+      box-sizing: border-box;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    html,
-    body {
-      height: 100%
+    html, body {
+      height: 100%;
+      scroll-behavior: smooth;
     }
 
     body {
       margin: 0;
-      background: var(--bg);
+      background: linear-gradient(135deg, var(--bg) 0%, #1e293b 100%);
+      background-attachment: fixed;
       color: var(--text);
-      font-family: Inter, system-ui, Segoe UI, Roboto, Arial, sans-serif;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      line-height: 1.6;
+      overflow-x: hidden;
     }
 
-    /* icone de configuração */
-    .icon-config {
-      cursor: pointer;
-      font-size: 18px;
-      line-height: 1;
-      user-select: none;
-      padding: 8px;
-      /* só pra dar área de clique */
+    body.light {
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
     }
 
-    .icon-config:hover {
-      opacity: 0.7;
+    /* Loading Animation */
+    .loading {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      transition: opacity 0.3s ease;
     }
 
+    .loading.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
 
+    .spinner {
+      width: 50px;
+      height: 50px;
+      border: 3px solid var(--muted);
+      border-top: 3px solid var(--accent);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Header */
     header {
       position: sticky;
       top: 0;
-      background: rgba(58, 58, 58, 0.8);
-      backdrop-filter: saturate(180%) blur(8px);
-      border-bottom: 1px solid var(--muted);
-      z-index: 10;
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(20px) saturate(180%);
+      border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+      z-index: 100;
+      box-shadow: var(--shadow);
     }
 
     body.light header {
-      background: rgba(249, 250, 251, .8);
+      background: rgba(248, 250, 252, 0.95);
+      border-bottom-color: rgba(100, 116, 139, 0.1);
     }
 
     .wrap {
-      max-width: 1100px;
+      max-width: 1200px;
       margin: 0 auto;
-      padding: 18px
+      padding: 1rem 1.5rem;
     }
 
-    .row {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap
-    }
-
-    .grow {
-      flex: 1 1 280px
-    }
-
-    h1 {
-      font-size: 22px;
-      margin: 0;
-      font-weight: 700
-    }
-
-    nav {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-top: 12px
-    }
-
-    nav button {
-      background: var(--bg);
-      border: 1px solid var(--muted);
-      color: var(--text);
-      padding: 10px 14px;
-      border-radius: 999px;
-      cursor: pointer;
-    }
-
-    nav button.active {
-      background: var(--accent-2);
-      border-color: transparent;
-      color: #fff;
-    }
-
-    main {
-      max-width: 1100px;
-      margin: 16px auto;
-      padding: 0 18px 70px
-    }
-
-    .grid {
-      display: grid;
-      gap: 14px
-    }
-
-    .grid.cols-3 {
-      grid-template-columns: repeat(3, minmax(0, 1fr))
-    }
-
-    @media (max-width:900px) {
-      .grid.cols-3 {
-        grid-template-columns: 1fr
-      }
-    }
-
-    .card {
-      background: var(--card);
-      border: 1px solid var(--muted);
-      border-radius: var(--radius);
-      padding: 16px;
-      box-shadow: 0 6px 30px rgba(0, 0, 0, .25);
-    }
-
-    .card h2 {
-      margin: 0 0 12px;
-      font-size: 18px
-    }
-
-    .muted {
-      color: var(--text-dim)
-    }
-
-    .kpi {
-      font-size: 26px;
-      font-weight: 800
-    }
-
-    .row-inline {
+    .header-row {
       display: flex;
       align-items: center;
-      gap: 6px;
-      flex-wrap: wrap
+      justify-content: space-between;
+      gap: 1rem;
     }
 
-    label {
-      font-size: 12px;
-      color: var(--text-dim)
-    }
-
-    input,
-    select,
-    textarea {
-      width: 100%;
-      padding: 10px 12px;
-      background: var(--bg);
-      border: 1px solid var(--muted);
-      border-radius: 12px;
-      color: var(--text)
-    }
-
-    textarea {
-      resize: vertical;
-      min-height: 100px
-    }
-
-    .btn {
-      background: var(--accent-2);
-      color: white;
-      border: none;
-      padding: 10px 14px;
-      border-radius: 12px;
-      cursor: pointer;
-      font-weight: 600
-    }
-
-    .btn.ghost {
-      background: var(--bg);
-      border: 1px solid var(--muted);
-      color: var(--text)
-    }
-
-    .btn.warn {
-      background: var(--warn)
-    }
-
-    .btn.danger {
-      background: var(--danger)
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse
-    }
-
-    th,
-    td {
-      padding: 10px;
-      border-bottom: 1px solid var(--muted);
-      text-align: left
-    }
-
-    th {
-      color: var(--text-dim);
-      font-weight: 600;
-      font-size: 12px;
-      text-transform: uppercase
-    }
-
-    tfoot td {
-      font-weight: 700
-    }
-
-    .tag {
-      padding: 4px 8px;
-      border-radius: 999px;
-      font-size: 11px;
-      border: 1px solid var(--muted)
-    }
-
-    .right {
-      text-align: right
-    }
-
-    .space-top {
-      margin-top: 12px
-    }
-
-    .note {
-      font-size: 12px;
-      color: var(--text-dim)
-    }
-
-    footer {
-      position: fixed;
-      bottom: 10px;
-      left: 0;
-      right: 0;
+    .logo {
       display: flex;
-      justify-content: center;
-      pointer-events: none
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 1.5rem;
+      font-weight: 800;
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
 
-    .dock {
-      pointer-events: auto;
-      background: var(--bg);
-      border: 1px solid var(--muted);
-      border-radius: 999px;
-      padding: 8px 10px;
+    .header-actions {
       display: flex;
-      gap: 8px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, .35)
+      align-items: center;
+      gap: 0.75rem;
     }
 
-    .switch {
+    .period-select {
+      background: var(--card);
+      border: 1px solid var(--muted);
+      color: var(--text);
+      padding: 0.5rem 1rem;
+      border-radius: 50px;
+      font-size: 0.875rem;
+      min-width: 120px;
+    }
+
+    .theme-toggle {
       position: relative;
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 0.5rem;
       cursor: pointer;
     }
 
-    .switch input {
-      display: none
+    .theme-toggle input {
+      display: none;
     }
 
     .slider {
-      width: 46px;
-      height: 24px;
+      width: 48px;
+      height: 26px;
       background: var(--muted);
-      border-radius: 999px;
+      border-radius: 50px;
       position: relative;
-      transition: .3s;
+      transition: all 0.3s ease;
     }
 
     .slider::before {
@@ -306,772 +182,2073 @@
       position: absolute;
       top: 2px;
       left: 2px;
-      width: 20px;
-      height: 20px;
+      width: 22px;
+      height: 22px;
       border-radius: 50%;
-      background: #fff;
-      transition: .3s;
+      background: white;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
     }
 
-    input:checked+.slider::before {
-      transform: translateX(22px)
+    input:checked + .slider {
+      background: var(--accent);
     }
 
-    input:checked+.slider {
-      background: var(--accent-2)
+    input:checked + .slider::before {
+      transform: translateX(22px);
     }
 
+    /* Navigation */
+    .nav-tabs {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 1rem;
+      flex-wrap: wrap;
+      padding: 0.5rem 0;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    .nav-tabs::-webkit-scrollbar {
+      display: none;
+    }
+
+    .nav-tab {
+      background: transparent;
+      border: 1px solid var(--muted);
+      color: var(--text-dim);
+      padding: 0.75rem 1.25rem;
+      border-radius: 50px;
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 0.875rem;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .nav-tab::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+      transition: left 0.5s;
+    }
+
+    .nav-tab:hover::before {
+      left: 100%;
+    }
+
+    .nav-tab.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: white;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    }
+
+    .nav-tab.config-icon {
+      background: transparent;
+      border: none;
+      padding: 0.75rem;
+      font-size: 1.125rem;
+      color: var(--text-dim);
+    }
+
+    .nav-tab.config-icon:hover {
+      color: var(--accent);
+      transform: scale(1.1);
+    }
+
+    /* Main Content */
+    main {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 1.5rem 4rem;
+      min-height: calc(100vh - 200px);
+    }
+
+    /* Cards */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--muted);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--gradient);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .card:hover::before {
+      opacity: 1;
+    }
+
+    .card h2 {
+      margin: 0 0 1rem;
+      font-size: 1.25rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .card h3 {
+      margin: 0 0 0.75rem;
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    /* KPI Cards */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin: 1.5rem 0;
+    }
+
+    .kpi-card {
+      text-align: center;
+      padding: 1.5rem;
+      border-radius: var(--radius-lg);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .kpi-card.balance {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: white;
+      box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);
+    }
+
+    .kpi-card.expenses {
+      background: linear-gradient(135deg, #ef4444, #dc2626);
+      color: white;
+      box-shadow: 0 10px 30px rgba(239, 68, 68, 0.3);
+    }
+
+    .kpi-card.leftover {
+      background: linear-gradient(135deg, #3b82f6, #2563eb);
+      color: white;
+      box-shadow: 0 10px 30px rgba(59, 130, 246, 0.3);
+    }
+
+    .kpi-value {
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin: 0.5rem 0;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .kpi-label {
+      color: rgba(255,255,255,0.8);
+      font-size: 0.875rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* Forms */
+    .form-grid {
+      display: grid;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+      align-items: end;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: var(--bg);
+      border: 2px solid var(--muted);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-size: 1rem;
+      transition: all 0.2s ease;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+      transform: translateY(-1px);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 80px;
+      font-family: inherit;
+    }
+
+    /* Buttons */
+    .btn {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: var(--radius);
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.875rem;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    .btn.ghost {
+      background: transparent;
+      border: 2px solid var(--muted);
+      color: var(--text);
+    }
+
+    .btn.ghost:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: rgba(16, 185, 129, 0.1);
+    }
+
+    .btn.danger {
+      background: var(--danger);
+    }
+
+    .btn.danger:hover {
+      box-shadow: 0 8px 25px rgba(239, 68, 68, 0.3);
+    }
+
+    .btn.success {
+      background: var(--success);
+    }
+
+    .btn.primary {
+      background: var(--accent-2);
+    }
+
+    .btn-small {
+      padding: 0.25rem 0.5rem;
+      font-size: 0.75rem;
+      min-width: auto;
+    }
+
+    /* Tables */
     .table-container {
       overflow-x: auto;
+      border-radius: var(--radius);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
     }
 
-    #tblDesp {
+    table {
       width: 100%;
       border-collapse: collapse;
+      background: var(--card);
     }
 
-    #tblDesp th,
-    #tblDesp td {
-      padding: 6px 8px;
+    th, td {
+      padding: 1rem 0.75rem;
       text-align: left;
-      white-space: nowrap;
+      border-bottom: 1px solid var(--muted);
     }
 
-    #tblDesp th.right,
-    #tblDesp td.right {
+    th {
+      color: var(--text-dim);
+      font-weight: 600;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      background: rgba(15, 23, 42, 0.5);
+    }
+
+    body.light th {
+      background: rgba(248, 250, 252, 0.5);
+    }
+
+    td {
+      font-size: 0.875rem;
+    }
+
+    .text-right {
       text-align: right;
     }
 
-    @media (max-width: 600px) {
-
-      #tblDesp th:nth-child(2),
-      #tblDesp td:nth-child(2),
-      #tblDesp th:nth-child(3),
-      #tblDesp td:nth-child(3) {
-        display: none;
-      }
+    /* Tags */
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      padding: 0.25rem 0.75rem;
+      border-radius: 50px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      border: 1px solid var(--muted);
+      color: var(--text);
+      background: var(--bg);
     }
 
-    /* === Metas === */
+    .tag.expense {
+      border-color: var(--danger);
+      color: var(--danger);
+      background: rgba(239, 68, 68, 0.1);
+    }
+
+    .tag.income {
+      border-color: var(--success);
+      color: var(--success);
+      background: rgba(34, 197, 94, 0.1);
+    }
+
+    /* Goals Section */
     .goals-grid {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 14px
-    }
-
-    @media (max-width:900px) {
-      .goals-grid {
-        grid-template-columns: 1fr
-      }
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1.5rem;
     }
 
     .goal-card {
       position: relative;
+      background: var(--card);
+      border: 1px solid var(--muted);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+      transition: all 0.3s ease;
+    }
+
+    .goal-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 40px -8px rgba(0, 0, 0, 0.2);
+    }
+
+    .goal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1rem;
     }
 
     .goal-close {
-      position: absolute;
-      top: 8px;
-      right: 8px;
       background: transparent;
       border: none;
       color: var(--text-dim);
+      font-size: 1.25rem;
       cursor: pointer;
-      font-weight: 700
+      padding: 0.25rem;
+      border-radius: 50%;
+      transition: all 0.2s ease;
     }
 
-    .progress {
-      height: 12px;
+    .goal-close:hover {
+      background: rgba(239, 68, 68, 0.1);
+      color: var(--danger);
+    }
+
+    .progress-bar {
+      height: 8px;
       background: var(--muted);
-      border-radius: 999px;
+      border-radius: 4px;
       overflow: hidden;
+      margin: 1rem 0;
     }
 
-    .progress>span {
-      display: block;
+    .progress-fill {
       height: 100%;
-      width: 0%;
-      transition: width .3s ease;
+      transition: width 0.8s ease;
+      border-radius: 4px;
     }
 
-    .p-red {
-      background: #ef4444
+    .progress-red { background: var(--danger); }
+    .progress-orange { background: var(--warn); }
+    .progress-green { background: var(--success); }
+    .progress-gold { 
+      background: linear-gradient(90deg, var(--warn), #fbbf24);
     }
 
-    .p-orange {
-      background: #f59e0b
+    .goal-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin: 1rem 0;
+      font-size: 0.875rem;
+      color: var(--text-dim);
     }
 
-    .p-green {
-      background: #22c55e
+    .goal-stats strong {
+      color: var(--text);
+      font-weight: 700;
     }
 
-    .p-gold {
-      background: linear-gradient(90deg, #f59e0b, #fbbf24, #f59e0b)
-    }
-
-    .goal-nums {
+    .goal-actions {
       display: flex;
-      justify-content: space-between;
-      font-size: 12px;
-      color: var(--text-dim)
+      gap: 0.5rem;
+      margin-top: 1rem;
     }
 
-    /* === Listas (post-it) === */
+    .goal-input {
+      flex: 1;
+      padding: 0.5rem;
+      border: 1px solid var(--muted);
+      border-radius: var(--radius);
+      font-size: 0.875rem;
+    }
+
+    /* Notes Section - CORRIGIDO */
     .notes-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 8px
+      margin-bottom: 1.5rem;
     }
 
     .notes-grid {
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 14px;
-      margin-top: 12px
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1rem;
     }
 
-    @media(max-width:1100px) {
-      .notes-grid {
-        grid-template-columns: repeat(2, 1fr)
-      }
-    }
-
-    @media(max-width:600px) {
-      .notes-grid {
-        grid-template-columns: 1fr
-      }
-    }
-
-    .note-item {
+    .note-card {
       position: relative;
-      background: #fef08a;
-      color: #111;
-      border-radius: 10px;
-      padding: 14px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, .25);
-      min-height: 160px;
+      background: linear-gradient(135deg, #fef08a, #fde047);
+      color: #1f2937;
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      box-shadow: var(--shadow-lg);
+      min-height: 180px;
+      transition: all 0.3s ease;
+      /* Evita quebras de linha indesejadas */
+      contain: layout style;
     }
 
-    body.light .note-item {
-      color: #111
+    body.light .note-card {
+      background: linear-gradient(135deg, #fef08a, #fde047);
+    }
+
+    .note-card:hover {
+      transform: translateY(-2px) rotate(1deg);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    }
+
+    .note-card.done {
+      opacity: 0.7;
+      transform: scale(0.98);
     }
 
     .note-delete {
       position: absolute;
-      top: 6px;
-      right: 8px;
-      background: transparent;
+      top: 0.5rem;
+      right: 0.5rem;
+      background: rgba(239, 68, 68, 0.2);
       border: none;
+      color: #dc2626;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
       font-weight: 700;
-      cursor: pointer
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.875rem;
+      transition: all 0.2s ease;
     }
 
-    .note-text {
-      width: 100%;
-      background: transparent;
+    .note-delete:hover {
+      background: var(--danger);
+      color: white;
+      transform: scale(1.1);
+    }
+
+    .note-content {
+      min-height: 120px;
       border: none;
-      outline: none;
+      background: transparent;
       color: inherit;
       font: inherit;
-      min-height: 100px;
-      resize: none
+      resize: none;
+      width: 100%;
+      outline: none;
+      padding: 0;
+      margin: 0 0 1rem;
+      /* Melhora o foco */
+      line-height: 1.5;
+      /* Previne seleção de texto indesejada */
+      -webkit-user-select: text;
+      -moz-user-select: text;
+      -ms-user-select: text;
+      user-select: text;
+      /* Evita que o browser recrie o elemento */
+      contain: content;
+    }
+
+    /* Efeito de foco suave */
+    .note-content:focus {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+      padding: 2px 4px;
+      /* Mantém o foco visual sem recriação */
+      box-shadow: inset 0 0 0 1px rgba(16, 185, 129, 0.3);
+    }
+
+    .note-card.done .note-content {
+      text-decoration: line-through;
+      opacity: 0.8;
     }
 
     .note-footer {
       position: absolute;
-      left: 8px;
-      bottom: 8px;
+      bottom: 0.5rem;
+      right: 0.5rem;
       display: flex;
       align-items: center;
-      gap: 6px
+      gap: 0.5rem;
     }
 
-    .note-done {
-      width: 18px;
-      height: 18px
+    .note-checkbox {
+      width: 20px;
+      height: 20px;
+      accent-color: var(--success);
     }
 
-    .note-item.done {
-      opacity: .7;
-      text-decoration: line-through;
+    /* Responsive */
+    @media (max-width: 768px) {
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+      
+      .kpi-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .goals-grid, .notes-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .header-row {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: stretch;
+      }
+      
+      .nav-tabs {
+        justify-content: center;
+      }
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .animate-fade-in {
+      animation: fadeInUp 0.6s ease forwards;
+    }
+
+    /* Empty States */
+    .empty-state {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: var(--text-dim);
+    }
+
+    .empty-state i {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+      opacity: 0.5;
+    }
+
+    /* Utility Classes */
+    .space-top { margin-top: 1rem; }
+    .space-bottom { margin-bottom: 1rem; }
+    .text-muted { color: var(--text-dim); }
+    .text-small { font-size: 0.75rem; }
+    .font-bold { font-weight: 700; }
+    .hidden { display: none !important; }
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--muted);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--accent);
+      border-radius: 3px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--accent-2);
     }
   </style>
 </head>
 
 <body>
+  <!-- Loading Screen -->
+  <div class="loading" id="loading">
+    <div class="spinner"></div>
+  </div>
+
   <header>
     <div class="wrap">
-      <div class="row" style="align-items:center;justify-content:space-between">
-        <div class="grow">
-          <h1>💰 Meu Financeiro</h1
+      <div class="header-row">
+        <div class="logo">
+          <i class="fas fa-wallet"></i>
+          Meu Financeiro Pro
         </div>
-        <div class="row-inline">
-          <select id="periodSelect" class="btn ghost" style="width:auto"></select>
-          <label class="switch">
-            <span id="themeIcon">🌞</span>
+        <div class="header-actions">
+          <select id="periodSelect" class="period-select">
+            <option value="">Carregando...</option>
+          </select>
+          <label class="theme-toggle">
+            <i id="themeIcon" class="fas fa-sun"></i>
             <input type="checkbox" id="themeToggle">
             <span class="slider"></span>
           </label>
         </div>
       </div>
-      <nav id="tabs"></nav>
+      <nav class="nav-tabs" id="tabs"></nav>
     </div>
   </header>
+
   <main>
     <!-- DASHBOARD -->
-    <section id="tab-dashboard" class="tab card" hidden>
-      <h2>📊 Dashboard</h2>
-      <div class="grid cols-3">
+    <section id="tab-dashboard" class="tab card animate-fade-in" hidden>
+      <h2><i class="fas fa-chart-line"></i> Dashboard</h2>
+      <div class="kpi-grid">
+        <div class="kpi-card balance">
+          <div class="kpi-label">Saldo Previsto</div>
+          <div class="kpi-value" id="kpiSaldo">R$ 0,00</div>
+          <div class="text-muted text-small">Total de entradas</div>
+        </div>
+        <div class="kpi-card expenses">
+          <div class="kpi-label">Total Despesas</div>
+          <div class="kpi-value" id="kpisomadiv">R$ 0,00</div>
+          <div class="text-muted text-small">Despesas + cartões</div>
+        </div>
+        <div class="kpi-card leftover">
+          <div class="kpi-label">Sobra Mensal</div>
+          <div class="kpi-value" id="kpiSobra">R$ 0,00</div>
+          <div class="text-muted text-small">Saldo disponível</div>
+        </div>
+      </div>
+      
+      <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 1.5rem;">
         <div class="card">
-          <div class="muted">Saldo previsto</div>
-          <div class="kpi" id="kpiSaldo">R$ 0,00</div>
-          <div class="note">Entradas</div>
+          <h3><i class="fas fa-calendar-alt"></i> Próximo Vencimento</h3>
+          <div id="kpiVencimento" class="text-muted font-bold" style="font-size: 1.1rem;">—</div>
         </div>
         <div class="card">
-          <div class="muted">Total de Despesas</div>
-          <div class="kpi" id="kpisomadiv">—</div>
-          <div class="note">Soma de todas as despesas + cartões</div>
-        </div>
-        <div class="card">
-          <div class="muted">Sobra</div>
-          <div class="kpi" id="kpiSobra">R$ 0,00</div>
-          <div class="note">Saldo após todas as despesas</div>
-        </div>
-        <div class="card">
-          <div class="kpi" id="kpiVencimento">—</div>
-          <div class="note">Despesas e cartões a vencer</div>
+          <h3><i class="fas fa-trending-up"></i> Economia do Mês</h3>
+          <div id="kpiEconomia" class="text-muted font-bold" style="font-size: 1.1rem;">R$ 0,00</div>
+          <p class="text-small text-muted">Comparado ao mês anterior</p>
         </div>
       </div>
     </section>
 
     <!-- RENDA -->
-    <section id="tab-renda" class="tab card" hidden>
-      <h2>💵 Renda</h2>
-      <div class="row">
-        <div class="grow"><label>Descrição</label><input id="rendaNome" placeholder="Salário, Extra..."></div>
-        <div class="grow"><label>Valor</label><input id="rendaValor" type="number" step="0.01"></div>
-        <div class="grow"><label>Data</label><input id="rendaData" type="date"></div>
-        <div class="row-inline" id="boxRendaRec">
-          <label for="rendaRecorrente">Recorrente</label>
+    <section id="tab-renda" class="tab card animate-fade-in" hidden>
+      <h2><i class="fas fa-arrow-up"></i> Renda</h2>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Descrição</label>
+          <input id="rendaNome" placeholder="Salário, Freelance, etc..." required>
+        </div>
+        <div class="form-group">
+          <label>Valor</label>
+          <input id="rendaValor" type="number" step="0.01" placeholder="0,00" required>
+        </div>
+        <div class="form-group">
+          <label>Data</label>
+          <input id="rendaData" type="date" required>
+        </div>
+        <div class="form-group">
+          <label>Recorrência</label>
           <select id="rendaRecorrente">
-            <option value="0">Não</option>
-            <option value="1">1 mês</option>
-            <option value="2">2 meses</option>
-            <option value="3">3 meses</option>
-            <option value="4">4 meses</option>
-            <option value="5">5 meses</option>
-            <option value="6">6 meses</option>
-            <option value="7">7 meses</option>
-            <option value="8">8 meses</option>
-            <option value="9">9 meses</option>
-            <option value="10">10 meses</option>
-            <option value="11">11 meses</option>
-            <option value="12">12 meses</option>
+            <option value="0">Única vez</option>
+            <option value="1">Mensal</option>
+            <option value="3">Trimestral</option>
+            <option value="6">Semestral</option>
+            <option value="12">Anual</option>
           </select>
         </div>
-        <button id="btnAddRenda" class="btn">Adicionar</button>
+        <div class="form-group" style="align-self: end;">
+          <button id="btnAddRenda" class="btn primary">
+            <i class="fas fa-plus"></i> Adicionar
+          </button>
+        </div>
       </div>
-      <div class="space-top">
+      
+      <div class="table-container space-top">
         <table id="tblRenda">
           <thead>
             <tr>
-              <th>Descrição</th>
-              <th>Data</th>
-              <th class="right">Valor</th>
-              <th></th>
+              <th><i class="fas fa-tag"></i> Descrição</th>
+              <th><i class="fas fa-calendar"></i> Data</th>
+              <th class="text-right"><i class="fas fa-money-bill-wave"></i> Valor</th>
+              <th class="text-right"><i class="fas fa-cog"></i></th>
             </tr>
           </thead>
           <tbody></tbody>
         </table>
+      </div>
+      
+      <div id="emptyRenda" class="empty-state" style="display: none;">
+        <i class="fas fa-arrow-up"></i>
+        <h3>Nenhuma renda registrada</h3>
+        <p>Adicione sua primeira entrada de renda para começar!</p>
       </div>
     </section>
 
     <!-- DESPESAS -->
-    <section id="tab-despesas" class="tab card" hidden>
-      <h2>📌 Despesas</h2>
-      <div class="row">
-        <div class="grow"><label>Descrição</label><input id="despNome"></div>
-        <div class="grow"><label>Valor</label><input id="despValor" type="number" step="0.01"></div>
-        <div class="grow"><label>Data vencimento</label><input id="despData" type="date"></div>
-        <div class="grow"><label>Tipo</label>
-          <select id="despTipo"></select>
+    <section id="tab-despesas" class="tab card animate-fade-in" hidden>
+      <h2><i class="fas fa-arrow-down"></i> Despesas</h2>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Descrição</label>
+          <input id="despNome" placeholder="Conta de luz, supermercado..." required>
         </div>
-        <div class="row-inline">
-          <input id="novoTipo" placeholder="Novo tipo" style="width:120px">
-          <button id="btnAddTipo" class="btn ghost">+</button>
+        <div class="form-group">
+          <label>Valor</label>
+          <input id="despValor" type="number" step="0.01" placeholder="0,00" required>
         </div>
-        <div class="row-inline" id="boxDespRec">
-          <label for="despRecorrente">Recorrente</label>
+        <div class="form-group">
+          <label>Vencimento</label>
+          <input id="despData" type="date" required>
+        </div>
+        <div class="form-group">
+          <label>Categoria</label>
+          <select id="despTipo" required></select>
+        </div>
+        <div class="form-group">
+          <label>Nova Categoria</label>
+          <div style="display: flex; gap: 0.5rem;">
+            <input id="novoTipo" placeholder="Ex: Lazer" style="flex: 1;">
+            <button id="btnAddTipo" class="btn ghost btn-small">
+              <i class="fas fa-plus"></i>
+            </button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Recorrência</label>
           <select id="despRecorrente">
-            <option value="0">Não</option>
-            <option value="1">1 mês</option>
-            <option value="2">2 meses</option>
-            <option value="3">3 meses</option>
-            <option value="4">4 meses</option>
-            <option value="5">5 meses</option>
-            <option value="6">6 meses</option>
-            <option value="7">7 meses</option>
-            <option value="8">8 meses</option>
-            <option value="9">9 meses</option>
-            <option value="10">10 meses</option>
-            <option value="11">11 meses</option>
-            <option value="12">12 meses</option>
+            <option value="0">Única vez</option>
+            <option value="1">Mensal</option>
+            <option value="3">Trimestral</option>
+            <option value="6">Semestral</option>
+            <option value="12">Anual</option>
           </select>
         </div>
-        <button id="btnAddDesp" class="btn">Adicionar</button>
+        <div class="form-group" style="align-self: end;">
+          <button id="btnAddDesp" class="btn danger">
+            <i class="fas fa-minus"></i> Registrar
+          </button>
+        </div>
       </div>
-      <div class="space-top table-container">
+      
+      <div class="table-container space-top">
         <table id="tblDesp">
           <thead>
             <tr>
-              <th>Descrição</th>
-              <th>Data</th>
-              <th>Tipo</th>
-              <th class="right">Valor</th>
-              <th></th>
+              <th><i class="fas fa-tag"></i> Descrição</th>
+              <th><i class="fas fa-calendar"></i> Data</th>
+              <th><i class="fas fa-folder"></i> Categoria</th>
+              <th class="text-right"><i class="fas fa-money-bill-wave"></i> Valor</th>
+              <th class="text-right"><i class="fas fa-cog"></i></th>
             </tr>
           </thead>
           <tbody></tbody>
         </table>
+      </div>
+      
+      <div id="emptyDesp" class="empty-state" style="display: none;">
+        <i class="fas fa-arrow-down"></i>
+        <h3>Nenhuma despesa registrada</h3>
+        <p>Registre suas despesas para ter controle total!</p>
       </div>
     </section>
 
     <!-- CARTÕES -->
-    <section id="tab-cartoes" class="tab card" hidden>
-      <h2>💳 Cartões</h2>
-      <div class="row">
-        <div class="grow"><label>Cartão</label><input id="ccNome"></div>
-        <div class="grow"><label>Vencimento</label><input id="ccVenc" type="date"></div>
-        <div class="grow"><label>Valor usado</label><input id="ccValor" type="number" step="0.01"></div>
-        <button id="btnAddCC" class="btn">Adicionar</button>
+    <section id="tab-cartoes" class="tab card animate-fade-in" hidden>
+      <h2><i class="fas fa-credit-card"></i> Cartões</h2>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Nome do Cartão</label>
+          <input id="ccNome" placeholder="Visa, Mastercard..." required>
+        </div>
+        <div class="form-group">
+          <label>Vencimento</label>
+          <input id="ccVenc" type="date" required>
+        </div>
+        <div class="form-group">
+          <label>Valor Gasto</label>
+          <input id="ccValor" type="number" step="0.01" placeholder="0,00" required>
+        </div>
+        <div class="form-group" style="align-self: end;">
+          <button id="btnAddCC" class="btn primary">
+            <i class="fas fa-plus"></i> Adicionar
+          </button>
+        </div>
       </div>
-      <div class="space-top">
+      
+      <div class="table-container space-top">
         <table id="tblCC">
           <thead>
             <tr>
-              <th>Cartão</th>
-              <th>Vencimento</th>
-              <th class="right">Valor usado</th>
-              <th></th>
+              <th><i class="fas fa-credit-card"></i> Cartão</th>
+              <th><i class="fas fa-calendar"></i> Vencimento</th>
+              <th class="text-right"><i class="fas fa-money-bill-wave"></i> Valor</th>
+              <th class="text-right"><i class="fas fa-cog"></i></th>
             </tr>
           </thead>
           <tbody></tbody>
         </table>
       </div>
+      
+      <div id="emptyCC" class="empty-state" style="display: none;">
+        <i class="fas fa-credit-card"></i>
+        <h3>Nenhum cartão registrado</h3>
+        <p>Adicione seus cartões para controle de gastos!</p>
+      </div>
     </section>
 
     <!-- METAS -->
-    <section id="tab-metas" class="tab card" hidden>
-      <h2>🎯 Metas</h2>
-      <div class="row">
-        <div class="grow"><label>Descrição</label><input id="metaDesc" placeholder="Ex.: Notebook, Viagem..."></div>
-        <div class="grow"><label>Valor da meta</label><input id="metaValor" type="number" step="0.01"
-            placeholder="0,00"></div>
-        <button id="btnAddMeta" class="btn">Adicionar meta</button>
+    <section id="tab-metas" class="tab card animate-fade-in" hidden>
+      <h2><i class="fas fa-bullseye"></i> Metas Financeiras</h2>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Objetivo</label>
+          <input id="metaDesc" placeholder="Ex: Novo notebook, Viagem..." required>
+        </div>
+        <div class="form-group">
+          <label>Valor Alvo</label>
+          <input id="metaValor" type="number" step="0.01" placeholder="0,00" required>
+        </div>
+        <div class="form-group" style="align-self: end;">
+          <button id="btnAddMeta" class="btn success">
+            <i class="fas fa-plus"></i> Nova Meta
+          </button>
+        </div>
       </div>
-      <div class="space-top goals-grid" id="goalsGrid"></div>
+      
+      <div class="goals-grid" id="goalsGrid"></div>
+      
+      <div id="emptyMetas" class="empty-state" style="display: none;">
+        <i class="fas fa-bullseye"></i>
+        <h3>Nenhuma meta criada</h3>
+        <p>Crie sua primeira meta financeira e acompanhe seu progresso!</p>
+      </div>
     </section>
 
     <!-- LISTAS -->
-    <section id="tab-listas" class="tab card" hidden>
+    <section id="tab-listas" class="tab card animate-fade-in" hidden>
       <div class="notes-header">
-        <h2>🗒️ Post-its</h2>
-        <button id="btnNovaNota" class="btn" style="margin-left:auto">➕ Nova nota</button>
+        <h2><i class="fas fa-sticky-note"></i> Post-its & Lembretes</h2>
+        <button id="btnNovaNota" class="btn primary">
+          <i class="fas fa-plus"></i> Nova Nota
+        </button>
       </div>
       <div class="notes-grid" id="notesGrid"></div>
+      
+      <div id="emptyNotes" class="empty-state" style="display: none;">
+        <i class="fas fa-sticky-note"></i>
+        <h3>Nenhum post-it criado</h3>
+        <p>Crie sua primeira nota para organizar seus pensamentos!</p>
+      </div>
     </section>
 
     <!-- CONFIG -->
-    <section id="tab-relatorios" class="tab card" hidden>
-      <h2>
-        <span id="btnConfig" class="icon-config">⚙️</span> Configuração
-      </h2>
-      <div id="listaReservas"></div>
-      <div class="space-top">
-        <button id="btnReset" class="btn danger">Limpar dados</button>
-        <div class="note">Dados salvos no seu dispositivo (localStorage)</div>
+    <section id="tab-relatorios" class="tab card animate-fade-in" hidden>
+      <h2><i class="fas fa-cog"></i> Configurações & Relatórios</h2>
+      
+      <div class="card space-top">
+        <h3><i class="fas fa-chart-pie"></i> Resumo por Categoria</h3>
+        <div id="relatorioCategorias" class="space-top"></div>
+      </div>
+      
+      <div class="card space-top">
+        <h3><i class="fas fa-history"></i> Histórico Mensal</h3>
+        <div id="relatorioHistorico" class="space-top"></div>
+      </div>
+      
+      <div class="card space-top">
+        <h3><i class="fas fa-database"></i> Backup & Exportar</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <button id="btnExport" class="btn primary">
+              <i class="fas fa-download"></i> Exportar Dados
+            </button>
+          </div>
+          <div class="form-group">
+            <button id="btnImport" class="btn ghost">
+              <i class="fas fa-upload"></i> Importar Dados
+            </button>
+          </div>
+        </div>
+        <input type="file" id="fileImport" accept=".json" style="display: none;">
+      </div>
+      
+      <div class="card space-top">
+        <h3><i class="fas fa-trash-alt"></i> Limpar Dados</h3>
+        <button id="btnReset" class="btn danger space-top">
+          <i class="fas fa-exclamation-triangle"></i> Resetar Tudo
+        </button>
+        <p class="text-small text-muted space-top">
+          Isso apagará todos os dados salvos no seu dispositivo
+        </p>
       </div>
     </section>
-
   </main>
+
   <script>
-    // ======= Helpers =======
-    const fmtBRL = (n) => (n || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-    const parseN = (v) => Number(String(v).replace(',', '.')) || 0;
+    // ======= Enhanced Helpers =======
+    const fmtBRL = (n, decimals = 2) => (n || 0).toLocaleString('pt-BR', { 
+      style: 'currency', 
+      currency: 'BRL',
+      minimumFractionDigits: decimals,
+      maximumFractionDigits: decimals
+    });
+
+    const parseN = (v) => {
+      const num = Number(String(v).replace(',', '.').replace('R$', '').trim());
+      return isNaN(num) ? 0 : num;
+    };
+
     const today = () => new Date();
     const getPeriod = (d) => {
       const date = new Date(d || today());
-      return date.getFullYear() + "-" + String(date.getMonth() + 1).padStart(2, '0');
+      return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
     };
 
-    // Corrige problema de datas (fuso local)
-    function parseLocalDate(inputDate) {
-      const [y, m, d] = inputDate.split("-").map(Number);
-      const now = new Date();
-      return new Date(y, m - 1, d, now.getHours(), now.getMinutes(), now.getSeconds());
-    }
+    const formatDate = (date) => new Date(date).toLocaleDateString('pt-BR');
 
-    // ======= Estado =======
-    let state = JSON.parse(localStorage.getItem('fin-state') || '{}');
-    if (!state.periodos) state = { periodos: {}, tipos: ["Moradia", "Transporte", "Alimentação", "Saúde", "Serviços", "Educação", "Outros"], metas: [], notas: [] };
-    if (!state.metas) state.metas = [];
-    if (!state.notas) state.notas = [];
-    let currentPeriod;
-    function ensurePeriod(p) { if (!state.periodos[p]) state.periodos[p] = { rendas: [], despesas: [], cartoes: [] }; }
-    function save() { localStorage.setItem('fin-state', JSON.stringify(state)); renderAll(); }
-
-    // ======= Periodos =======
-    function renderPeriods() {
-      const sel = document.getElementById('periodSelect'); sel.innerHTML = "";
-      const ps = Object.keys(state.periodos).sort();
-      ps.forEach(p => {
-        const opt = document.createElement('option');
-        opt.value = p; opt.textContent = p; sel.appendChild(opt);
+    const showNotification = (message, type = 'success') => {
+      // Simple notification system
+      const notification = document.createElement('div');
+      notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 1rem 1.5rem;
+        border-radius: ${getComputedStyle(document.documentElement).getPropertyValue('--radius')};
+        color: white;
+        font-weight: 600;
+        z-index: 1000;
+        transform: translateX(400px);
+        transition: transform 0.3s ease;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      `;
+      
+      const colors = {
+        success: '#10b981',
+        error: '#ef4444',
+        warning: '#f59e0b',
+        info: '#3b82f6'
+      };
+      
+      notification.style.background = colors[type];
+      notification.textContent = message;
+      document.body.appendChild(notification);
+      
+      // Animate in
+      requestAnimationFrame(() => {
+        notification.style.transform = 'translateX(0)';
       });
-      if (!currentPeriod) { currentPeriod = getPeriod(); ensurePeriod(currentPeriod); }
-      if (!ps.includes(currentPeriod)) { ensurePeriod(currentPeriod); }
-      sel.value = currentPeriod;
-      sel.onchange = () => { currentPeriod = sel.value; renderAll(); };
+      
+      // Auto remove
+      setTimeout(() => {
+        notification.style.transform = 'translateX(400px)';
+        setTimeout(() => notification.remove(), 300);
+      }, 3000);
+    };
+
+    // ======= Enhanced State Management =======
+    let state = JSON.parse(localStorage.getItem('fin-state-pro') || '{}');
+    
+    // Initialize state with better defaults
+    if (!state.periodos) {
+      state = {
+        periodos: {},
+        tipos: ['Moradia', 'Alimentação', 'Transporte', 'Saúde', 'Educação', 'Lazer', 'Outros'],
+        metas: [],
+        notas: [],
+        stats: {
+          firstUse: new Date().toISOString(),
+          lastBackup: null
+        }
+      };
     }
 
-    // ======= Rendas =======
+    let currentPeriod = getPeriod();
+    
+    function ensurePeriod(p) {
+      if (!state.periodos[p]) {
+        state.periodos[p] = { 
+          rendas: [], 
+          despesas: [], 
+          cartoes: [],
+          created: new Date().toISOString()
+        };
+      }
+    }
+
+    // Debounce helper para evitar salvamentos excessivos
+    function debounce(func, wait) {
+      let timeout;
+      return function executedFunction(...args) {
+        const later = () => {
+          clearTimeout(timeout);
+          func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+      };
+    }
+
+    let debounceSave = debounce(saveState, 500); // Salva 500ms após parar de digitar
+
+    function saveState(autoSave = true) {
+      try {
+        localStorage.setItem('fin-state-pro', JSON.stringify(state));
+        
+        // Só mostra notificação em saves manuais ou mudanças significativas
+        if (autoSave && !notaAtiva) {
+          // Não mostra notificação para auto-save durante digitação
+          return;
+        }
+        
+        if (state.stats.lastBackup !== getPeriod()) {
+          state.stats.lastBackup = getPeriod();
+          if (!notaAtiva) { // Só notifica se não está digitando
+            showNotification('Dados salvos automaticamente', 'info');
+          }
+        }
+        renderAll();
+      } catch (e) {
+        showNotification('Erro ao salvar dados', 'error');
+        console.error('Save error:', e);
+      }
+    }
+
+    // ======= Enhanced Periods =======
+    function renderPeriods() {
+      const sel = document.getElementById('periodSelect');
+      const originalValue = sel.value;
+      
+      sel.innerHTML = '';
+      const periods = Object.keys(state.periodos).sort((a, b) => b.localeCompare(a));
+      
+      if (periods.length === 0) {
+        sel.innerHTML = '<option value="">Nenhum período</option>';
+        return;
+      }
+      
+      periods.forEach(p => {
+        const [year, month] = p.split('-');
+        const opt = document.createElement('option');
+        opt.value = p;
+        opt.textContent = `${new Date(year, month - 1).toLocaleDateString('pt-BR', { month: 'long' })} ${year}`;
+        sel.appendChild(opt);
+      });
+      
+      if (!originalValue || !periods.includes(originalValue)) {
+        currentPeriod = periods[0];
+      } else {
+        currentPeriod = originalValue;
+      }
+      
+      sel.value = currentPeriod;
+      
+      sel.onchange = (e) => {
+        currentPeriod = e.target.value;
+        showNotification(`Período alterado para ${e.target.selectedOptions[0].text}`, 'info');
+        renderAll();
+      };
+    }
+
+    // ======= Enhanced Renda =======
     document.getElementById('btnAddRenda').onclick = () => {
       const nome = document.getElementById('rendaNome').value.trim();
       const valor = parseN(document.getElementById('rendaValor').value);
       const data = document.getElementById('rendaData').value;
       const meses = parseInt(document.getElementById('rendaRecorrente').value);
-      if (!nome || !valor || !data) { alert("Preencha os campos"); return; }
+      
+      if (!nome || !valor || !data) {
+        showNotification('Preencha todos os campos obrigatórios', 'error');
+        return;
+      }
 
-      const d = parseLocalDate(data);
+      if (valor <= 0) {
+        showNotification('O valor deve ser maior que zero', 'error');
+        return;
+      }
+
+      const d = new Date(data);
       const p = getPeriod(d);
       ensurePeriod(p);
-      state.periodos[p].rendas.push({ id: Date.now(), nome, valor, data: d.toISOString(), recorrente: meses > 0 });
+      
+      const renda = {
+        id: Date.now() + Math.random(),
+        nome,
+        valor,
+        data: d.toISOString(),
+        recorrente: meses > 0,
+        categoria: 'Renda',
+        tags: ['confirmado']
+      };
+      
+      state.periodos[p].rendas.push(renda);
       currentPeriod = p;
 
+      // Create recurring entries
       if (meses > 0) {
         for (let i = 1; i < meses; i++) {
-          let d2 = new Date(d); d2.setMonth(d2.getMonth() + i);
-          const pi = getPeriod(d2);
-          ensurePeriod(pi);
-          state.periodos[pi].rendas.push({ id: Date.now() + i, nome, valor, data: d2.toISOString(), recorrente: true });
+          const futureDate = new Date(d);
+          futureDate.setMonth(futureDate.getMonth() + i);
+          const futurePeriod = getPeriod(futureDate);
+          ensurePeriod(futurePeriod);
+          
+          state.periodos[futurePeriod].rendas.push({
+            ...renda,
+            id: Date.now() + Math.random() + i,
+            data: futureDate.toISOString()
+          });
         }
+        showNotification(`Renda recorrente criada por ${meses} meses!`, 'success');
       }
-      document.getElementById('rendaNome').value = "";
-      document.getElementById('rendaValor').value = "";
-      document.getElementById('rendaData').value = "";
-      document.getElementById('rendaRecorrente').value = "0";
-      save();
+
+      // Clear form
+      document.getElementById('rendaNome').value = '';
+      document.getElementById('rendaValor').value = '';
+      document.getElementById('rendaData').value = '';
+      document.getElementById('rendaRecorrente').value = '0';
+      
+      showNotification(`Renda "${nome}" adicionada com sucesso!`, 'success');
+      saveState();
     };
+
     function renderRenda() {
       ensurePeriod(currentPeriod);
-      const tb = document.querySelector('#tblRenda tbody'); tb.innerHTML = "";
-      state.periodos[currentPeriod].rendas.forEach(r => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `<td>${r.nome}</td><td>${new Date(r.data).toLocaleDateString()}</td><td class="right">${fmtBRL(r.valor)}</td><td><button class="btn ghost">X</button></td>`;
-        tr.querySelector('button').onclick = () => { state.periodos[currentPeriod].rendas = state.periodos[currentPeriod].rendas.filter(x => x.id !== r.id); save(); };
-        tb.appendChild(tr);
+      const tbody = document.querySelector('#tblRenda tbody');
+      const emptyState = document.getElementById('emptyRenda');
+      
+      tbody.innerHTML = '';
+      const rendas = state.periodos[currentPeriod].rendas || [];
+      
+      if (rendas.length === 0) {
+        emptyState.style.display = 'block';
+        return;
+      }
+      
+      emptyState.style.display = 'none';
+      
+      rendas
+        .sort((a, b) => new Date(a.data) - new Date(b.data))
+        .forEach(renda => {
+          const tr = document.createElement('tr');
+          tr.className = 'animate-fade-in';
+          tr.innerHTML = `
+            <td>
+              <div class="tag income">
+                <i class="fas fa-arrow-up"></i> ${renda.nome}
+              </div>
+            </td>
+            <td>${formatDate(renda.data)}</td>
+            <td class="text-right">${fmtBRL(renda.valor)}</td>
+            <td class="text-right">
+              <button class="btn ghost btn-small danger" onclick="deleteItem('renda', ${renda.id}, this)" title="Excluir">
+                <i class="fas fa-trash"></i>
+              </button>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+    }
+
+    // ======= Enhanced Tipos =======
+    function renderTipos() {
+      const sel = document.getElementById('despTipo');
+      sel.innerHTML = '<option value="">Selecione...</option>';
+      
+      state.tipos.forEach(tipo => {
+        const option = document.createElement('option');
+        option.value = tipo;
+        option.textContent = tipo;
+        sel.appendChild(option);
       });
     }
 
-    // ======= Tipos =======
-    function renderTipos() {
-      const sel = document.getElementById('despTipo'); sel.innerHTML = "";
-      state.tipos.forEach(t => { const o = document.createElement('option'); o.textContent = t; sel.appendChild(o); });
-    }
     document.getElementById('btnAddTipo').onclick = () => {
-      const v = document.getElementById('novoTipo').value.trim();
-      if (v) { state.tipos.push(v); document.getElementById('novoTipo').value = ""; save(); }
+      const novoTipo = document.getElementById('novoTipo').value.trim();
+      if (novoTipo && !state.tipos.includes(novoTipo)) {
+        state.tipos.push(novoTipo);
+        document.getElementById('novoTipo').value = '';
+        saveState();
+        showNotification(`Categoria "${novoTipo}" adicionada`, 'success');
+        renderTipos();
+      } else if (novoTipo) {
+        showNotification('Categoria já existe', 'warning');
+      }
     };
 
-    // ======= Despesas =======
+    // ======= Enhanced Despesas =======
     document.getElementById('btnAddDesp').onclick = () => {
       const nome = document.getElementById('despNome').value.trim();
       const valor = parseN(document.getElementById('despValor').value);
       const data = document.getElementById('despData').value;
       const tipo = document.getElementById('despTipo').value;
       const meses = parseInt(document.getElementById('despRecorrente').value);
-      if (!nome || !valor || !data) { alert("Preencha os campos"); return; }
+      
+      if (!nome || !valor || !data || !tipo) {
+        showNotification('Preencha todos os campos obrigatórios', 'error');
+        return;
+      }
 
-      const d = parseLocalDate(data);
+      if (valor <= 0) {
+        showNotification('O valor deve ser maior que zero', 'error');
+        return;
+      }
+
+      const d = new Date(data);
       const p = getPeriod(d);
       ensurePeriod(p);
-      state.periodos[p].despesas.push({ id: Date.now(), nome, valor, data: d.toISOString(), tipo, recorrente: meses > 0 });
+      
+      const despesa = {
+        id: Date.now() + Math.random(),
+        nome,
+        valor,
+        data: d.toISOString(),
+        tipo,
+        recorrente: meses > 0,
+        tags: ['pendente'],
+        created: new Date().toISOString()
+      };
+      
+      state.periodos[p].despesas.push(despesa);
       currentPeriod = p;
 
+      // Create recurring expenses
       if (meses > 0) {
         for (let i = 1; i < meses; i++) {
-          let d2 = new Date(d); d2.setMonth(d2.getMonth() + i);
-          const pi = getPeriod(d2);
-          ensurePeriod(pi);
-          state.periodos[pi].despesas.push({ id: Date.now() + i, nome, valor, data: d2.toISOString(), tipo, recorrente: true });
+          const futureDate = new Date(d);
+          futureDate.setMonth(futureDate.getMonth() + i);
+          const futurePeriod = getPeriod(futureDate);
+          ensurePeriod(futurePeriod);
+          
+          state.periodos[futurePeriod].despesas.push({
+            ...despesa,
+            id: Date.now() + Math.random() + i,
+            data: futureDate.toISOString()
+          });
         }
+        showNotification(`Despesa recorrente criada por ${meses} meses!`, 'warning');
       }
-      document.getElementById('despNome').value = "";
-      document.getElementById('despValor').value = "";
-      document.getElementById('despData').value = "";
-      document.getElementById('despRecorrente').value = "0";
-      save();
+
+      // Clear form
+      document.getElementById('despNome').value = '';
+      document.getElementById('despValor').value = '';
+      document.getElementById('despData').value = '';
+      document.getElementById('despRecorrente').value = '0';
+      document.getElementById('despTipo').value = '';
+      
+      showNotification(`Despesa "${nome}" registrada`, 'warning');
+      saveState();
     };
+
     function renderDesp() {
       ensurePeriod(currentPeriod);
-      const tb = document.querySelector('#tblDesp tbody'); tb.innerHTML = "";
-      state.periodos[currentPeriod].despesas.forEach(d => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `<td>${d.nome}</td><td>${new Date(d.data).toLocaleDateString()}</td><td>${d.tipo}</td><td class="right">${fmtBRL(d.valor)}</td><td><button class="btn ghost">X</button></td>`;
-        tr.querySelector('button').onclick = () => { state.periodos[currentPeriod].despesas = state.periodos[currentPeriod].despesas.filter(x => x.id !== d.id); save(); };
-        tb.appendChild(tr);
-      });
+      const tbody = document.querySelector('#tblDesp tbody');
+      const emptyState = document.getElementById('emptyDesp');
+      
+      tbody.innerHTML = '';
+      const despesas = state.periodos[currentPeriod].despesas || [];
+      
+      if (despesas.length === 0) {
+        emptyState.style.display = 'block';
+        return;
+      }
+      
+      emptyState.style.display = 'none';
+      
+      despesas
+        .sort((a, b) => new Date(a.data) - new Date(b.data))
+        .forEach(d => {
+          const isOverdue = new Date(d.data) < today();
+          const tr = document.createElement('tr');
+          tr.className = isOverdue ? 'bg-red-50' : 'animate-fade-in';
+          tr.innerHTML = `
+            <td>
+              <div class="tag expense">
+                <i class="fas fa-arrow-down"></i> ${d.nome}
+              </div>
+            </td>
+            <td>
+              <span style="color: ${isOverdue ? 'var(--danger)' : 'var(--text)'}">
+                ${formatDate(d.data)}
+                ${isOverdue ? '<i class="fas fa-exclamation-triangle" style="margin-left: 0.5rem; color: var(--danger);"></i>' : ''}
+              </span>
+            </td>
+            <td><span class="tag" style="background: rgba(59, 130, 246, 0.1); color: var(--accent-2); border-color: var(--accent-2);">${d.tipo}</span></td>
+            <td class="text-right text-red-600">${fmtBRL(d.valor)}</td>
+            <td class="text-right">
+              <button class="btn ghost btn-small danger" onclick="deleteItem('despesa', ${d.id}, this)" title="Excluir">
+                <i class="fas fa-trash"></i>
+              </button>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
     }
 
-    // ======= Cartões =======
+    // ======= Enhanced Cartões =======
     document.getElementById('btnAddCC').onclick = () => {
       const nome = document.getElementById('ccNome').value.trim();
       const valor = parseN(document.getElementById('ccValor').value);
       const venc = document.getElementById('ccVenc').value;
-      if (!nome || !valor || !venc) { alert("Preencha os campos"); return; }
+      
+      if (!nome || !valor || !venc) {
+        showNotification('Preencha todos os campos obrigatórios', 'error');
+        return;
+      }
 
-      const d = parseLocalDate(venc);
+      if (valor <= 0) {
+        showNotification('O valor deve ser maior que zero', 'error');
+        return;
+      }
+
+      const d = new Date(venc);
       const p = getPeriod(d);
       ensurePeriod(p);
-      state.periodos[p].cartoes.push({ id: Date.now(), nome, valor, venc: d.toISOString() });
+      
+      const cartao = {
+        id: Date.now() + Math.random(),
+        nome,
+        valor,
+        venc: d.toISOString(),
+        tags: ['pendente'],
+        created: new Date().toISOString()
+      };
+      
+      state.periodos[p].cartoes.push(cartao);
       currentPeriod = p;
 
-      document.getElementById('ccNome').value = "";
-      document.getElementById('ccValor').value = "";
-      document.getElementById('ccVenc').value = "";
-      save();
+      // Clear form
+      document.getElementById('ccNome').value = '';
+      document.getElementById('ccValor').value = '';
+      document.getElementById('ccVenc').value = '';
+      
+      showNotification(`Gasto no cartão "${nome}" registrado`, 'warning');
+      saveState();
     };
+
     function renderCC() {
       ensurePeriod(currentPeriod);
-      const tb = document.querySelector('#tblCC tbody'); tb.innerHTML = "";
-      state.periodos[currentPeriod].cartoes.forEach(c => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `<td>${c.nome}</td><td>${new Date(c.venc).toLocaleDateString()}</td><td class="right">${fmtBRL(c.valor)}</td><td><button class="btn ghost">X</button></td>`;
-        tr.querySelector('button').onclick = () => { state.periodos[currentPeriod].cartoes = state.periodos[currentPeriod].cartoes.filter(x => x.id !== c.id); save(); };
-        tb.appendChild(tr);
-      });
+      const tbody = document.querySelector('#tblCC tbody');
+      const emptyState = document.getElementById('emptyCC');
+      
+      tbody.innerHTML = '';
+      const cartoes = state.periodos[currentPeriod].cartoes || [];
+      
+      if (cartoes.length === 0) {
+        emptyState.style.display = 'block';
+        return;
+      }
+      
+      emptyState.style.display = 'none';
+      
+      cartoes
+        .sort((a, b) => new Date(a.venc) - new Date(b.venc))
+        .forEach(c => {
+          const isOverdue = new Date(c.venc) < today();
+          const tr = document.createElement('tr');
+          tr.className = isOverdue ? 'bg-red-50' : 'animate-fade-in';
+          tr.innerHTML = `
+            <td>
+              <div class="tag" style="background: rgba(59, 130, 246, 0.1); color: var(--accent-2); border-color: var(--accent-2);">
+                <i class="fas fa-credit-card"></i> ${c.nome}
+              </div>
+            </td>
+            <td>
+              <span style="color: ${isOverdue ? 'var(--danger)' : 'var(--text)'}">
+                ${formatDate(c.venc)}
+                ${isOverdue ? '<i class="fas fa-exclamation-triangle" style="margin-left: 0.5rem; color: var(--danger);"></i>' : ''}
+              </span>
+            </td>
+            <td class="text-right text-red-600">${fmtBRL(c.valor)}</td>
+            <td class="text-right">
+              <button class="btn ghost btn-small danger" onclick="deleteItem('cartao', ${c.id}, this)" title="Excluir">
+                <i class="fas fa-trash"></i>
+              </button>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
     }
 
-    // ======= Dashboard =======
+    // ======= Enhanced Dashboard =======
     function renderDashboard() {
       ensurePeriod(currentPeriod);
       const rendas = state.periodos[currentPeriod].rendas || [];
       const despesas = state.periodos[currentPeriod].despesas || [];
       const cartoes = state.periodos[currentPeriod].cartoes || [];
-      const totalR = rendas.reduce((s, x) => s + x.valor, 0);
-      const totalD = despesas.reduce((s, x) => s + x.valor, 0);
-      const totalC = cartoes.reduce((s, x) => s + x.valor, 0);
-      const saldo = totalR;
+      
+      const totalRendas = rendas.reduce((sum, r) => sum + r.valor, 0);
+      const totalDespesas = despesas.reduce((sum, d) => sum + d.valor, 0);
+      const totalCartoes = cartoes.reduce((sum, c) => sum + c.valor, 0);
+      const saldo = totalRendas;
+      const sobra = saldo - totalDespesas - totalCartoes;
+      
+      // Update KPIs
       document.getElementById('kpiSaldo').textContent = fmtBRL(saldo);
-      document.getElementById('kpiSobra').textContent = fmtBRL(saldo - totalD - totalC);
-
-
-      // Corrigido: mostra próximo vencimento e total despesas
-      const eventos = [...despesas.map(d => ({ data: d.data, nome: d.nome })), ...cartoes.map(c => ({ data: c.venc, nome: c.nome }))];
+      document.getElementById('kpisomadiv').textContent = fmtBRL(totalDespesas + totalCartoes);
+      document.getElementById('kpiSobra').textContent = fmtBRL(sobra);
+      
+      // Next due date
+      const eventos = [
+        ...despesas.map(d => ({ data: d.data, nome: d.nome, tipo: 'despesa' })),
+        ...cartoes.map(c => ({ data: c.venc, nome: c.nome, tipo: 'cartao' }))
+      ];
+      
       const futuros = eventos.filter(e => new Date(e.data) >= today());
       futuros.sort((a, b) => new Date(a.data) - new Date(b.data));
-
-      const proximo = futuros.length ? new Date(futuros[0].data).toLocaleDateString() + " - " + futuros[0].nome : "—";
-      const somadivt = totalD + totalC
-      const resumo = `Próximo vencimento: ${proximo}`;
-      const totaldiv = `R$ ${somadivt}`;
-      document.getElementById('kpiVencimento').textContent = resumo;
-      document.getElementById('kpisomadiv').textContent = totaldiv;
-
+      
+      const proximo = futuros.length > 0 
+        ? `${formatDate(futuros[0].data)} - ${futuros[0].nome}`
+        : 'Nenhum vencimento';
+      
+      document.getElementById('kpiVencimento').textContent = proximo;
+      
+      // Economy comparison (simplified)
+      const economia = sobra > 0 ? sobra * 0.1 : 0; // 10% of positive balance
+      document.getElementById('kpiEconomia').innerHTML = `
+        ${fmtBRL(economia)}
+        <span class="text-small" style="display: block; opacity: 0.8;">
+          ${sobra >= 0 ? '📈 Positivo' : '📉 Ajustar gastos'}
+        </span>
+      `;
     }
 
-    // ======= Metas =======
+    // ======= Enhanced Metas =======
     function addMeta() {
       const desc = document.getElementById('metaDesc').value.trim();
       const alvo = parseN(document.getElementById('metaValor').value);
-      if (!desc || !alvo) { alert('Informe descrição e valor da meta'); return; }
-      state.metas.push({ id: Date.now(), desc, alvo, acumulado: 0 });
+      
+      if (!desc || !alvo) {
+        showNotification('Informe descrição e valor da meta', 'error');
+        return;
+      }
+      
+      if (alvo <= 0) {
+        showNotification('O valor da meta deve ser maior que zero', 'error');
+        return;
+      }
+
+      const meta = {
+        id: Date.now() + Math.random(),
+        desc,
+        alvo,
+        acumulado: 0,
+        created: new Date().toISOString(),
+        tags: []
+      };
+      
+      state.metas.push(meta);
       document.getElementById('metaDesc').value = '';
       document.getElementById('metaValor').value = '';
-      save();
+      
+      showNotification(`Meta "${desc}" criada! 🎯`, 'success');
+      saveState();
     }
+
     document.getElementById('btnAddMeta').onclick = addMeta;
 
     function renderMetas() {
       const grid = document.getElementById('goalsGrid');
+      const emptyState = document.getElementById('emptyMetas');
+      
       grid.innerHTML = '';
-      state.metas.forEach(m => {
-        const pct = m.alvo > 0 ? Math.min(100, Math.round((m.acumulado / m.alvo) * 100)) : 0;
-        let cls = 'p-red';
-        if (pct > 33 && pct <= 77) cls = 'p-orange';
-        else if (pct > 77 && pct < 100) cls = 'p-green';
-        else if (pct >= 100) cls = 'p-gold';
-
+      
+      if (state.metas.length === 0) {
+        emptyState.style.display = 'block';
+        return;
+      }
+      
+      emptyState.style.display = 'none';
+      
+      state.metas.forEach(meta => {
+        const progresso = meta.alvo > 0 ? (meta.acumulado / meta.alvo) * 100 : 0;
+        const progressoFormatado = Math.min(100, Math.round(progresso));
+        
+        let corClasse = 'progress-red';
+        if (progresso > 75) corClasse = 'progress-gold';
+        else if (progresso > 50) corClasse = 'progress-green';
+        else if (progresso > 25) corClasse = 'progress-orange';
+        
         const card = document.createElement('div');
-        card.className = 'card goal-card';
+        card.className = 'goal-card animate-fade-in';
         card.innerHTML = `
-        <button class="goal-close" title="Excluir">×</button>
-        <h3 style="margin:0 0 6px">${m.desc}</h3>
-        <div class="goal-nums"><span>Alvo: <strong>${fmtBRL(m.alvo)}</strong></span><span>Acumulado: <strong>${fmtBRL(m.acumulado)}</strong></span></div>
-        <div class="progress space-top"><span class="${cls}" style="width:${pct}%"></span></div>
-        <div class="goal-nums" style="margin-top:6px"><span>${pct}%</span><span>Falta: <strong>${fmtBRL(Math.max(0, m.alvo - m.acumulado))}</strong></span></div>
-        <div class="row" style="margin-top:10px">
-          <div class="grow"><input type="number" step="0.01" placeholder="Valor" class="metaMov"></div>
-          <button class="btn">+ Adicionar</button>
-          <button class="btn warn">- Retirar</button>
-        </div>
-      `;
-
-        // Excluir meta
-        card.querySelector('.goal-close').onclick = () => {
-          if (confirm('Deseja realmente excluir esta meta?')) {
-            state.metas = state.metas.filter(x => x.id !== m.id); save();
-          }
-        };
-        // Adicionar/Retirar valores
-        const input = card.querySelector('.metaMov');
-        card.querySelectorAll('button.btn').forEach((b, i) => {
-          b.onclick = () => {
-            const v = parseN(input.value);
-            if (!v) { alert('Informe um valor'); return; }
-            if (i === 0) { // adicionar
-              m.acumulado = Math.max(0, m.acumulado + v);
-            } else { // retirar
-              m.acumulado = Math.max(0, m.acumulado - v);
-            }
-            input.value = '';
-            save();
-          };
-        });
-
+          <div class="goal-header">
+            <h3>${meta.desc}</h3>
+            <button class="goal-close" onclick="deleteMeta(${meta.id})" title="Excluir meta">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+          
+          <div class="goal-stats">
+            <div><strong>Alvo:</strong> ${fmtBRL(meta.alvo)}</div>
+            <div><strong>Atual:</strong> ${fmtBRL(meta.acumulado)}</div>
+          </div>
+          
+          <div class="progress-bar">
+            <div class="progress-fill ${corClasse}" style="width: ${progressoFormatado}%"></div>
+          </div>
+          
+          <div class="goal-stats">
+            <div>${progressoFormatado}%</div>
+            <div><strong>Falta:</strong> ${fmtBRL(Math.max(0, meta.alvo - meta.acumulado))}</div>
+          </div>
+          
+          <div class="goal-actions">
+            <input type="number" class="goal-input" placeholder="Valor" step="0.01">
+            <button class="btn success btn-small" onclick="updateMeta(${meta.id}, true, this)">
+              <i class="fas fa-plus"></i> Adicionar
+            </button>
+            <button class="btn danger btn-small" onclick="updateMeta(${meta.id}, false, this)">
+              <i class="fas fa-minus"></i> Retirar
+            </button>
+          </div>
+        `;
+        
         grid.appendChild(card);
       });
     }
 
-    // ======= Listas (post-it) =======
-    function novaNota() {
-      state.notas.push({ id: Date.now(), texto: '', done: false });
-      save();
+    function updateMeta(id, isAdd, button) {
+      const meta = state.metas.find(m => m.id === id);
+      if (!meta) return;
+      
+      const input = button.parentElement.querySelector('input');
+      const valor = parseN(input.value);
+      
+      if (!valor || valor <= 0) {
+        showNotification('Informe um valor válido', 'error');
+        return;
+      }
+      
+      if (isAdd) {
+        meta.acumulado = Math.min(meta.alvo, meta.acumulado + valor);
+        showNotification(`+${fmtBRL(valor)} adicionado à meta "${meta.desc}"`, 'success');
+      } else {
+        meta.acumulado = Math.max(0, meta.acumulado - valor);
+        showNotification(`-${fmtBRL(valor)} removido da meta "${meta.desc}"`, 'warning');
+      }
+      
+      input.value = '';
+      saveState();
     }
+
+    function deleteMeta(id) {
+      const meta = state.metas.find(m => m.id === id);
+      if (confirm(`Deseja realmente excluir a meta "${meta.desc}"?`)) {
+        state.metas = state.metas.filter(m => m.id !== id);
+        saveState();
+        showNotification('Meta excluída', 'warning');
+      }
+    }
+
+    // ======= Enhanced Notas (CORRIGIDO) =======
+    // Global state para notas (evita recriação desnecessária)
+    let notasRenderizadas = new Map();
+    let notaAtiva = null;
+
+    function novaNota() {
+      const nota = {
+        id: Date.now() + Math.random(),
+        texto: '',
+        done: false,
+        created: new Date().toISOString()
+      };
+      state.notas.push(nota);
+      
+      // Renderiza apenas a nova nota
+      renderNovaNota(nota);
+      debounceSave(); // Usa debounce aqui
+      showNotification('Nova nota criada! 📝', 'success');
+      
+      // Foca na nova nota
+      setTimeout(() => {
+        const novaTextarea = document.querySelector(`[data-id="${nota.id}"]`);
+        if (novaTextarea) {
+          novaTextarea.focus();
+        }
+      }, 100);
+    }
+
     document.getElementById('btnNovaNota').onclick = novaNota;
+
+    function renderNovaNota(nota) {
+      const grid = document.getElementById('notesGrid');
+      const existingCard = document.querySelector(`[data-note-id="${nota.id}"]`);
+      
+      if (existingCard) {
+        // Atualiza apenas o texto se já existe
+        const textarea = existingCard.querySelector('.note-content');
+        textarea.value = nota.texto;
+        return;
+      }
+      
+      // Cria novo card apenas se não existir
+      const noteCard = document.createElement('div');
+      noteCard.className = `note-card ${nota.done ? 'done' : ''}`;
+      noteCard.setAttribute('data-note-id', nota.id);
+      noteCard.innerHTML = `
+        <button class="note-delete" onclick="deleteNote(${nota.id})" title="Excluir nota">
+          <i class="fas fa-times"></i>
+        </button>
+        <textarea class="note-content" 
+                  placeholder="Escreva sua anotação aqui... 📝" 
+                  data-id="${nota.id}">${nota.texto}</textarea>
+        <div class="note-footer">
+          <input type="checkbox" class="note-checkbox" ${nota.done ? 'checked' : ''} onchange="toggleNote(${nota.id}, this)">
+        </div>
+      `;
+      
+      // Event listeners com debouncing
+      const textarea = noteCard.querySelector('.note-content');
+      const checkbox = noteCard.querySelector('.note-checkbox');
+      
+      // Salva a nota ativa antes de qualquer mudança
+      function salvarNotaAtual() {
+        if (notaAtiva && notaAtiva !== nota.id) {
+          const notaAtual = state.notas.find(n => n.id === notaAtiva);
+          if (notaAtual) {
+            const textareaAtual = document.querySelector(`[data-id="${notaAtiva}"]`);
+            if (textareaAtual) {
+              notaAtual.texto = textareaAtual.value;
+              notaAtual.updated = new Date().toISOString();
+            }
+          }
+        }
+      }
+      
+      // Event listener para input com debounce
+      textarea.addEventListener('input', (e) => {
+        salvarNotaAtual();
+        notaAtiva = nota.id;
+        
+        // Atualiza o estado local imediatamente
+        const targetNota = state.notas.find(n => n.id == nota.id);
+        if (targetNota) {
+          targetNota.texto = e.target.value;
+          targetNota.updated = new Date().toISOString();
+        }
+        
+        // Salva com debounce
+        debounceSave();
+      });
+      
+      // Event listener para focus
+      textarea.addEventListener('focus', () => {
+        salvarNotaAtual();
+        notaAtiva = nota.id;
+        notasRenderizadas.set(nota.id, noteCard);
+      });
+      
+      // Event listener para blur (salva imediatamente ao sair do foco)
+      textarea.addEventListener('blur', () => {
+        if (notaAtiva === nota.id) {
+          const targetNota = state.notas.find(n => n.id == nota.id);
+          if (targetNota) {
+            targetNota.texto = textarea.value;
+            targetNota.updated = new Date().toISOString();
+            saveState(); // Salva imediatamente ao sair do foco
+            notaAtiva = null;
+          }
+        }
+      });
+      
+      // Event listener para checkbox
+      checkbox.addEventListener('change', (e) => {
+        const targetNota = state.notas.find(n => n.id == nota.id);
+        if (targetNota) {
+          targetNota.done = e.target.checked;
+          targetNota.updated = new Date().toISOString();
+          noteCard.classList.toggle('done', targetNota.done);
+          debounceSave();
+          showNotification(e.target.checked ? 'Nota marcada como concluída! ✅' : 'Nota reaberta', 'info');
+        }
+      });
+      
+      // Adiciona ao grid
+      grid.appendChild(noteCard);
+      notasRenderizadas.set(nota.id, noteCard);
+      
+      // Se é a primeira nota, mostra ela
+      if (state.notas.length === 1) {
+        setTimeout(() => textarea.focus(), 100);
+      }
+    }
 
     function renderNotas() {
       const grid = document.getElementById('notesGrid');
-
-      // Salvar foco e posição do cursor antes de recriar
-      const active = document.activeElement;
-      let caretPos = null;
-      let activeId = null;
-      if (active && active.classList.contains("note-text")) {
-        caretPos = active.selectionStart;
-        activeId = active.dataset.id;
+      const emptyState = document.getElementById('emptyNotes');
+      
+      // Limpa apenas se necessário
+      if (grid.children.length === 0 || state.notas.length === 0) {
+        grid.innerHTML = '';
+        notasRenderizadas.clear();
       }
-
-      grid.innerHTML = '';
-      state.notas.forEach(n => {
-        const el = document.createElement('div');
-        el.className = 'note-item' + (n.done ? ' done' : '');
-        el.innerHTML = `
-      <button class="note-delete">×</button>
-      <textarea class="note-text" placeholder="Escreva sua anotação..." data-id="${n.id}"></textarea>
-      <div class="note-footer"><input type="checkbox" class="note-done"></div>
-    `;
-        const txt = el.querySelector('.note-text');
-        const chk = el.querySelector('.note-done');
-        txt.value = n.texto;
-        chk.checked = n.done;
-
-        // Salvar texto ao digitar
-        txt.addEventListener('input', () => {
-          n.texto = txt.value;
-          save();
-        });
-        // Toggle done
-        chk.addEventListener('change', () => {
-          n.done = chk.checked;
-          save();
-        });
-        // Excluir com confirmação somente se houver texto
-        el.querySelector('.note-delete').onclick = () => {
-          if (n.texto.trim().length > 0) {
-            if (!confirm('Esta nota possui conteúdo. Deseja realmente excluir?')) return;
+      
+      if (state.notas.length === 0) {
+        emptyState.style.display = 'block';
+        return;
+      }
+      
+      emptyState.style.display = 'none';
+      
+      // Renderiza apenas notas que não estão no DOM
+      state.notas.forEach(nota => {
+        if (!notasRenderizadas.has(nota.id)) {
+          renderNovaNota(nota);
+        } else {
+          // Atualiza apenas o estado visual se necessário
+          const existingCard = notasRenderizadas.get(nota.id);
+          const textarea = existingCard.querySelector('.note-content');
+          const checkbox = existingCard.querySelector('.note-checkbox');
+          
+          // Atualiza texto se mudou
+          if (textarea.value !== nota.texto) {
+            textarea.value = nota.texto;
           }
-          state.notas = state.notas.filter(x => x.id !== n.id);
-          save();
-        };
-
-        grid.appendChild(el);
-
-        // Restaurar foco no textarea que estava ativo
-        if (activeId && n.id == activeId) {
-          txt.focus();
-          if (caretPos !== null) {
-            txt.setSelectionRange(caretPos, caretPos);
+          
+          // Atualiza checkbox se mudou
+          if (checkbox.checked !== nota.done) {
+            checkbox.checked = nota.done;
+            existingCard.classList.toggle('done', nota.done);
           }
+        }
+      });
+      
+      // Remove cards órfãos (notas que foram deletadas)
+      Array.from(grid.children).forEach(child => {
+        if (!state.notas.some(nota => nota.id == child.getAttribute('data-note-id'))) {
+          child.remove();
+          notasRenderizadas.delete(parseFloat(child.getAttribute('data-note-id')));
         }
       });
     }
 
+    function toggleNote(id, checkbox) {
+      const nota = state.notas.find(n => n.id === id);
+      if (nota) {
+        nota.done = checkbox.checked;
+        nota.updated = new Date().toISOString();
+        
+        // Atualiza apenas o card específico
+        const card = notasRenderizadas.get(id);
+        if (card) {
+          card.classList.toggle('done', nota.done);
+        }
+        
+        debounceSave();
+        showNotification(checkbox.checked ? 'Nota marcada como concluída! ✅' : 'Nota reaberta', 'info');
+      }
+    }
 
-    // ======= Config =======
-    document.getElementById('btnReset').onclick = () => {
-      if (confirm("Apagar todos os dados?")) {
-        localStorage.removeItem('fin-state');
-        location.reload();
+    function deleteNote(id) {
+      const nota = state.notas.find(n => n.id === id);
+      const hasContent = nota && nota.texto.trim().length > 0;
+      
+      if (hasContent && !confirm('Esta nota possui conteúdo. Deseja realmente excluir?')) {
+        return;
+      }
+      
+      // Remove do estado
+      state.notas = state.notas.filter(n => n.id !== id);
+      
+      // Remove do DOM suavemente
+      const card = notasRenderizadas.get(id);
+      if (card) {
+        card.style.transition = 'all 0.3s ease';
+        card.style.opacity = '0';
+        card.style.transform = 'scale(0.8)';
+        setTimeout(() => {
+          card.remove();
+          notasRenderizadas.delete(id);
+        }, 300);
+      }
+      
+      saveState();
+      showNotification('Nota excluída', 'warning');
+      
+      // Se era a nota ativa, limpa o estado
+      if (notaAtiva === id) {
+        notaAtiva = null;
+      }
+    }
+
+    // ======= Delete Helper =======
+    window.deleteItem = function(type, id, button) {
+      const confirmMsg = type === 'renda' ? 'excluir esta renda?' : 
+                        type === 'despesa' ? 'excluir esta despesa?' : 
+                        'excluir este cartão?';
+      
+      if (confirm(`Deseja realmente ${confirmMsg}`)) {
+        ensurePeriod(currentPeriod);
+        const items = state.periodos[currentPeriod][type + 's'];
+        state.periodos[currentPeriod][type + 's'] = items.filter(item => item.id !== id);
+        saveState();
+        showNotification('Item excluído', 'warning');
+        button.closest('tr').style.opacity = '0';
+        setTimeout(() => button.closest('tr').remove(), 300);
       }
     };
 
-    // ======= Tabs =======
-    const tabNames = [
-      ["dashboard", "Dashboard"],
-      ["metas", "Metas"],
-      ["listas", "Post-its"],
-      ["renda", "Renda"],
-      ["despesas", "Despesas"],
-      ["cartoes", "Cartões"],
-
-
-      ["relatorios", "icon"]   // ícone no menu
-    ];
-    function renderTabs() {
-      const nav = document.getElementById('tabs'); nav.innerHTML = "";
-      tabNames.forEach(([id, label], i) => {
-        let el;
-        if (label === "icon") {
-          el = document.createElement("span");
-          el.textContent = "⚙️";
-          el.className = "icon-config";
-        } else {
-          el = document.createElement("button");
-          el.textContent = label;
-          if (i == 0) el.classList.add("active");
-        }
-        el.onclick = () => {
-          document.querySelectorAll(".tab").forEach(t => t.hidden = true);
-          document.getElementById("tab-" + id).hidden = false;
-          document.querySelectorAll("nav button").forEach(x => x.classList.remove("active"));
-          if (el.tagName === "BUTTON") el.classList.add("active");
-        };
-        nav.appendChild(el);
-      });
-      document.getElementById("tab-dashboard").hidden = false;
-    }
-
-
-    // ======= Tema =======
-    const themeToggle = document.getElementById('themeToggle');
-    const themeIcon = document.getElementById('themeIcon');
-    function applyTheme() {
-      if (localStorage.getItem('theme') === 'light') {
-        document.body.classList.add('light');
-        themeToggle.checked = false;
-        themeIcon.textContent = '🌞';
-      } else {
-        document.body.classList.remove('light');
-        themeToggle.checked = true;
-        themeIcon.textContent = '🌙';
+    // ======= Enhanced Reports =======
+    function renderRelatorios() {
+      // Category report
+      const relCat = document.getElementById('relatorioCategorias');
+      ensurePeriod(currentPeriod);
+      const despesas = state.periodos[currentPeriod].despesas || [];
+      
+      if (despesas.length === 0) {
+        relCat.innerHTML = '<p class="text-muted">Nenhuma despesa para análise</p>';
+        return;
       }
+      
+      const porCategoria = {};
+      despesas.forEach(d => {
+        porCategoria[d.tipo] = (porCategoria[d.tipo] || 0) + d.valor;
+      });
+      
+      let relHTML = '<div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">';
+      Object.entries(porCategoria)
+        .sort(([,a], [,b]) => b - a)
+        .forEach(([cat, val]) => {
+          const pct = (val / despesas.reduce((s, d) => s + d.valor, 0)) * 100;
+          relHTML += `
+            <div class="card">
+              <div class="text-right" style="font-size: 1.5rem; font-weight: 700; color: var(--danger);">${fmtBRL(val)}</div>
+              <div style="font-size: 0.875rem; color: var(--text-dim);">${cat}</div>
+              <div class="text-small text-muted">${Math.round(pct)}% do total</div>
+            </div>
+          `;
+        });
+      relHTML += '</div>';
+      relCat.innerHTML = relHTML;
+      
+      // Monthly history
+      const relHist = document.getElementById('relatorioHistorico');
+      const periods = Object.keys(state.periodos).sort().slice(-6); // Last 6 months
+      
+      let histHTML = '<div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem;">';
+      periods.forEach(p => {
+        const periodData = state.periodos[p];
+        const renda = (periodData.rendas || []).reduce((s, r) => s + r.valor, 0);
+        const despesa = ((periodData.despesas || []).reduce((s, d) => s + d.valor, 0) + 
+                        (periodData.cartoes || []).reduce((s, c) => s + c.valor, 0));
+        const saldo = renda - despesa;
+        
+        const trend = saldo >= 0 ? 'success' : 'danger';
+        histHTML += `
+          <div class="card text-center">
+            <div class="text-small text-muted">${p}</div>
+            <div class="${trend === 'success' ? 'text-success' : 'text-danger'} font-bold">${fmtBRL(saldo)}</div>
+            <div class="text-small text-muted">Saldo</div>
+          </div>
+        `;
+      });
+      histHTML += '</div>';
+      relHist.innerHTML = histHTML;
     }
-    themeToggle.onchange = () => { localStorage.setItem('theme', themeToggle.checked ? 'dark' : 'light'); applyTheme(); };
 
-    // ======= Render All =======
+    // ======= Export/Import =======
+    document.getElementById('btnExport').onclick = () => {
+      const dataStr = JSON.stringify(state, null, 2);
+      const dataBlob = new Blob([dataStr], {type: 'application/json'});
+      const url = URL.createObjectURL(dataBlob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `financeiro-${getPeriod()}.json`;
+      link.click();
+      URL.revokeObjectURL(url);
+      showNotification('Dados exportados com sucesso!', 'success');
+    };
+
+    document.getElementById('btnImport').onclick = () => {
+      document.getElementById('fileImport').click();
+    };
+
+    document.getElementById('fileImport').onchange = (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const importedState = JSON.parse(e.target.result);
+          if (confirm('Deseja importar estes dados? Isso substituirá os dados atuais.')) {
+            state = { ...state, ...importedState };
+            saveState();
+            showNotification('Dados importados com sucesso!', 'success');
+            renderAll();
+          }
+        } catch (err) {
+          showNotification('Erro ao importar arquivo. Verifique o formato.', 'error');
+        }
+      };
+      reader.readAsText(file);
+    };
+
+    // ======= Reset =======
+    document.getElementById('btnReset').onclick = () => {
+      if (confirm('⚠️ ATENÇÃO: Isso apagará TODOS os seus dados! Deseja continuar?')) {
+        if (confirm('TEM CERTEZA? Esta ação não pode ser desfeita.')) {
+          localStorage.removeItem('fin-state-pro');
+          location.reload();
+        }
+      }
+    };
+
+    // ======= Enhanced Tabs =======
+    const tabConfig = [
+      { id: 'dashboard', label: 'Dashboard', icon: 'fas fa-chart-line' },
+      { id: 'renda', label: 'Renda', icon: 'fas fa-arrow-up' },
+      { id: 'despesas', label: 'Despesas', icon: 'fas fa-arrow-down' },
+      { id: 'cartoes', label: 'Cartões', icon: 'fas fa-credit-card' },
+      { id: 'metas', label: 'Metas', icon: 'fas fa-bullseye' },
+      { id: 'listas', label: 'Post-its', icon: 'fas fa-sticky-note' },
+      { id: 'relatorios', label: 'Config', icon: 'fas fa-cog' }
+    ];
+
+    function renderTabs() {
+      const nav = document.getElementById('tabs');
+      nav.innerHTML = '';
+      
+      tabConfig.forEach((tab, index) => {
+        const btn = document.createElement('button');
+        btn.className = 'nav-tab';
+        btn.innerHTML = `<i class="${tab.icon}"></i> ${tab.label}`;
+        
+        if (index === 0) {
+          btn.classList.add('active');
+        }
+        
+        btn.onclick = () => {
+          // Hide all tabs
+          document.querySelectorAll('.tab').forEach(t => t.hidden = true);
+          
+          // Show selected tab
+          document.getElementById(`tab-${tab.id}`).hidden = false;
+          
+          // Update active state
+          document.querySelectorAll('.nav-tab').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          
+          // Render specific tab content
+          if (tab.id === 'relatorios') {
+            renderRelatorios();
+          } else if (tab.id === 'dashboard') {
+            renderDashboard();
+          }
+          
+          showNotification(`Navegando para ${tab.label}`, 'info');
+        };
+        
+        nav.appendChild(btn);
+      });
+      
+      // Show first tab
+      document.getElementById('tab-dashboard').hidden = false;
+      renderDashboard();
+    }
+
+    // ======= Theme Management =======
+    function applyTheme() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      const isLight = savedTheme === 'light';
+      const toggle = document.getElementById('themeToggle');
+      const icon = document.getElementById('themeIcon');
+      
+      document.body.classList.toggle('light', isLight);
+      toggle.checked = !isLight;
+      icon.className = isLight ? 'fas fa-moon' : 'fas fa-sun';
+    }
+
+    document.getElementById('themeToggle').onchange = (e) => {
+      const isLight = !e.target.checked;
+      localStorage.setItem('theme', isLight ? 'light' : 'dark');
+      applyTheme();
+      showNotification(isLight ? 'Tema claro ativado' : 'Tema escuro ativado', 'info');
+    };
+
+    // ======= Main Render =======
     function renderAll() {
       renderPeriods();
       renderRenda();
@@ -1083,18 +2260,60 @@
       renderNotas();
     }
 
-    // init
-    renderTabs();
-    applyTheme();
-    renderAll();
-  </script>
-  <script>
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("service-worker.js")
-        .then(() => console.log("Service Worker registrado"));
+    // ======= Initialization =======
+    document.addEventListener('DOMContentLoaded', () => {
+      // Hide loading
+      setTimeout(() => {
+        document.getElementById('loading').classList.add('hidden');
+      }, 1000);
+      
+      // Set default dates
+      const todayDate = today().toISOString().split('T')[0];
+      document.getElementById('rendaData').value = todayDate;
+      document.getElementById('despData').value = todayDate;
+      document.getElementById('ccVenc').value = todayDate;
+      
+      // Initialize
+      ensurePeriod(currentPeriod);
+      renderTabs();
+      applyTheme();
+      renderAll();
+      
+      // Auto-save every 30 seconds
+      setInterval(() => saveState(true), 30000);
+      
+      // Welcome message
+      if (!state.stats.firstUse) {
+        setTimeout(() => {
+          showNotification('Bem-vindo ao Meu Financeiro Pro! 🚀', 'success');
+        }, 1500);
+      }
+
+      // Inicializa notas se existirem
+      if (state.notas && state.notas.length > 0) {
+        // Pequeno delay para garantir que o DOM está pronto
+        setTimeout(() => {
+          state.notas.forEach(nota => renderNovaNota(nota));
+        }, 100);
+      }
+    });
+
+    // Global functions for onclick handlers
+    window.deleteItem = window.deleteItem || function() {};
+    window.deleteMeta = window.deleteMeta || function() {};
+    window.updateMeta = window.updateMeta || function() {};
+    window.deleteNote = deleteNote;
+    window.toggleNote = toggleNote;
+
+    // PWA Service Worker
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/service-worker.js')
+          .then(reg => console.log('SW registered'))
+          .catch(err => console.log('SW registration failed'));
+      });
     }
   </script>
 </body>
 
 </html>
-
