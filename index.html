@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>💰 Meu Financeiro Pro</title>
+  <title>💰 Meu Financeiro Pro - Dashboard Inteligente</title>
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#0f172a">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -119,6 +118,8 @@
       max-width: 1200px;
       margin: 0 auto;
       padding: 1rem 1.5rem;
+      width: 100%;
+      box-sizing: border-box;
     }
 
     .header-row {
@@ -146,14 +147,99 @@
       gap: 0.75rem;
     }
 
+    /* Period Select - Mês atual primeiro */
+    .period-dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
     .period-select {
       background: var(--card);
       border: 1px solid var(--muted);
       color: var(--text);
-      padding: 0.5rem 1rem;
-      border-radius: 50px;
+      padding: 0.75rem 1.5rem 0.75rem 1rem;
+      border-radius: var(--radius-lg);
       font-size: 0.875rem;
-      min-width: 120px;
+      min-width: 180px;
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+      background-position: right 0.5rem center;
+      background-repeat: no-repeat;
+      background-size: 1.5em 1.5em;
+      padding-right: 2.5rem;
+    }
+
+    .period-select:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+    }
+
+    .period-list {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: var(--card);
+      border: 1px solid var(--muted);
+      border-top: none;
+      border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+      max-height: 300px;
+      overflow-y: auto;
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-10px);
+      transition: all 0.2s ease;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .period-list.show {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .period-option {
+      padding: 0.75rem 1rem;
+      cursor: pointer;
+      border-bottom: 1px solid var(--muted);
+      font-size: 0.875rem;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .period-option:hover,
+    .period-option.active {
+      background: rgba(16, 185, 129, 0.1);
+      color: var(--accent);
+    }
+
+    .period-option.current {
+      background: var(--accent);
+      color: white;
+      font-weight: 600;
+    }
+
+    .period-option.current:hover {
+      background: var(--accent);
+      color: white;
+    }
+
+    .period-option:last-child {
+      border-bottom: none;
+    }
+
+    .period-option i {
+      font-size: 0.75rem;
+      opacity: 0.5;
+    }
+
+    .period-option.current i {
+      opacity: 1;
     }
 
     .theme-toggle {
@@ -198,78 +284,219 @@
       transform: translateX(22px);
     }
 
-    /* Navigation */
-    .nav-tabs {
-      display: flex;
-      gap: 0.5rem;
-      margin-top: 1rem;
-      flex-wrap: wrap;
-      padding: 0.5rem 0;
-      overflow-x: auto;
-      scrollbar-width: none;
-      -ms-overflow-style: none;
+    /* Side Navigation */
+    .side-nav {
+      position: fixed;
+      top: 0;
+      right: -300px;
+      width: 300px;
+      height: 100vh;
+      background: var(--card);
+      border-left: 1px solid var(--muted);
+      z-index: 200;
+      transition: right 0.3s ease;
+      overflow-y: auto;
+      padding: 2rem 0;
     }
 
-    .nav-tabs::-webkit-scrollbar {
-      display: none;
+    .side-nav.open {
+      right: 0;
     }
 
-    .nav-tab {
-      background: transparent;
-      border: 1px solid var(--muted);
-      color: var(--text-dim);
-      padding: 0.75rem 1.25rem;
+    .nav-toggle {
+      background: var(--accent);
+      border: none;
+      color: white;
+      padding: 0.75rem;
       border-radius: 50px;
+      cursor: pointer;
+      font-size: 1rem;
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      z-index: 250;
+      box-shadow: var(--shadow);
+    }
+
+    .nav-menu {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      padding: 1rem;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1rem;
+      border-radius: var(--radius);
       cursor: pointer;
       font-weight: 500;
       font-size: 0.875rem;
       transition: all 0.2s ease;
-      white-space: nowrap;
+      color: var(--text);
+      text-decoration: none;
+      border: 1px solid transparent;
+    }
+
+    .nav-item:hover {
+      background: rgba(16, 185, 129, 0.1);
+      border-color: var(--accent);
+      transform: translateX(4px);
+    }
+
+    .nav-item.active {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+
+    .nav-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 150;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .nav-overlay.show {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    /* Main Content - Centralizado e Responsivo */
+    main {
+      max-width: 100%;
+      margin: 2rem auto;
+      padding: 0 1.5rem 4rem;
+      min-height: calc(100vh - 200px);
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    /* Container wrapper para centralização */
+    .content-wrapper {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
+
+    /* All Tabs Hidden by Default */
+    .tab {
+      display: none;
+    }
+
+    .tab.active {
+      display: block;
+      animation: fadeInUp 0.6s ease forwards;
+    }
+
+    /* Welcome Screen / Onboarding */
+    .welcome-screen {
+      text-align: center;
+      padding: 3rem 2rem;
+      background: var(--gradient);
+      border-radius: var(--radius-lg);
+      margin-bottom: 2rem;
+      color: white;
       position: relative;
       overflow: hidden;
     }
 
-    .nav-tab::before {
+    .welcome-screen::before {
       content: '';
       position: absolute;
       top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
-      transition: left 0.5s;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/><circle cx="50" cy="10" r="0.5" fill="white" opacity="0.05"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+      opacity: 0.3;
     }
 
-    .nav-tab:hover::before {
-      left: 100%;
+    .welcome-content {
+      position: relative;
+      z-index: 1;
     }
 
-    .nav-tab.active {
-      background: var(--accent);
-      border-color: var(--accent);
+    .welcome-icon {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+      opacity: 0.9;
+    }
+
+    .welcome-title {
+      font-size: 2rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+    }
+
+    .welcome-subtitle {
+      font-size: 1.1rem;
+      opacity: 0.9;
+      margin-bottom: 2rem;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .progress-steps {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .step {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.875rem;
+      opacity: 0.7;
+    }
+
+    .step.completed {
+      opacity: 1;
+      color: var(--success);
+    }
+
+    .step-icon {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+    }
+
+    .step.completed .step-icon {
+      background: var(--success);
       color: white;
-      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
     }
 
-    .nav-tab.config-icon {
+    .skip-onboarding {
       background: transparent;
-      border: none;
-      padding: 0.75rem;
-      font-size: 1.125rem;
-      color: var(--text-dim);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius);
+      cursor: pointer;
+      font-size: 0.875rem;
+      transition: all 0.2s ease;
     }
 
-    .nav-tab.config-icon:hover {
-      color: var(--accent);
-      transform: scale(1.1);
-    }
-
-    /* Main Content */
-    main {
-      max-width: 1200px;
-      margin: 2rem auto;
-      padding: 0 1.5rem 4rem;
-      min-height: calc(100vh - 200px);
+    .skip-onboarding:hover {
+      border-color: white;
+      background: rgba(255, 255, 255, 0.1);
     }
 
     /* Cards */
@@ -281,6 +508,7 @@
       box-shadow: var(--shadow);
       position: relative;
       overflow: hidden;
+      margin-bottom: 1.5rem;
     }
 
     .card::before {
@@ -318,17 +546,22 @@
     /* KPI Cards */
     .kpi-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
       gap: 1.5rem;
       margin: 1.5rem 0;
     }
 
     .kpi-card {
       text-align: center;
-      padding: 1.5rem;
+      padding: 2rem;
       border-radius: var(--radius-lg);
       position: relative;
       overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .kpi-card:hover {
+      transform: translateY(-4px);
     }
 
     .kpi-card.balance {
@@ -350,10 +583,11 @@
     }
 
     .kpi-value {
-      font-size: 2.5rem;
+      font-size: 3rem;
       font-weight: 800;
       margin: 0.5rem 0;
       text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      line-height: 1;
     }
 
     .kpi-label {
@@ -364,11 +598,60 @@
       letter-spacing: 0.05em;
     }
 
+    .kpi-trend {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.25rem;
+      font-size: 0.75rem;
+      margin-top: 0.5rem;
+      opacity: 0.8;
+    }
+
+    /* Quick Actions */
+    .quick-actions {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin: 2rem 0;
+    }
+
+    .quick-action {
+      background: var(--card);
+      border: 2px solid var(--muted);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .quick-action:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow);
+    }
+
+    .quick-action i {
+      font-size: 2rem;
+      color: var(--accent);
+    }
+
+    .quick-action-label {
+      font-weight: 600;
+      color: var(--text);
+      font-size: 0.875rem;
+    }
+
     /* Forms */
     .form-grid {
       display: grid;
-      gap: 1rem;
-      margin-bottom: 1.5rem;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
     }
 
     .form-row {
@@ -381,20 +664,123 @@
     .form-group {
       display: flex;
       flex-direction: column;
-      gap: 0.25rem;
+      gap: 0.5rem;
+      position: relative;
     }
 
     label {
-      font-size: 0.75rem;
+      font-size: 0.875rem;
       font-weight: 600;
       color: var(--text-dim);
       text-transform: uppercase;
       letter-spacing: 0.05em;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Help Popups - Pequenos e Elegantes */
+    .help-trigger {
+      background: var(--muted);
+      color: white;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      cursor: help;
+      font-weight: bold;
+      transition: all 0.2s ease;
+      border: none;
+      position: relative;
+    }
+
+    .help-trigger:hover {
+      background: var(--accent);
+      transform: scale(1.1);
+      box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+    }
+
+    .help-popup {
+      position: absolute;
+      top: -10px;
+      right: -10px;
+      background: var(--card);
+      color: var(--text);
+      padding: 1rem;
+      border-radius: var(--radius);
+      font-size: 0.8rem;
+      max-width: 280px;
+      width: max-content;
+      box-shadow: var(--shadow-lg);
+      z-index: 100;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-10px) scale(0.95);
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* O botão .help-trigger fica dentro do label; o .help-popup é irmão do label.
+        Mostrar popup quando o label é hover ou possui foco interno (acessibilidade),
+        ou quando a classe .show for aplicada via JS (útil em touch). */
+    label:hover + .help-popup,
+    label:focus-within + .help-popup,
+    .help-popup.show {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0) scale(1);
+    }
+
+    .help-popup::before {
+      content: '';
+      position: absolute;
+      top: 100%;
+      right: 16px;
+      width: 0;
+      height: 0;
+      border: 8px solid transparent;
+      border-top-color: var(--muted);
+      z-index: 1;
+    }
+
+    .help-popup::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      right: 15px;
+      width: 0;
+      height: 0;
+      border: 7px solid transparent;
+      border-top-color: var(--card);
+      z-index: 2;
+    }
+
+    .help-icon {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      width: 16px;
+      height: 16px;
+      background: var(--accent);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.6rem;
+      cursor: pointer;
+    }
+
+    .help-icon:hover {
+      background: var(--success);
+      transform: scale(1.1);
     }
 
     input, select, textarea {
       width: 100%;
-      padding: 0.75rem 1rem;
+      padding: 0.875rem 1rem;
       background: var(--bg);
       border: 2px solid var(--muted);
       border-radius: var(--radius);
@@ -421,7 +807,7 @@
       background: var(--accent);
       color: white;
       border: none;
-      padding: 0.75rem 1.5rem;
+      padding: 0.875rem 1.5rem;
       border-radius: var(--radius);
       cursor: pointer;
       font-weight: 600;
@@ -432,6 +818,23 @@
       gap: 0.5rem;
       text-transform: uppercase;
       letter-spacing: 0.05em;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: left 0.5s;
+    }
+
+    .btn:hover::before {
+      left: 100%;
     }
 
     .btn:hover {
@@ -472,7 +875,7 @@
     }
 
     .btn-small {
-      padding: 0.25rem 0.5rem;
+      padding: 0.5rem 1rem;
       font-size: 0.75rem;
       min-width: auto;
     }
@@ -482,6 +885,7 @@
       overflow-x: auto;
       border-radius: var(--radius);
       box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      margin-top: 1rem;
     }
 
     table {
@@ -503,6 +907,8 @@
       text-transform: uppercase;
       letter-spacing: 0.1em;
       background: rgba(15, 23, 42, 0.5);
+      position: sticky;
+      top: 0;
     }
 
     body.light th {
@@ -638,7 +1044,7 @@
       font-size: 0.875rem;
     }
 
-    /* Notes Section - CORRIGIDO */
+    /* Notes Section */
     .notes-header {
       display: flex;
       justify-content: space-between;
@@ -662,7 +1068,6 @@
       box-shadow: var(--shadow-lg);
       min-height: 180px;
       transition: all 0.3s ease;
-      /* Evita quebras de linha indesejadas */
       contain: layout style;
     }
 
@@ -716,23 +1121,18 @@
       outline: none;
       padding: 0;
       margin: 0 0 1rem;
-      /* Melhora o foco */
       line-height: 1.5;
-      /* Previne seleção de texto indesejada */
       -webkit-user-select: text;
       -moz-user-select: text;
       -ms-user-select: text;
       user-select: text;
-      /* Evita que o browser recrie o elemento */
       contain: content;
     }
 
-    /* Efeito de foco suave */
     .note-content:focus {
       background: rgba(255, 255, 255, 0.1);
       border-radius: 4px;
       padding: 2px 4px;
-      /* Mantém o foco visual sem recriação */
       box-shadow: inset 0 0 0 1px rgba(16, 185, 129, 0.3);
     }
 
@@ -756,29 +1156,45 @@
       accent-color: var(--success);
     }
 
-    /* Responsive */
-    @media (max-width: 768px) {
-      .form-row {
-        grid-template-columns: 1fr;
-      }
-      
-      .kpi-grid {
-        grid-template-columns: 1fr;
-      }
-      
-      .goals-grid, .notes-grid {
-        grid-template-columns: 1fr;
-      }
-      
-      .header-row {
-        flex-direction: column;
-        gap: 1rem;
-        align-items: stretch;
-      }
-      
-      .nav-tabs {
-        justify-content: center;
-      }
+    /* Empty States */
+    .empty-state {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: var(--text-dim);
+    }
+
+    .empty-state i {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+      opacity: 0.5;
+    }
+
+    .empty-state h3 {
+      margin: 0 0 0.5rem;
+      color: var(--text);
+      font-size: 1.25rem;
+    }
+
+    .empty-state p {
+      margin: 0 0 2rem;
+      opacity: 0.8;
+    }
+
+    .empty-action {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 0.875rem 2rem;
+      border-radius: var(--radius);
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.875rem;
+      transition: all 0.2s ease;
+    }
+
+    .empty-action:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
     }
 
     /* Animations */
@@ -791,23 +1207,6 @@
         opacity: 1;
         transform: translateY(0);
       }
-    }
-
-    .animate-fade-in {
-      animation: fadeInUp 0.6s ease forwards;
-    }
-
-    /* Empty States */
-    .empty-state {
-      text-align: center;
-      padding: 3rem 1rem;
-      color: var(--text-dim);
-    }
-
-    .empty-state i {
-      font-size: 4rem;
-      margin-bottom: 1rem;
-      opacity: 0.5;
     }
 
     /* Utility Classes */
@@ -829,6 +1228,11 @@
       border: 0;
     }
 
+    .grid {
+      display: grid;
+      gap: 1.5rem;
+    }
+
     /* Scrollbar */
     ::-webkit-scrollbar {
       width: 6px;
@@ -846,6 +1250,144 @@
     ::-webkit-scrollbar-thumb:hover {
       background: var(--accent-2);
     }
+
+    /* Centralização para Desktop - ADICIONADO */
+    @media screen and (min-width: 768px) {
+      .content-wrapper {
+        padding: 0 1.5rem;
+      }
+      
+      .wrap {
+        padding: 1rem 2rem;
+      }
+      
+      main {
+        padding: 0 2rem 4rem;
+      }
+    }
+
+    @media screen and (min-width: 1024px) {
+      .content-wrapper {
+        max-width: 1200px;
+        padding: 0 2rem;
+        margin: 0 auto;
+      }
+      
+      .wrap {
+        max-width: 1200px;
+        padding: 1rem 2rem;
+        margin: 0 auto;
+      }
+      
+      main {
+        max-width: 1200px;
+        padding: 0 2rem 4rem;
+        margin: 2rem auto;
+      }
+    }
+
+    @media screen and (min-width: 1440px) {
+      .content-wrapper {
+        max-width: 1400px;
+        padding: 0 3rem;
+      }
+      
+      .wrap {
+        max-width: 1400px;
+        padding: 1rem 3rem;
+      }
+      
+      main {
+        max-width: 1400px;
+        padding: 0 3rem 4rem;
+        margin: 2rem auto;
+      }
+    }
+
+    /* Para telas ultra-wide */
+    @media screen and (min-width: 1920px) {
+      .content-wrapper {
+        max-width: 1600px;
+        padding: 0 4rem;
+      }
+      
+      .wrap {
+        max-width: 1600px;
+        padding: 1rem 4rem;
+      }
+      
+      main {
+        max-width: 1600px;
+        padding: 0 4rem 4rem;
+        margin: 2rem auto;
+      }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+      
+      .kpi-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .goals-grid, .notes-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .header-row {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: stretch;
+      }
+      
+      .nav-toggle {
+        top: 0.5rem;
+        right: 0.5rem;
+      }
+      
+      .side-nav {
+        width: 100%;
+        right: -100%;
+      }
+      
+      .period-select {
+        min-width: 140px;
+      }
+      
+      .content-wrapper {
+        padding: 0 1rem;
+      }
+      
+      .wrap {
+        padding: 1rem;
+      }
+      
+      main {
+        padding: 0 1rem 4rem;
+        margin: 1rem auto;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .welcome-screen {
+        padding: 2rem 1rem;
+      }
+      
+      .welcome-title {
+        font-size: 1.5rem;
+      }
+      
+      .kpi-value {
+        font-size: 2.5rem;
+      }
+      
+      .card {
+        padding: 1rem;
+      }
+    }
   </style>
 </head>
 
@@ -855,6 +1397,48 @@
     <div class="spinner"></div>
   </div>
 
+  <!-- Navigation Toggle -->
+  <button class="nav-toggle" id="navToggle">
+    <i class="fas fa-bars"></i>
+  </button>
+
+  <!-- Navigation Overlay -->
+  <div class="nav-overlay" id="navOverlay"></div>
+
+  <!-- Side Navigation -->
+  <nav class="side-nav" id="sideNav">
+    <div class="nav-menu">
+      <a href="#" class="nav-item active" data-tab="dashboard">
+        <i class="fas fa-chart-line"></i>
+        Dashboard
+      </a>
+      <a href="#" class="nav-item" data-tab="renda">
+        <i class="fas fa-arrow-up"></i>
+        Renda
+      </a>
+      <a href="#" class="nav-item" data-tab="despesas">
+        <i class="fas fa-arrow-down"></i>
+        Despesas
+      </a>
+      <a href="#" class="nav-item" data-tab="cartoes">
+        <i class="fas fa-credit-card"></i>
+        Cartões
+      </a>
+      <a href="#" class="nav-item" data-tab="metas">
+        <i class="fas fa-bullseye"></i>
+        Metas
+      </a>
+      <a href="#" class="nav-item" data-tab="listas">
+        <i class="fas fa-sticky-note"></i>
+        Post-its
+      </a>
+      <a href="#" class="nav-item" data-tab="relatorios">
+        <i class="fas fa-cog"></i>
+        Configurações
+      </a>
+    </div>
+  </nav>
+
   <header>
     <div class="wrap">
       <div class="header-row">
@@ -863,9 +1447,12 @@
           Meu Financeiro Pro
         </div>
         <div class="header-actions">
-          <select id="periodSelect" class="period-select">
-            <option value="">Carregando...</option>
-          </select>
+          <div class="period-dropdown">
+            <div class="period-select" id="periodSelect" onclick="togglePeriodList()">
+              <span id="currentPeriodText">Carregando...</span>
+            </div>
+            <div class="period-list" id="periodList"></div>
+          </div>
           <label class="theme-toggle">
             <i id="themeIcon" class="fas fa-sun"></i>
             <input type="checkbox" id="themeToggle">
@@ -873,36 +1460,86 @@
           </label>
         </div>
       </div>
-      <nav class="nav-tabs" id="tabs"></nav>
     </div>
   </header>
 
-  <main>
-    <!-- DASHBOARD -->
-    <section id="tab-dashboard" class="tab card animate-fade-in" hidden>
+  <main class="content-wrapper">
+    <!-- Welcome Screen / Onboarding -->
+    <section id="welcomeScreen" class="welcome-screen animate-fade-in" style="display: none;">
+      <div class="welcome-content">
+        <div class="welcome-icon">
+          <i class="fas fa-rocket"></i>
+        </div>
+        <h1 class="welcome-title">Bem-vindo ao seu Financeiro Inteligente! 🚀</h1>
+        <p class="welcome-subtitle">
+          Vamos configurar seu controle financeiro em 3 passos simples. Você verá seus dados em tempo real assim que terminar!
+        </p>
+        
+        <div class="progress-steps">
+          <div class="step" id="step1">
+            <div class="step-icon">1</div>
+            <span>Adicionar sua primeira renda</span>
+          </div>
+          <div class="step" id="step2">
+            <div class="step-icon">2</div>
+            <span>Registrar uma despesa</span>
+          </div>
+          <div class="step" id="step3">
+            <div class="step-icon">3</div>
+            <span>Definir uma meta</span>
+          </div>
+        </div>
+        
+        <button id="startOnboarding" class="btn success">
+          <i class="fas fa-play"></i> Começar Agora
+        </button>
+        <button id="skipOnboarding" class="skip-onboarding space-top">
+          Pular e ver dados →
+        </button>
+      </div>
+    </section>
+
+    <!-- DASHBOARD - Agora como aba normal -->
+    <section id="tab-dashboard" class="tab card animate-fade-in" style="display: none;">
       <h2><i class="fas fa-chart-line"></i> Dashboard</h2>
+      
+      <!-- KPIs Principais -->
       <div class="kpi-grid">
         <div class="kpi-card balance">
           <div class="kpi-label">Saldo Previsto</div>
           <div class="kpi-value" id="kpiSaldo">R$ 0,00</div>
           <div class="text-muted text-small">Total de entradas</div>
+          <div class="kpi-trend">
+            <i class="fas fa-arrow-up"></i>
+            <span>+12% vs mês anterior</span>
+          </div>
         </div>
         <div class="kpi-card expenses">
           <div class="kpi-label">Total Despesas</div>
           <div class="kpi-value" id="kpisomadiv">R$ 0,00</div>
           <div class="text-muted text-small">Despesas + cartões</div>
+          <div class="kpi-trend">
+            <i class="fas fa-arrow-down"></i>
+            <span>Alerta: próximo vencimento</span>
+          </div>
         </div>
         <div class="kpi-card leftover">
           <div class="kpi-label">Sobra Mensal</div>
           <div class="kpi-value" id="kpiSobra">R$ 0,00</div>
           <div class="text-muted text-small">Saldo disponível</div>
+          <div class="kpi-trend" id="kpiTrend">
+            <i class="fas fa-chart-line"></i>
+            <span id="kpiTrendText">Estável</span>
+          </div>
         </div>
       </div>
       
+      <!-- Informações Rápidas -->
       <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 1.5rem;">
         <div class="card">
           <h3><i class="fas fa-calendar-alt"></i> Próximo Vencimento</h3>
           <div id="kpiVencimento" class="text-muted font-bold" style="font-size: 1.1rem;">—</div>
+          <p class="text-small text-muted">Fique de olho nas datas importantes</p>
         </div>
         <div class="card">
           <h3><i class="fas fa-trending-up"></i> Economia do Mês</h3>
@@ -910,38 +1547,135 @@
           <p class="text-small text-muted">Comparado ao mês anterior</p>
         </div>
       </div>
+
+      <!-- Quick Actions -->
+      <div class="quick-actions">
+        <div class="quick-action" data-tab="renda" onclick="navigateToTab('renda')">
+          <i class="fas fa-plus-circle"></i>
+          <div class="quick-action-label">Adicionar Renda</div>
+        </div>
+        <div class="quick-action" data-tab="despesas" onclick="navigateToTab('despesas')">
+          <i class="fas fa-minus-circle"></i>
+          <div class="quick-action-label">Nova Despesa</div>
+        </div>
+        <div class="quick-action" data-tab="cartoes" onclick="navigateToTab('cartoes')">
+          <i class="fas fa-credit-card"></i>
+          <div class="quick-action-label">Gasto no Cartão</div>
+        </div>
+        <div class="quick-action" data-tab="metas" onclick="navigateToTab('metas')">
+          <i class="fas fa-bullseye"></i>
+          <div class="quick-action-label">Nova Meta</div>
+        </div>
+      </div>
+
+      <!-- Resumo das Transações Recentes -->
+      <div class="card">
+        <h2><i class="fas fa-list"></i> Transações Recentes</h2>
+        <div class="table-container">
+          <table id="tblRecentes">
+            <thead>
+              <tr>
+                <th><i class="fas fa-tag"></i> Descrição</th>
+                <th><i class="fas fa-calendar"></i> Data</th>
+                <th class="text-right"><i class="fas fa-money-bill-wave"></i> Valor</th>
+                <th class="text-right"><i class="fas fa-cog"></i></th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        
+        <div id="emptyRecentes" class="empty-state" style="display: none;">
+          <i class="fas fa-inbox"></i>
+          <h3>Nenhuma transação ainda</h3>
+          <p>Use os botões rápidos acima para começar!</p>
+          <button class="empty-action" onclick="navigateToTab('renda')">
+            <i class="fas fa-plus"></i> Primeira Renda
+          </button>
+        </div>
+      </div>
     </section>
 
     <!-- RENDA -->
-    <section id="tab-renda" class="tab card animate-fade-in" hidden>
+    <section id="tab-renda" class="tab card animate-fade-in" style="display: none;">
       <h2><i class="fas fa-arrow-up"></i> Renda</h2>
-      <div class="form-row">
-        <div class="form-group">
-          <label>Descrição</label>
-          <input id="rendaNome" placeholder="Salário, Freelance, etc..." required>
-        </div>
-        <div class="form-group">
-          <label>Valor</label>
-          <input id="rendaValor" type="number" step="0.01" placeholder="0,00" required>
-        </div>
-        <div class="form-group">
-          <label>Data</label>
-          <input id="rendaData" type="date" required>
-        </div>
-        <div class="form-group">
-          <label>Recorrência</label>
-          <select id="rendaRecorrente">
-            <option value="0">Única vez</option>
-            <option value="1">Mensal</option>
-            <option value="3">Trimestral</option>
-            <option value="6">Semestral</option>
-            <option value="12">Anual</option>
-          </select>
-        </div>
-        <div class="form-group" style="align-self: end;">
-          <button id="btnAddRenda" class="btn primary">
-            <i class="fas fa-plus"></i> Adicionar
-          </button>
+      <div class="form-grid">
+        <div class="form-row">
+          <div class="form-group">
+            <label>
+              Descrição
+              <button class="help-trigger" type="button">
+                <i class="fas fa-question-circle"></i>
+              </button>
+            </label>
+            <div class="help-popup">
+              <div style="font-weight: 600; margin-bottom: 0.5rem; color: var(--accent);">Como funciona</div>
+              <div>Nome da fonte de renda (Salário, Freelance, Aluguel, etc.).</div>
+              <div class="help-icon" onclick="this.parentElement.style.display='none'" title="Fechar">
+                <i class="fas fa-times"></i>
+              </div>
+            </div>
+            <input id="rendaNome" placeholder="Salário, Freelance, etc..." required>
+          </div>
+          <div class="form-group">
+            <label>
+              Valor
+              <button class="help-trigger" type="button">
+                <i class="fas fa-question-circle"></i>
+              </button>
+            </label>
+            <div class="help-popup">
+              <div style="font-weight: 600; margin-bottom: 0.5rem; color: var(--accent);">Dica importante</div>
+              <div>Use o valor líquido recebido (após impostos e descontos). Use vírgula para centavos.</div>
+              <div class="help-icon" onclick="this.parentElement.style.display='none'" title="Fechar">
+                <i class="fas fa-times"></i>
+              </div>
+            </div>
+            <input id="rendaValor" type="number" step="0.01" placeholder="0,00" required>
+          </div>
+          <div class="form-group">
+            <label>
+              Data de Recebimento
+              <button class="help-trigger" type="button">
+                <i class="fas fa-question-circle"></i>
+              </button>
+            </label>
+            <div class="help-popup">
+              <div style="font-weight: 600; margin-bottom: 0.5rem; color: var(--accent);">Por que isso importa</div>
+              <div>Data em que o dinheiro realmente entra na conta. Ajuda no planejamento mensal.</div>
+              <div class="help-icon" onclick="this.parentElement.style.display='none'" title="Fechar">
+                <i class="fas fa-times"></i>
+              </div>
+            </div>
+            <input id="rendaData" type="date" required>
+          </div>
+          <div class="form-group">
+            <label>
+              Recorrência
+              <button class="help-trigger" type="button">
+                <i class="fas fa-question-circle"></i>
+              </button>
+            </label>
+            <div class="help-popup">
+              <div style="font-weight: 600; margin-bottom: 0.5rem; color: var(--accent);">Automatize seu controle</div>
+              <div>Se é uma renda que se repete regularmente, o sistema criará entradas automáticas para os próximos períodos.</div>
+              <div class="help-icon" onclick="this.parentElement.style.display='none'" title="Fechar">
+                <i class="fas fa-times"></i>
+              </div>
+            </div>
+            <select id="rendaRecorrente">
+              <option value="0">Única vez</option>
+              <option value="1">Mensal</option>
+              <option value="3">Trimestral</option>
+              <option value="6">Semestral</option>
+              <option value="12">Anual</option>
+            </select>
+          </div>
+          <div class="form-group" style="align-self: end;">
+            <button id="btnAddRenda" class="btn primary">
+              <i class="fas fa-plus"></i> Adicionar Renda
+            </button>
+          </div>
         </div>
       </div>
       
@@ -959,56 +1693,133 @@
         </table>
       </div>
       
-      <div id="emptyRenda" class="empty-state" style="display: none;">
+      <div id="emptyRenda" class="empty-state">
         <i class="fas fa-arrow-up"></i>
         <h3>Nenhuma renda registrada</h3>
-        <p>Adicione sua primeira entrada de renda para começar!</p>
+        <p>Adicione sua primeira entrada de renda para começar a ver seu saldo crescer!</p>
+        <button class="empty-action" onclick="document.getElementById('rendaNome').focus()">
+          <i class="fas fa-plus"></i> Adicionar Primeira Renda
+        </button>
       </div>
     </section>
 
     <!-- DESPESAS -->
-    <section id="tab-despesas" class="tab card animate-fade-in" hidden>
+    <section id="tab-despesas" class="tab card animate-fade-in" style="display: none;">
       <h2><i class="fas fa-arrow-down"></i> Despesas</h2>
-      <div class="form-row">
-        <div class="form-group">
-          <label>Descrição</label>
-          <input id="despNome" placeholder="Conta de luz, supermercado..." required>
-        </div>
-        <div class="form-group">
-          <label>Valor</label>
-          <input id="despValor" type="number" step="0.01" placeholder="0,00" required>
-        </div>
-        <div class="form-group">
-          <label>Vencimento</label>
-          <input id="despData" type="date" required>
-        </div>
-        <div class="form-group">
-          <label>Categoria</label>
-          <select id="despTipo" required></select>
-        </div>
-        <div class="form-group">
-          <label>Nova Categoria</label>
-          <div style="display: flex; gap: 0.5rem;">
-            <input id="novoTipo" placeholder="Ex: Lazer" style="flex: 1;">
-            <button id="btnAddTipo" class="btn ghost btn-small">
-              <i class="fas fa-plus"></i>
+      <div class="form-grid">
+        <div class="form-row">
+          <div class="form-group">
+            <label>
+              Descrição
+              <button class="help-trigger" type="button">
+                <i class="fas fa-question-circle"></i>
+              </button>
+            </label>
+            <div class="help-popup">
+              <div style="font-weight: 600; margin-bottom: 0.5rem; color: var(--accent);">Seja específico</div>
+              <div>O que você gastou (conta de luz, supermercado, Netflix, etc.). Detalhes ajudam na análise.</div>
+              <div class="help-icon" onclick="this.parentElement.style.display='none'" title="Fechar">
+                <i class="fas fa-times"></i>
+              </div>
+            </div>
+            <input id="despNome" placeholder="Conta de luz, supermercado..." required>
+          </div>
+          <div class="form-group">
+            <label>
+              Valor
+              <button class="help-trigger" type="button">
+                <i class="fas fa-question-circle"></i>
+              </button>
+            </label>
+            <div class="help-popup">
+              <div style="font-weight: 600; margin-bottom: 0.5rem; color: var(--accent);">Precisão conta</div>
+              <div>Valor exato do gasto. Use vírgula para centavos. Inclua tudo, até os pequenos gastos.</div>
+              <div class="help-icon" onclick="this.parentElement.style.display='none'" title="Fechar">
+                <i class="fas fa-times"></i>
+              </div>
+            </div>
+            <input id="despValor" type="number" step="0.01" placeholder="0,00" required>
+          </div>
+          <div class="form-group">
+            <label>
+              Vencimento
+              <button class="help-trigger" type="button">
+                <i class="fas fa-question-circle"></i>
+              </button>
+            </label>
+            <div class="help-popup">
+              <div style="font-weight: 600; margin-bottom: 0.5rem; color: var(--accent);">Evite multas</div>
+              <div>Data limite para pagamento. O sistema alertará sobre vencimentos próximos para evitar juros.</div>
+              <div class="help-icon" onclick="this.parentElement.style.display='none'" title="Fechar">
+                <i class="fas fa-times"></i>
+              </div>
+            </div>
+            <input id="despData" type="date" required>
+          </div>
+          <div class="form-group">
+            <label>
+              Categoria
+              <button class="help-trigger" type="button">
+                <i class="fas fa-question-circle"></i>
+              </button>
+            </label>
+            <div class="help-popup">
+              <div style="font-weight: 600; margin-bottom: 0.5rem; color: var(--accent);">Organize melhor</div>
+              <div>Ajuda a organizar e analisar seus gastos por tipo. Você pode criar novas categorias abaixo.</div>
+              <div class="help-icon" onclick="this.parentElement.style.display='none'" title="Fechar">
+                <i class="fas fa-times"></i>
+              </div>
+            </div>
+            <select id="despTipo" required></select>
+          </div>
+          <div class="form-group">
+            <label>
+              Nova Categoria
+              <button class="help-trigger" type="button">
+                <i class="fas fa-question-circle"></i>
+              </button>
+            </label>
+            <div class="help-popup">
+              <div style="font-weight: 600; margin-bottom: 0.5rem; color: var(--accent);">Personalize</div>
+              <div>Crie categorias específicas para seus gastos (ex: "Delivery", "Pet Shop", "Cursos").</div>
+              <div class="help-icon" onclick="this.parentElement.style.display='none'" title="Fechar">
+                <i class="fas fa-times"></i>
+              </div>
+            </div>
+            <div style="display: flex; gap: 0.5rem;">
+              <input id="novoTipo" placeholder="Ex: Lazer" style="flex: 1;">
+              <button id="btnAddTipo" class="btn ghost btn-small">
+                <i class="fas fa-plus"></i>
+              </button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>
+              Recorrência
+              <button class="help-trigger" type="button">
+                <i class="fas fa-question-circle"></i>
+              </button>
+            </label>
+            <div class="help-popup">
+              <div style="font-weight: 600; margin-bottom: 0.5rem; color: var(--accent);">Não se preocupe em lembrar</div>
+              <div>Se é um gasto que se repete (aluguel, internet, academia), o sistema criará automaticamente para os próximos meses.</div>
+              <div class="help-icon" onclick="this.parentElement.style.display='none'" title="Fechar">
+                <i class="fas fa-times"></i>
+              </div>
+            </div>
+            <select id="despRecorrente">
+              <option value="0">Única vez</option>
+              <option value="1">Mensal</option>
+              <option value="3">Trimestral</option>
+              <option value="6">Semestral</option>
+              <option value="12">Anual</option>
+            </select>
+          </div>
+          <div class="form-group" style="align-self: end;">
+            <button id="btnAddDesp" class="btn danger">
+              <i class="fas fa-minus"></i> Registrar Despesa
             </button>
           </div>
-        </div>
-        <div class="form-group">
-          <label>Recorrência</label>
-          <select id="despRecorrente">
-            <option value="0">Única vez</option>
-            <option value="1">Mensal</option>
-            <option value="3">Trimestral</option>
-            <option value="6">Semestral</option>
-            <option value="12">Anual</option>
-          </select>
-        </div>
-        <div class="form-group" style="align-self: end;">
-          <button id="btnAddDesp" class="btn danger">
-            <i class="fas fa-minus"></i> Registrar
-          </button>
         </div>
       </div>
       
@@ -1027,33 +1838,74 @@
         </table>
       </div>
       
-      <div id="emptyDesp" class="empty-state" style="display: none;">
+      <div id="emptyDesp" class="empty-state">
         <i class="fas fa-arrow-down"></i>
         <h3>Nenhuma despesa registrada</h3>
-        <p>Registre suas despesas para ter controle total!</p>
+        <p>Registre suas despesas para ter controle total do seu orçamento!</p>
+        <button class="empty-action" onclick="document.getElementById('despNome').focus()">
+          <i class="fas fa-plus"></i> Primeira Despesa
+        </button>
       </div>
     </section>
 
     <!-- CARTÕES -->
-    <section id="tab-cartoes" class="tab card animate-fade-in" hidden>
+    <section id="tab-cartoes" class="tab card animate-fade-in" style="display: none;">
       <h2><i class="fas fa-credit-card"></i> Cartões</h2>
-      <div class="form-row">
-        <div class="form-group">
-          <label>Nome do Cartão</label>
-          <input id="ccNome" placeholder="Visa, Mastercard..." required>
-        </div>
-        <div class="form-group">
-          <label>Vencimento</label>
-          <input id="ccVenc" type="date" required>
-        </div>
-        <div class="form-group">
-          <label>Valor Gasto</label>
-          <input id="ccValor" type="number" step="0.01" placeholder="0,00" required>
-        </div>
-        <div class="form-group" style="align-self: end;">
-          <button id="btnAddCC" class="btn primary">
-            <i class="fas fa-plus"></i> Adicionar
-          </button>
+      <div class="form-grid">
+        <div class="form-row">
+          <div class="form-group">
+            <label>
+              Nome do Cartão
+              <button class="help-trigger" type="button">
+                <i class="fas fa-question-circle"></i>
+              </button>
+            </label>
+            <div class="help-popup">
+              <div style="font-weight: 600; margin-bottom: 0.5rem; color: var(--accent);">Identifique seu cartão</div>
+              <div>Nome do cartão (Visa, Mastercard, Nubank, Santander, etc.). Ajuda a separar os gastos por cartão.</div>
+              <div class="help-icon" onclick="this.parentElement.style.display='none'" title="Fechar">
+                <i class="fas fa-times"></i>
+              </div>
+            </div>
+            <input id="ccNome" placeholder="Visa, Mastercard..." required>
+          </div>
+          <div class="form-group">
+            <label>
+              Vencimento
+              <button class="help-trigger" type="button">
+                <i class="fas fa-question-circle"></i>
+              </button>
+            </label>
+            <div class="help-popup">
+              <div style="font-weight: 600; margin-bottom: 0.5rem; color: var(--accent);">Data crítica</div>
+              <div>Data de fechamento da fatura do cartão. Importante para planejar o pagamento mensal.</div>
+              <div class="help-icon" onclick="this.parentElement.style.display='none'" title="Fechar">
+                <i class="fas fa-times"></i>
+              </div>
+            </div>
+            <input id="ccVenc" type="date" required>
+          </div>
+          <div class="form-group">
+            <label>
+              Valor Gasto
+              <button class="help-trigger" type="button">
+                <i class="fas fa-question-circle"></i>
+              </button>
+            </label>
+            <div class="help-popup">
+              <div style="font-weight: 600; margin-bottom: 0.5rem; color: var(--accent);">Controle total</div>
+              <div>Total gasto no cartão neste período. Some todos os gastos para ter visão completa da fatura.</div>
+              <div class="help-icon" onclick="this.parentElement.style.display='none'" title="Fechar">
+                <i class="fas fa-times"></i>
+              </div>
+            </div>
+            <input id="ccValor" type="number" step="0.01" placeholder="0,00" required>
+          </div>
+          <div class="form-group" style="align-self: end;">
+            <button id="btnAddCC" class="btn primary">
+              <i class="fas fa-plus"></i> Registrar Gasto
+            </button>
+          </div>
         </div>
       </div>
       
@@ -1071,43 +1923,75 @@
         </table>
       </div>
       
-      <div id="emptyCC" class="empty-state" style="display: none;">
+      <div id="emptyCC" class="empty-state">
         <i class="fas fa-credit-card"></i>
         <h3>Nenhum cartão registrado</h3>
-        <p>Adicione seus cartões para controle de gastos!</p>
+        <p>Adicione seus cartões para controle completo dos gastos!</p>
+        <button class="empty-action" onclick="document.getElementById('ccNome').focus()">
+          <i class="fas fa-plus"></i> Primeiro Cartão
+        </button>
       </div>
     </section>
 
     <!-- METAS -->
-    <section id="tab-metas" class="tab card animate-fade-in" hidden>
+    <section id="tab-metas" class="tab card animate-fade-in" style="display: none;">
       <h2><i class="fas fa-bullseye"></i> Metas Financeiras</h2>
-      <div class="form-row">
-        <div class="form-group">
-          <label>Objetivo</label>
-          <input id="metaDesc" placeholder="Ex: Novo notebook, Viagem..." required>
-        </div>
-        <div class="form-group">
-          <label>Valor Alvo</label>
-          <input id="metaValor" type="number" step="0.01" placeholder="0,00" required>
-        </div>
-        <div class="form-group" style="align-self: end;">
-          <button id="btnAddMeta" class="btn success">
-            <i class="fas fa-plus"></i> Nova Meta
-          </button>
+      <div class="form-grid">
+        <div class="form-row">
+          <div class="form-group">
+            <label>
+              Objetivo
+              <button class="help-trigger" type="button">
+                <i class="fas fa-question-circle"></i>
+              </button>
+            </label>
+            <div class="help-popup">
+              <div style="font-weight: 600; margin-bottom: 0.5rem; color: var(--accent);">Mantenha o foco</div>
+              <div>Para que você está poupando? (Viagem aos EUA, carro novo, fundo de emergência, curso). Seja específico!</div>
+              <div class="help-icon" onclick="this.parentElement.style.display='none'" title="Fechar">
+                <i class="fas fa-times"></i>
+              </div>
+            </div>
+            <input id="metaDesc" placeholder="Ex: Novo notebook, Viagem..." required>
+          </div>
+          <div class="form-group">
+            <label>
+              Valor Alvo
+              <button class="help-trigger" type="button">
+                <i class="fas fa-question-circle"></i>
+              </button>
+            </label>
+            <div class="help-popup">
+              <div style="font-weight: 600; margin-bottom: 0.5rem; color: var(--accent);">Seja realista</div>
+              <div>Quanto você quer economizar para este objetivo. O sistema mostrará seu progresso em tempo real.</div>
+              <div class="help-icon" onclick="this.parentElement.style.display='none'" title="Fechar">
+                <i class="fas fa-times"></i>
+              </div>
+            </div>
+            <input id="metaValor" type="number" step="0.01" placeholder="0,00" required>
+          </div>
+          <div class="form-group" style="align-self: end;">
+            <button id="btnAddMeta" class="btn success">
+              <i class="fas fa-plus"></i> Criar Meta
+            </button>
+          </div>
         </div>
       </div>
       
       <div class="goals-grid" id="goalsGrid"></div>
       
-      <div id="emptyMetas" class="empty-state" style="display: none;">
+      <div id="emptyMetas" class="empty-state">
         <i class="fas fa-bullseye"></i>
         <h3>Nenhuma meta criada</h3>
-        <p>Crie sua primeira meta financeira e acompanhe seu progresso!</p>
+        <p>Crie sua primeira meta financeira e acompanhe seu progresso em tempo real!</p>
+        <button class="empty-action" onclick="document.getElementById('metaDesc').focus()">
+          <i class="fas fa-plus"></i> Primeira Meta
+        </button>
       </div>
     </section>
 
-    <!-- LISTAS -->
-    <section id="tab-listas" class="tab card animate-fade-in" hidden>
+    <!-- POST-ITS -->
+    <section id="tab-listas" class="tab card animate-fade-in" style="display: none;">
       <div class="notes-header">
         <h2><i class="fas fa-sticky-note"></i> Post-its & Lembretes</h2>
         <button id="btnNovaNota" class="btn primary">
@@ -1116,15 +2000,18 @@
       </div>
       <div class="notes-grid" id="notesGrid"></div>
       
-      <div id="emptyNotes" class="empty-state" style="display: none;">
+      <div id="emptyNotes" class="empty-state">
         <i class="fas fa-sticky-note"></i>
         <h3>Nenhum post-it criado</h3>
-        <p>Crie sua primeira nota para organizar seus pensamentos!</p>
+        <p>Crie sua primeira nota para organizar seus pensamentos financeiros!</p>
+        <button class="empty-action" onclick="document.getElementById('btnNovaNota').click()">
+          <i class="fas fa-plus"></i> Primeira Nota
+        </button>
       </div>
     </section>
 
-    <!-- CONFIG -->
-    <section id="tab-relatorios" class="tab card animate-fade-in" hidden>
+    <!-- CONFIGURAÇÕES -->
+    <section id="tab-relatorios" class="tab card animate-fade-in" style="display: none;">
       <h2><i class="fas fa-cog"></i> Configurações & Relatórios</h2>
       
       <div class="card space-top">
@@ -1189,7 +2076,6 @@
     const formatDate = (date) => new Date(date).toLocaleDateString('pt-BR');
 
     const showNotification = (message, type = 'success') => {
-      // Simple notification system
       const notification = document.createElement('div');
       notification.style.cssText = `
         position: fixed;
@@ -1210,18 +2096,17 @@
         error: '#ef4444',
         warning: '#f59e0b',
         info: '#3b82f6'
+     
       };
       
       notification.style.background = colors[type];
       notification.textContent = message;
       document.body.appendChild(notification);
       
-      // Animate in
       requestAnimationFrame(() => {
         notification.style.transform = 'translateX(0)';
       });
       
-      // Auto remove
       setTimeout(() => {
         notification.style.transform = 'translateX(400px)';
         setTimeout(() => notification.remove(), 300);
@@ -1230,6 +2115,9 @@
 
     // ======= Enhanced State Management =======
     let state = JSON.parse(localStorage.getItem('fin-state-pro') || '{}');
+    let currentPeriod = getPeriod();
+    let onboardingStep = parseInt(localStorage.getItem('onboarding-step') || '0');
+    let onboardingCompleted = localStorage.getItem('onboarding-completed') === 'true';
     
     // Initialize state with better defaults
     if (!state.periodos) {
@@ -1245,8 +2133,6 @@
       };
     }
 
-    let currentPeriod = getPeriod();
-    
     function ensurePeriod(p) {
       if (!state.periodos[p]) {
         state.periodos[p] = { 
@@ -1258,7 +2144,6 @@
       }
     }
 
-    // Debounce helper para evitar salvamentos excessivos
     function debounce(func, wait) {
       let timeout;
       return function executedFunction(...args) {
@@ -1271,21 +2156,16 @@
       };
     }
 
-    let debounceSave = debounce(saveState, 500); // Salva 500ms após parar de digitar
+    let debounceSave = debounce(saveState, 500);
 
     function saveState(autoSave = true) {
       try {
         localStorage.setItem('fin-state-pro', JSON.stringify(state));
-        
-        // Só mostra notificação em saves manuais ou mudanças significativas
-        if (autoSave && !notaAtiva) {
-          // Não mostra notificação para auto-save durante digitação
-          return;
-        }
+        if (autoSave && !notaAtiva) return;
         
         if (state.stats.lastBackup !== getPeriod()) {
           state.stats.lastBackup = getPeriod();
-          if (!notaAtiva) { // Só notifica se não está digitando
+          if (!notaAtiva) {
             showNotification('Dados salvos automaticamente', 'info');
           }
         }
@@ -1296,45 +2176,177 @@
       }
     }
 
-    // ======= Enhanced Periods =======
+    // ======= Enhanced Periods - Mês atual primeiro =======
     function renderPeriods() {
-      const sel = document.getElementById('periodSelect');
-      const originalValue = sel.value;
+      const currentPeriodText = document.getElementById('currentPeriodText');
+      const periodList = document.getElementById('periodList');
       
-      sel.innerHTML = '';
-      const periods = Object.keys(state.periodos).sort((a, b) => b.localeCompare(a));
-      
+      const periods = Object.keys(state.periodos);
       if (periods.length === 0) {
-        sel.innerHTML = '<option value="">Nenhum período</option>';
+        currentPeriodText.textContent = 'Este mês';
+        periodList.innerHTML = '<div class="period-option disabled">Nenhum período criado</div>';
         return;
       }
       
-      periods.forEach(p => {
-        const [year, month] = p.split('-');
-        const opt = document.createElement('option');
-        opt.value = p;
-        opt.textContent = `${new Date(year, month - 1).toLocaleDateString('pt-BR', { month: 'long' })} ${year}`;
-        sel.appendChild(opt);
+      // Ordena com mês atual primeiro, depois decrescente
+      const sortedPeriods = [currentPeriod, ...periods.filter(p => p !== currentPeriod).sort((a, b) => b.localeCompare(a))];
+      
+      // Atualiza texto do período atual
+      const currentPeriodDate = new Date(currentPeriod + '-01');
+      const currentMonthName = currentPeriodDate.toLocaleDateString('pt-BR', { 
+        month: 'long', 
+        year: 'numeric' 
+      });
+      currentPeriodText.textContent = currentMonthName;
+      
+      // Preenche lista de períodos
+      periodList.innerHTML = '';
+      
+      sortedPeriods.forEach(period => {
+        const periodDate = new Date(period + '-01');
+        const monthName = periodDate.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
+        const isCurrent = period === currentPeriod;
+        
+        const option = document.createElement('div');
+        option.className = `period-option ${isCurrent ? 'current' : ''}`;
+        option.innerHTML = `
+          <i class="fas ${isCurrent ? 'fa-check-circle' : 'fa-calendar-alt'}"></i>
+          ${monthName}
+        `;
+        option.onclick = () => {
+          currentPeriod = period;
+          renderPeriods();
+          renderAll();
+          closePeriodList();
+          showNotification(`Período alterado para ${monthName}`, 'info');
+        };
+        periodList.appendChild(option);
+      });
+    }
+
+    function togglePeriodList() {
+      const list = document.getElementById('periodList');
+      list.classList.toggle('show');
+    }
+
+    function closePeriodList() {
+      document.getElementById('periodList').classList.remove('show');
+    }
+
+    // Fecha lista ao clicar fora
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.period-dropdown')) {
+        closePeriodList();
+      }
+    });
+
+    // ======= Onboarding System =======
+    function initOnboarding() {
+      const welcomeScreen = document.getElementById('welcomeScreen');
+      
+      if (!onboardingCompleted && onboardingStep === 0) {
+        welcomeScreen.style.display = 'block';
+        // Não mostra nenhuma aba durante onboarding
+        document.querySelectorAll('.tab').forEach(tab => tab.style.display = 'none');
+        showWelcomeScreen();
+      } else {
+        welcomeScreen.style.display = 'none';
+        // Mostra dashboard por padrão
+        navigateToTab('dashboard');
+      }
+    }
+
+    function showWelcomeScreen() {
+      document.getElementById('startOnboarding').onclick = () => {
+        nextOnboardingStep(1);
+      };
+      
+      document.getElementById('skipOnboarding').onclick = () => {
+        completeOnboarding();
+      };
+    }
+
+    function nextOnboardingStep(step) {
+      onboardingStep = step;
+      localStorage.setItem('onboarding-step', step);
+      
+      const steps = ['step1', 'step2', 'step3'];
+      steps.forEach((s, i) => {
+        const stepEl = document.getElementById(s);
+        if (i < step - 1) {
+          stepEl.classList.add('completed');
+        }
       });
       
-      if (!originalValue || !periods.includes(originalValue)) {
-        currentPeriod = periods[0];
-      } else {
-        currentPeriod = originalValue;
+      switch(step) {
+        case 1:
+          navigateToTab('renda');
+          showGuidedInput('renda');
+          break;
+        case 2:
+          navigateToTab('despesas');
+          showGuidedInput('despesas');
+          break;
+        case 3:
+          navigateToTab('metas');
+          showGuidedInput('metas');
+          break;
+      }
+    }
+
+    function showGuidedInput(type) {
+      let message, focusElement;
+      
+      switch(type) {
+        case 'renda':
+          message = 'Vamos começar! Adicione sua principal fonte de renda mensal.';
+          focusElement = 'rendaNome';
+          break;
+        case 'despesas':
+          message = 'Ótimo! Agora registre sua maior despesa fixa mensal.';
+          focusElement = 'despNome';
+          break;
+        case 'metas':
+          message = 'Por último, defina um objetivo financeiro para se motivar!';
+          focusElement = 'metaDesc';
+          break;
       }
       
-      sel.value = currentPeriod;
+      showNotification(message, 'info');
+      setTimeout(() => document.getElementById(focusElement)?.focus(), 500);
+    }
+
+    function completeOnboarding() {
+      onboardingCompleted = true;
+      onboardingStep = 0;
+      localStorage.setItem('onboarding-completed', 'true');
+      localStorage.setItem('onboarding-step', '0');
       
-      sel.onchange = (e) => {
-        currentPeriod = e.target.value;
-        showNotification(`Período alterado para ${e.target.selectedOptions[0].text}`, 'info');
-        renderAll();
-      };
+      document.getElementById('welcomeScreen').style.display = 'none';
+      navigateToTab('dashboard');
+      
+      showNotification('Bem-vindo ao seu dashboard! 🎉 Seus dados estão prontos!', 'success');
+    }
+
+    function trackOnboardingProgress(action) {
+      if (!onboardingCompleted) {
+        switch(action) {
+          case 'add-renda':
+            if (onboardingStep === 1) nextOnboardingStep(2);
+            break;
+          case 'add-despesa':
+            if (onboardingStep === 2) nextOnboardingStep(3);
+            break;
+          case 'add-meta':
+            if (onboardingStep === 3) completeOnboarding();
+            break;
+        }
+      }
     }
 
     // ======= Enhanced Renda =======
     document.getElementById('btnAddRenda').onclick = () => {
-      const nome = document.getElementById('rendaNome').value.trim();
+      const nome = document.getElementById('rendaNome').value.trim();    
       const valor = parseN(document.getElementById('rendaValor').value);
       const data = document.getElementById('rendaData').value;
       const meses = parseInt(document.getElementById('rendaRecorrente').value);
@@ -1366,7 +2378,6 @@
       state.periodos[p].rendas.push(renda);
       currentPeriod = p;
 
-      // Create recurring entries
       if (meses > 0) {
         for (let i = 1; i < meses; i++) {
           const futureDate = new Date(d);
@@ -1389,7 +2400,8 @@
       document.getElementById('rendaData').value = '';
       document.getElementById('rendaRecorrente').value = '0';
       
-      showNotification(`Renda "${nome}" adicionada com sucesso!`, 'success');
+      showNotification(`Renda "${nome}" adicionada com sucesso! 💰`, 'success');
+      trackOnboardingProgress('add-renda');
       saveState();
     };
 
@@ -1493,7 +2505,6 @@
       state.periodos[p].despesas.push(despesa);
       currentPeriod = p;
 
-      // Create recurring expenses
       if (meses > 0) {
         for (let i = 1; i < meses; i++) {
           const futureDate = new Date(d);
@@ -1518,6 +2529,7 @@
       document.getElementById('despTipo').value = '';
       
       showNotification(`Despesa "${nome}" registrada`, 'warning');
+      trackOnboardingProgress('add-despesa');
       saveState();
     };
 
@@ -1669,6 +2681,12 @@
       document.getElementById('kpisomadiv').textContent = fmtBRL(totalDespesas + totalCartoes);
       document.getElementById('kpiSobra').textContent = fmtBRL(sobra);
       
+      // Trend indicator
+      const trendText = sobra > 500 ? 'Excelente!' : sobra > 0 ? 'Bom!' : 'Ajustar';
+      const trendIcon = sobra > 500 ? 'fas fa-trophy' : sobra > 0 ? 'fas fa-smile' : 'fas fa-exclamation-triangle';
+      document.getElementById('kpiTrendText').textContent = trendText;
+      document.getElementById('kpiTrend').innerHTML = `<i class="${trendIcon}" style="color: ${sobra > 0 ? 'var(--success)' : 'var(--warn)'}"></i> <span>${trendText}</span>`;
+      
       // Next due date
       const eventos = [
         ...despesas.map(d => ({ data: d.data, nome: d.nome, tipo: 'despesa' })),
@@ -1684,14 +2702,70 @@
       
       document.getElementById('kpiVencimento').textContent = proximo;
       
-      // Economy comparison (simplified)
-      const economia = sobra > 0 ? sobra * 0.1 : 0; // 10% of positive balance
+      // Economy comparison
+      const economia = sobra > 0 ? sobra * 0.1 : 0;
       document.getElementById('kpiEconomia').innerHTML = `
         ${fmtBRL(economia)}
         <span class="text-small" style="display: block; opacity: 0.8;">
           ${sobra >= 0 ? '📈 Positivo' : '📉 Ajustar gastos'}
         </span>
       `;
+      
+      renderRecentes();
+    }
+
+    function renderRecentes() {
+      ensurePeriod(currentPeriod);
+      const rendas = state.periodos[currentPeriod].rendas || [];
+      const despesas = state.periodos[currentPeriod].despesas || [];
+      const cartoes = state.periodos[currentPeriod].cartoes || [];
+      
+      const todas = [
+        ...rendas.map(r => ({ ...r, tipo: 'renda' })),
+        ...despesas.map(d => ({ ...d, tipo: 'despesa' })),
+        ...cartoes.map(c => ({ ...c, tipo: 'cartao', data: c.venc }))
+      ];
+      
+      const recentes = todas
+        .sort((a, b) => new Date(b.data || b.venc) - new Date(a.data || a.venc))
+        .slice(0, 5);
+      
+      const tbody = document.querySelector('#tblRecentes tbody');
+      const emptyState = document.getElementById('emptyRecentes');
+      
+      tbody.innerHTML = '';
+      
+      if (recentes.length === 0) {
+        emptyState.style.display = 'block';
+        return;
+      }
+      
+      emptyState.style.display = 'none';
+      
+      recentes.forEach(item => {
+        const tr = document.createElement('tr');
+        tr.className = 'animate-fade-in';
+        const isRenda = item.tipo === 'renda';
+        const valor = fmtBRL(item.valor);
+        const data = formatDate(item.data || item.venc);
+        
+        tr.innerHTML = `
+          <td>
+            <div class="tag ${isRenda ? 'income' : 'expense'}">
+              <i class="fas fa-${isRenda ? 'arrow-up' : 'arrow-down'}"></i> 
+              ${item.nome}
+            </div>
+          </td>
+          <td>${data}</td>
+          <td class="text-right ${isRenda ? 'text-green-600' : 'text-red-600'}">${valor}</td>
+          <td class="text-right">
+            <button class="btn ghost btn-small danger" onclick="deleteItem('${item.tipo}', ${item.id}, this)" title="Excluir">
+              <i class="fas fa-trash"></i>
+            </button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
     }
 
     // ======= Enhanced Metas =======
@@ -1723,6 +2797,7 @@
       document.getElementById('metaValor').value = '';
       
       showNotification(`Meta "${desc}" criada! 🎯`, 'success');
+      trackOnboardingProgress('add-meta');
       saveState();
     }
 
@@ -1822,8 +2897,7 @@
       }
     }
 
-    // ======= Enhanced Notas (CORRIGIDO) =======
-    // Global state para notas (evita recriação desnecessária)
+    // ======= Enhanced Notas =======
     let notasRenderizadas = new Map();
     let notaAtiva = null;
 
@@ -1836,12 +2910,10 @@
       };
       state.notas.push(nota);
       
-      // Renderiza apenas a nova nota
       renderNovaNota(nota);
-      debounceSave(); // Usa debounce aqui
+      debounceSave();
       showNotification('Nova nota criada! 📝', 'success');
       
-      // Foca na nova nota
       setTimeout(() => {
         const novaTextarea = document.querySelector(`[data-id="${nota.id}"]`);
         if (novaTextarea) {
@@ -1857,13 +2929,11 @@
       const existingCard = document.querySelector(`[data-note-id="${nota.id}"]`);
       
       if (existingCard) {
-        // Atualiza apenas o texto se já existe
         const textarea = existingCard.querySelector('.note-content');
         textarea.value = nota.texto;
         return;
       }
       
-      // Cria novo card apenas se não existir
       const noteCard = document.createElement('div');
       noteCard.className = `note-card ${nota.done ? 'done' : ''}`;
       noteCard.setAttribute('data-note-id', nota.id);
@@ -1879,11 +2949,9 @@
         </div>
       `;
       
-      // Event listeners com debouncing
       const textarea = noteCard.querySelector('.note-content');
       const checkbox = noteCard.querySelector('.note-checkbox');
       
-      // Salva a nota ativa antes de qualquer mudança
       function salvarNotaAtual() {
         if (notaAtiva && notaAtiva !== nota.id) {
           const notaAtual = state.notas.find(n => n.id === notaAtiva);
@@ -1897,43 +2965,37 @@
         }
       }
       
-      // Event listener para input com debounce
       textarea.addEventListener('input', (e) => {
         salvarNotaAtual();
         notaAtiva = nota.id;
         
-        // Atualiza o estado local imediatamente
         const targetNota = state.notas.find(n => n.id == nota.id);
         if (targetNota) {
           targetNota.texto = e.target.value;
           targetNota.updated = new Date().toISOString();
         }
         
-        // Salva com debounce
         debounceSave();
       });
       
-      // Event listener para focus
       textarea.addEventListener('focus', () => {
         salvarNotaAtual();
         notaAtiva = nota.id;
         notasRenderizadas.set(nota.id, noteCard);
       });
       
-      // Event listener para blur (salva imediatamente ao sair do foco)
       textarea.addEventListener('blur', () => {
         if (notaAtiva === nota.id) {
           const targetNota = state.notas.find(n => n.id == nota.id);
           if (targetNota) {
             targetNota.texto = textarea.value;
             targetNota.updated = new Date().toISOString();
-            saveState(); // Salva imediatamente ao sair do foco
+            saveState();
             notaAtiva = null;
           }
         }
       });
       
-      // Event listener para checkbox
       checkbox.addEventListener('change', (e) => {
         const targetNota = state.notas.find(n => n.id == nota.id);
         if (targetNota) {
@@ -1945,11 +3007,9 @@
         }
       });
       
-      // Adiciona ao grid
       grid.appendChild(noteCard);
       notasRenderizadas.set(nota.id, noteCard);
       
-      // Se é a primeira nota, mostra ela
       if (state.notas.length === 1) {
         setTimeout(() => textarea.focus(), 100);
       }
@@ -1959,7 +3019,6 @@
       const grid = document.getElementById('notesGrid');
       const emptyState = document.getElementById('emptyNotes');
       
-      // Limpa apenas se necessário
       if (grid.children.length === 0 || state.notas.length === 0) {
         grid.innerHTML = '';
         notasRenderizadas.clear();
@@ -1972,22 +3031,18 @@
       
       emptyState.style.display = 'none';
       
-      // Renderiza apenas notas que não estão no DOM
       state.notas.forEach(nota => {
         if (!notasRenderizadas.has(nota.id)) {
           renderNovaNota(nota);
         } else {
-          // Atualiza apenas o estado visual se necessário
           const existingCard = notasRenderizadas.get(nota.id);
           const textarea = existingCard.querySelector('.note-content');
           const checkbox = existingCard.querySelector('.note-checkbox');
           
-          // Atualiza texto se mudou
           if (textarea.value !== nota.texto) {
             textarea.value = nota.texto;
           }
           
-          // Atualiza checkbox se mudou
           if (checkbox.checked !== nota.done) {
             checkbox.checked = nota.done;
             existingCard.classList.toggle('done', nota.done);
@@ -1995,7 +3050,6 @@
         }
       });
       
-      // Remove cards órfãos (notas que foram deletadas)
       Array.from(grid.children).forEach(child => {
         if (!state.notas.some(nota => nota.id == child.getAttribute('data-note-id'))) {
           child.remove();
@@ -2010,7 +3064,6 @@
         nota.done = checkbox.checked;
         nota.updated = new Date().toISOString();
         
-        // Atualiza apenas o card específico
         const card = notasRenderizadas.get(id);
         if (card) {
           card.classList.toggle('done', nota.done);
@@ -2029,10 +3082,8 @@
         return;
       }
       
-      // Remove do estado
       state.notas = state.notas.filter(n => n.id !== id);
       
-      // Remove do DOM suavemente
       const card = notasRenderizadas.get(id);
       if (card) {
         card.style.transition = 'all 0.3s ease';
@@ -2047,7 +3098,6 @@
       saveState();
       showNotification('Nota excluída', 'warning');
       
-      // Se era a nota ativa, limpa o estado
       if (notaAtiva === id) {
         notaAtiva = null;
       }
@@ -2105,7 +3155,7 @@
       
       // Monthly history
       const relHist = document.getElementById('relatorioHistorico');
-      const periods = Object.keys(state.periodos).sort().slice(-6); // Last 6 months
+      const periods = Object.keys(state.periodos).sort().slice(-6);
       
       let histHTML = '<div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem;">';
       periods.forEach(p => {
@@ -2171,62 +3221,108 @@
       if (confirm('⚠️ ATENÇÃO: Isso apagará TODOS os seus dados! Deseja continuar?')) {
         if (confirm('TEM CERTEZA? Esta ação não pode ser desfeita.')) {
           localStorage.removeItem('fin-state-pro');
+          localStorage.removeItem('onboarding-completed');
+          localStorage.removeItem('onboarding-step');
           location.reload();
         }
       }
     };
 
-    // ======= Enhanced Tabs =======
-    const tabConfig = [
-      { id: 'dashboard', label: 'Dashboard', icon: 'fas fa-chart-line' },
-      { id: 'renda', label: 'Renda', icon: 'fas fa-arrow-up' },
-      { id: 'despesas', label: 'Despesas', icon: 'fas fa-arrow-down' },
-      { id: 'cartoes', label: 'Cartões', icon: 'fas fa-credit-card' },
-      { id: 'metas', label: 'Metas', icon: 'fas fa-bullseye' },
-      { id: 'listas', label: 'Post-its', icon: 'fas fa-sticky-note' },
-      { id: 'relatorios', label: 'Config', icon: 'fas fa-cog' }
-    ];
-
-    function renderTabs() {
-      const nav = document.getElementById('tabs');
-      nav.innerHTML = '';
-      
-      tabConfig.forEach((tab, index) => {
-        const btn = document.createElement('button');
-        btn.className = 'nav-tab';
-        btn.innerHTML = `<i class="${tab.icon}"></i> ${tab.label}`;
-        
-        if (index === 0) {
-          btn.classList.add('active');
-        }
-        
-        btn.onclick = () => {
-          // Hide all tabs
-          document.querySelectorAll('.tab').forEach(t => t.hidden = true);
-          
-          // Show selected tab
-          document.getElementById(`tab-${tab.id}`).hidden = false;
-          
-          // Update active state
-          document.querySelectorAll('.nav-tab').forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
-          
-          // Render specific tab content
-          if (tab.id === 'relatorios') {
-            renderRelatorios();
-          } else if (tab.id === 'dashboard') {
-            renderDashboard();
-          }
-          
-          showNotification(`Navegando para ${tab.label}`, 'info');
-        };
-        
-        nav.appendChild(btn);
+    // ======= Navigation System - Todas as abas controladas =======
+    window.navigateToTab = function(tabId) {
+      // Esconde todas as abas
+      document.querySelectorAll('.tab').forEach(t => {
+        t.classList.remove('active');
+        t.style.display = 'none';
       });
       
-      // Show first tab
-      document.getElementById('tab-dashboard').hidden = false;
-      renderDashboard();
+      // Remove active de todos os itens de navegação
+      document.querySelectorAll('.nav-item').forEach(item => {
+        item.classList.remove('active');
+      });
+      
+      // Mostra aba selecionada
+      const targetTab = document.getElementById(`tab-${tabId}`);
+      if (targetTab) {
+        targetTab.style.display = 'block';
+        targetTab.classList.add('active');
+      }
+      
+      // Marca item de navegação ativo
+      const activeItem = document.querySelector(`[data-tab="${tabId}"]`);
+      if (activeItem) {
+        activeItem.classList.add('active');
+      }
+      
+      // Fecha menu lateral
+      closeSideNav();
+      
+      // Renderiza conteúdo específico da aba
+      switch(tabId) {
+        case 'dashboard':
+          renderDashboard();
+          break;
+        case 'renda':
+          renderRenda();
+          break;
+        case 'despesas':
+          renderDesp();
+          renderTipos();
+          break;
+        case 'cartoes':
+          renderCC();
+          break;
+        case 'metas':
+          renderMetas();
+          break;
+        case 'listas':
+          renderNotas();
+          break;
+        case 'relatorios':
+          renderRelatorios();
+          break;
+      }
+      
+      showNotification(`Carregando ${tabId}`, 'info');
+    };
+
+    function initNavigation() {
+      // Side nav toggle
+      document.getElementById('navToggle').onclick = () => {
+        toggleSideNav();
+      };
+      
+      document.getElementById('navOverlay').onclick = () => {
+        closeSideNav();
+      };
+      
+      // Nav items
+      document.querySelectorAll('.nav-item').forEach(item => {
+        item.onclick = (e) => {
+          e.preventDefault();
+          const tabId = item.getAttribute('data-tab');
+          navigateToTab(tabId);
+        };
+      });
+    }
+
+    function toggleSideNav() {
+      const sideNav = document.getElementById('sideNav');
+      const overlay = document.getElementById('navOverlay');
+      
+      sideNav.classList.toggle('open');
+      overlay.classList.toggle('show');
+      
+      document.body.style.overflow = sideNav.classList.contains('open') ? 'hidden' : '';
+    }
+
+    function closeSideNav() {
+      const sideNav = document.getElementById('sideNav');
+      const overlay = document.getElementById('navOverlay');
+      
+      sideNav.classList.remove('open');
+      overlay.classList.remove('show');
+      document.body.style.overflow = '';
     }
 
     // ======= Theme Management =======
@@ -2275,35 +3371,38 @@
       
       // Initialize
       ensurePeriod(currentPeriod);
-      renderTabs();
+      initNavigation();
       applyTheme();
+      initOnboarding();
       renderAll();
       
       // Auto-save every 30 seconds
       setInterval(() => saveState(true), 30000);
       
-      // Welcome message
-      if (!state.stats.firstUse) {
+      // Welcome message for returning users
+      if (onboardingCompleted && !state.stats.firstUse) {
         setTimeout(() => {
-          showNotification('Bem-vindo ao Meu Financeiro Pro! 🚀', 'success');
+          showNotification('Bem-vindo de volta! 📊 Seus dados estão atualizados.', 'success');
         }, 1500);
       }
 
-      // Inicializa notas se existirem
+      // Initialize notes
       if (state.notas && state.notas.length > 0) {
-        // Pequeno delay para garantir que o DOM está pronto
         setTimeout(() => {
           state.notas.forEach(nota => renderNovaNota(nota));
         }, 100);
       }
     });
 
-    // Global functions for onclick handlers
+    // Global functions
     window.deleteItem = window.deleteItem || function() {};
-    window.deleteMeta = window.deleteMeta || function() {};
-    window.updateMeta = window.updateMeta || function() {};
+    window.deleteMeta = deleteMeta;
+    window.updateMeta = updateMeta;
     window.deleteNote = deleteNote;
     window.toggleNote = toggleNote;
+    window.navigateToTab = navigateToTab;
+    window.togglePeriodList = togglePeriodList;
+    window.closePeriodList = closePeriodList;
 
     // PWA Service Worker
     if ('serviceWorker' in navigator) {
@@ -2315,5 +3414,4 @@
     }
   </script>
 </body>
-
 </html>
