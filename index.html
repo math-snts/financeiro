@@ -7,6 +7,7 @@
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#0f172a">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/geo-tz@8.1.4/dist/index.js"></script>
   <style>
     :root {
       --bg: #0f172a;
@@ -722,9 +723,6 @@
       transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    /* O botão .help-trigger fica dentro do label; o .help-popup é irmão do label.
-        Mostrar popup quando o label é hover ou possui foco interno (acessibilidade),
-        ou quando a classe .show for aplicada via JS (útil em touch). */
     label:hover + .help-popup,
     label:focus-within + .help-popup,
     .help-popup.show {
@@ -1233,6 +1231,16 @@
       gap: 1.5rem;
     }
 
+    /* Classes CSS Corrigidas */
+    .bg-red-50 { background: rgba(239, 68, 68, 0.1); }
+    .text-red-600 { color: #dc2626; }
+    .text-success { color: var(--success); }
+    .text-danger { color: var(--danger); }
+    .text-center { text-align: center; }
+    .animate-fade-in {
+      animation: fadeInUp 0.6s ease forwards;
+    }
+
     /* Scrollbar */
     ::-webkit-scrollbar {
       width: 6px;
@@ -1511,7 +1519,7 @@
           <div class="text-muted text-small">Total de entradas</div>
           <div class="kpi-trend">
             <i class="fas fa-arrow-up"></i>
-            <span>+12% vs mês anterior</span>
+            
           </div>
         </div>
         <div class="kpi-card expenses">
@@ -1520,7 +1528,6 @@
           <div class="text-muted text-small">Despesas + cartões</div>
           <div class="kpi-trend">
             <i class="fas fa-arrow-down"></i>
-            <span>Alerta: próximo vencimento</span>
           </div>
         </div>
         <div class="kpi-card leftover">
@@ -1535,16 +1542,11 @@
       </div>
       
       <!-- Informações Rápidas -->
-      <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+      <div class="grid" style="grid-template-columns: 1fr;">
         <div class="card">
           <h3><i class="fas fa-calendar-alt"></i> Próximo Vencimento</h3>
           <div id="kpiVencimento" class="text-muted font-bold" style="font-size: 1.1rem;">—</div>
           <p class="text-small text-muted">Fique de olho nas datas importantes</p>
-        </div>
-        <div class="card">
-          <h3><i class="fas fa-trending-up"></i> Economia do Mês</h3>
-          <div id="kpiEconomia" class="text-muted font-bold" style="font-size: 1.1rem;">R$ 0,00</div>
-          <p class="text-small text-muted">Comparado ao mês anterior</p>
         </div>
       </div>
 
@@ -1565,33 +1567,6 @@
         <div class="quick-action" data-tab="metas" onclick="navigateToTab('metas')">
           <i class="fas fa-bullseye"></i>
           <div class="quick-action-label">Nova Meta</div>
-        </div>
-      </div>
-
-      <!-- Resumo das Transações Recentes -->
-      <div class="card">
-        <h2><i class="fas fa-list"></i> Transações Recentes</h2>
-        <div class="table-container">
-          <table id="tblRecentes">
-            <thead>
-              <tr>
-                <th><i class="fas fa-tag"></i> Descrição</th>
-                <th><i class="fas fa-calendar"></i> Data</th>
-                <th class="text-right"><i class="fas fa-money-bill-wave"></i> Valor</th>
-                <th class="text-right"><i class="fas fa-cog"></i></th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </div>
-        
-        <div id="emptyRecentes" class="empty-state" style="display: none;">
-          <i class="fas fa-inbox"></i>
-          <h3>Nenhuma transação ainda</h3>
-          <p>Use os botões rápidos acima para começar!</p>
-          <button class="empty-action" onclick="navigateToTab('renda')">
-            <i class="fas fa-plus"></i> Primeira Renda
-          </button>
         </div>
       </div>
     </section>
@@ -2067,13 +2042,24 @@
       return isNaN(num) ? 0 : num;
     };
 
-    const today = () => new Date();
-    const getPeriod = (d) => {
-      const date = new Date(d || today());
-      return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+    function parseLocalDate(dateStr) {
+      const [year, month, day] = dateStr.split('-').map(Number);
+      return new Date(year, month - 1, day);
+    }
+
+    const todayStr = () => {
+      const d = new Date();
+      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
     };
 
-    const formatDate = (date) => new Date(date).toLocaleDateString('pt-BR');
+    const today = () => parseLocalDate(todayStr());
+
+    const getPeriod = (dateStr) => {
+      const d = parseLocalDate(dateStr);
+      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+    };
+
+    const formatDate = (dateStr) => parseLocalDate(dateStr).toLocaleDateString('pt-BR');
 
     const showNotification = (message, type = 'success') => {
       const notification = document.createElement('div');
@@ -2096,7 +2082,6 @@
         error: '#ef4444',
         warning: '#f59e0b',
         info: '#3b82f6'
-     
       };
       
       notification.style.background = colors[type];
@@ -2115,10 +2100,12 @@
 
     // ======= Enhanced State Management =======
     let state = JSON.parse(localStorage.getItem('fin-state-pro') || '{}');
-    let currentPeriod = getPeriod();
+    let currentPeriod = getPeriod(todayStr());
     let onboardingStep = parseInt(localStorage.getItem('onboarding-step') || '0');
     let onboardingCompleted = localStorage.getItem('onboarding-completed') === 'true';
-    
+    let notaAtiva = null; // 🔥 VARIÁVEL CRÍTICA ADICIONADA
+    let notasRenderizadas = new Map();
+
     // Initialize state with better defaults
     if (!state.periodos) {
       state = {
@@ -2163,8 +2150,8 @@
         localStorage.setItem('fin-state-pro', JSON.stringify(state));
         if (autoSave && !notaAtiva) return;
         
-        if (state.stats.lastBackup !== getPeriod()) {
-          state.stats.lastBackup = getPeriod();
+        if (state.stats.lastBackup !== getPeriod(todayStr())) {
+          state.stats.lastBackup = getPeriod(todayStr());
           if (!notaAtiva) {
             showNotification('Dados salvos automaticamente', 'info');
           }
@@ -2192,7 +2179,8 @@
       const sortedPeriods = [currentPeriod, ...periods.filter(p => p !== currentPeriod).sort((a, b) => b.localeCompare(a))];
       
       // Atualiza texto do período atual
-      const currentPeriodDate = new Date(currentPeriod + '-01');
+      const [year, month] = currentPeriod.split('-');
+      const currentPeriodDate = new Date(parseInt(year), parseInt(month) - 1, 1);
       const currentMonthName = currentPeriodDate.toLocaleDateString('pt-BR', { 
         month: 'long', 
         year: 'numeric' 
@@ -2203,24 +2191,28 @@
       periodList.innerHTML = '';
       
       sortedPeriods.forEach(period => {
-        const periodDate = new Date(period + '-01');
-        const monthName = periodDate.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
-        const isCurrent = period === currentPeriod;
-        
-        const option = document.createElement('div');
-        option.className = `period-option ${isCurrent ? 'current' : ''}`;
-        option.innerHTML = `
-          <i class="fas ${isCurrent ? 'fa-check-circle' : 'fa-calendar-alt'}"></i>
-          ${monthName}
-        `;
-        option.onclick = () => {
-          currentPeriod = period;
-          renderPeriods();
-          renderAll();
-          closePeriodList();
-          showNotification(`Período alterado para ${monthName}`, 'info');
-        };
-        periodList.appendChild(option);
+        const periodData = state.periodos[period];
+        if (periodData && (periodData.rendas.length > 0 || periodData.despesas.length > 0 || periodData.cartoes.length > 0) || period === currentPeriod) {
+          const [year, month] = period.split('-');
+          const periodDate = new Date(parseInt(year), parseInt(month) - 1, 1);
+          const monthName = periodDate.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
+          const isCurrent = period === currentPeriod;
+          
+          const option = document.createElement('div');
+          option.className = `period-option ${isCurrent ? 'current' : ''}`;
+          option.innerHTML = `
+            <i class="fas ${isCurrent ? 'fa-check-circle' : 'fa-calendar-alt'}"></i>
+            ${monthName}
+          `;
+          option.onclick = () => {
+            currentPeriod = period;
+            renderPeriods();
+            renderAll();
+            closePeriodList();
+            showNotification(`Período alterado para ${monthName}`, 'info');
+          };
+          periodList.appendChild(option);
+        }
       });
     }
 
@@ -2344,7 +2336,7 @@
       }
     }
 
-    // ======= Enhanced Renda =======
+    // ======= Enhanced Renda - CORRIGIDO RECORRÊNCIA =======
     document.getElementById('btnAddRenda').onclick = () => {
       const nome = document.getElementById('rendaNome').value.trim();    
       const valor = parseN(document.getElementById('rendaValor').value);
@@ -2361,15 +2353,14 @@
         return;
       }
 
-      const d = new Date(data);
-      const p = getPeriod(d);
+      const p = getPeriod(data);
       ensurePeriod(p);
       
       const renda = {
         id: Date.now() + Math.random(),
         nome,
         valor,
-        data: d.toISOString(),
+        data: data,
         recorrente: meses > 0,
         categoria: 'Renda',
         tags: ['confirmado']
@@ -2378,17 +2369,20 @@
       state.periodos[p].rendas.push(renda);
       currentPeriod = p;
 
+      // CORREÇÃO: Criar rendas para os meses seguintes corretamente
       if (meses > 0) {
-        for (let i = 1; i < meses; i++) {
-          const futureDate = new Date(d);
-          futureDate.setMonth(futureDate.getMonth() + i);
-          const futurePeriod = getPeriod(futureDate);
+        let futureD = parseLocalDate(data);
+        for (let i = 1; i <= meses; i++) {
+          const newDate = new Date(futureD);
+          newDate.setMonth(futureD.getMonth() + i);
+          const futureData = `${newDate.getFullYear()}-${String(newDate.getMonth() + 1).padStart(2, '0')}-${String(newDate.getDate()).padStart(2, '0')}`;
+          const futurePeriod = getPeriod(futureData);
           ensurePeriod(futurePeriod);
           
           state.periodos[futurePeriod].rendas.push({
             ...renda,
             id: Date.now() + Math.random() + i,
-            data: futureDate.toISOString()
+            data: futureData
           });
         }
         showNotification(`Renda recorrente criada por ${meses} meses!`, 'success');
@@ -2397,7 +2391,7 @@
       // Clear form
       document.getElementById('rendaNome').value = '';
       document.getElementById('rendaValor').value = '';
-      document.getElementById('rendaData').value = '';
+      document.getElementById('rendaData').value = todayStr();
       document.getElementById('rendaRecorrente').value = '0';
       
       showNotification(`Renda "${nome}" adicionada com sucesso! 💰`, 'success');
@@ -2421,7 +2415,7 @@
       emptyState.style.display = 'none';
       
       rendas
-        .sort((a, b) => new Date(a.data) - new Date(b.data))
+        .sort((a, b) => a.data.localeCompare(b.data))
         .forEach(renda => {
           const tr = document.createElement('tr');
           tr.className = 'animate-fade-in';
@@ -2469,7 +2463,7 @@
       }
     };
 
-    // ======= Enhanced Despesas =======
+    // ======= Enhanced Despesas - CORRIGIDO RECORRÊNCIA =======
     document.getElementById('btnAddDesp').onclick = () => {
       const nome = document.getElementById('despNome').value.trim();
       const valor = parseN(document.getElementById('despValor').value);
@@ -2487,15 +2481,14 @@
         return;
       }
 
-      const d = new Date(data);
-      const p = getPeriod(d);
+      const p = getPeriod(data);
       ensurePeriod(p);
       
       const despesa = {
         id: Date.now() + Math.random(),
         nome,
         valor,
-        data: d.toISOString(),
+        data: data,
         tipo,
         recorrente: meses > 0,
         tags: ['pendente'],
@@ -2505,17 +2498,20 @@
       state.periodos[p].despesas.push(despesa);
       currentPeriod = p;
 
+      // CORREÇÃO: Criar despesas para os meses seguintes corretamente
       if (meses > 0) {
-        for (let i = 1; i < meses; i++) {
-          const futureDate = new Date(d);
-          futureDate.setMonth(futureDate.getMonth() + i);
-          const futurePeriod = getPeriod(futureDate);
+        let futureD = parseLocalDate(data);
+        for (let i = 1; i <= meses; i++) {
+          const newDate = new Date(futureD);
+          newDate.setMonth(futureD.getMonth() + i);
+          const futureData = `${newDate.getFullYear()}-${String(newDate.getMonth() + 1).padStart(2, '0')}-${String(newDate.getDate()).padStart(2, '0')}`;
+          const futurePeriod = getPeriod(futureData);
           ensurePeriod(futurePeriod);
           
           state.periodos[futurePeriod].despesas.push({
             ...despesa,
             id: Date.now() + Math.random() + i,
-            data: futureDate.toISOString()
+            data: futureData
           });
         }
         showNotification(`Despesa recorrente criada por ${meses} meses!`, 'warning');
@@ -2524,7 +2520,7 @@
       // Clear form
       document.getElementById('despNome').value = '';
       document.getElementById('despValor').value = '';
-      document.getElementById('despData').value = '';
+      document.getElementById('despData').value = todayStr();
       document.getElementById('despRecorrente').value = '0';
       document.getElementById('despTipo').value = '';
       
@@ -2549,9 +2545,9 @@
       emptyState.style.display = 'none';
       
       despesas
-        .sort((a, b) => new Date(a.data) - new Date(b.data))
+        .sort((a, b) => a.data.localeCompare(b.data))
         .forEach(d => {
-          const isOverdue = new Date(d.data) < today();
+          const isOverdue = d.data < todayStr();
           const tr = document.createElement('tr');
           tr.className = isOverdue ? 'bg-red-50' : 'animate-fade-in';
           tr.innerHTML = `
@@ -2594,15 +2590,14 @@
         return;
       }
 
-      const d = new Date(venc);
-      const p = getPeriod(d);
+      const p = getPeriod(venc);
       ensurePeriod(p);
       
       const cartao = {
         id: Date.now() + Math.random(),
         nome,
         valor,
-        venc: d.toISOString(),
+        venc: venc,
         tags: ['pendente'],
         created: new Date().toISOString()
       };
@@ -2613,7 +2608,7 @@
       // Clear form
       document.getElementById('ccNome').value = '';
       document.getElementById('ccValor').value = '';
-      document.getElementById('ccVenc').value = '';
+      document.getElementById('ccVenc').value = todayStr();
       
       showNotification(`Gasto no cartão "${nome}" registrado`, 'warning');
       saveState();
@@ -2635,9 +2630,9 @@
       emptyState.style.display = 'none';
       
       cartoes
-        .sort((a, b) => new Date(a.venc) - new Date(b.venc))
+        .sort((a, b) => a.venc.localeCompare(b.venc))
         .forEach(c => {
-          const isOverdue = new Date(c.venc) < today();
+          const isOverdue = c.venc < todayStr();
           const tr = document.createElement('tr');
           tr.className = isOverdue ? 'bg-red-50' : 'animate-fade-in';
           tr.innerHTML = `
@@ -2663,7 +2658,7 @@
         });
     }
 
-    // ======= Enhanced Dashboard =======
+    // ======= Enhanced Dashboard - CORRIGIDO PRÓXIMOS VENCIMENTOS =======
     function renderDashboard() {
       ensurePeriod(currentPeriod);
       const rendas = state.periodos[currentPeriod].rendas || [];
@@ -2682,90 +2677,52 @@
       document.getElementById('kpiSobra').textContent = fmtBRL(sobra);
       
       // Trend indicator
-      const trendText = sobra > 500 ? 'Excelente!' : sobra > 0 ? 'Bom!' : 'Ajustar';
+      const trendText = sobra > 500 ? 'Excelente!' : sobra > 0 ? 'Bom!' : '';
       const trendIcon = sobra > 500 ? 'fas fa-trophy' : sobra > 0 ? 'fas fa-smile' : 'fas fa-exclamation-triangle';
       document.getElementById('kpiTrendText').textContent = trendText;
       document.getElementById('kpiTrend').innerHTML = `<i class="${trendIcon}" style="color: ${sobra > 0 ? 'var(--success)' : 'var(--warn)'}"></i> <span>${trendText}</span>`;
       
-      // Next due date
-      const eventos = [
-        ...despesas.map(d => ({ data: d.data, nome: d.nome, tipo: 'despesa' })),
-        ...cartoes.map(c => ({ data: c.venc, nome: c.nome, tipo: 'cartao' }))
-      ];
+      // CORREÇÃO: Próximo vencimento - buscar em todos os períodos futuros
+      const eventos = [];
       
-      const futuros = eventos.filter(e => new Date(e.data) >= today());
-      futuros.sort((a, b) => new Date(a.data) - new Date(b.data));
+      // Buscar em todos os períodos a partir do atual
+      const periodosFuturos = Object.keys(state.periodos)
+        .filter(p => p >= currentPeriod)
+        .sort();
+      
+      periodosFuturos.forEach(p => {
+        const periodData = state.periodos[p];
+        
+        // Adicionar despesas
+        (periodData.despesas || []).forEach(d => {
+          eventos.push({ 
+            data: d.data, 
+            nome: d.nome, 
+            tipo: 'despesa',
+            periodo: p
+          });
+        });
+        
+        // Adicionar cartões
+        (periodData.cartoes || []).forEach(c => {
+          eventos.push({ 
+            data: c.venc, 
+            nome: c.nome, 
+            tipo: 'cartao',
+            periodo: p
+          });
+        });
+      });
+      
+      // Filtrar apenas eventos futuros e ordenar
+      const futuros = eventos.filter(e => e.data >= todayStr());
+      futuros.sort((a, b) => a.data.localeCompare(b.data));
       
       const proximo = futuros.length > 0 
-        ? `${formatDate(futuros[0].data)} - ${futuros[0].nome}`
-        : 'Nenhum vencimento';
+        ? `${formatDate(futuros[0].data)} - ${futuros[0].nome} (${futuros[0].tipo})`
+        : 'Nenhum vencimento futuro';
       
       document.getElementById('kpiVencimento').textContent = proximo;
-      
-      // Economy comparison
-      const economia = sobra > 0 ? sobra * 0.1 : 0;
-      document.getElementById('kpiEconomia').innerHTML = `
-        ${fmtBRL(economia)}
-        <span class="text-small" style="display: block; opacity: 0.8;">
-          ${sobra >= 0 ? '📈 Positivo' : '📉 Ajustar gastos'}
-        </span>
-      `;
-      
-      renderRecentes();
-    }
-
-    function renderRecentes() {
-      ensurePeriod(currentPeriod);
-      const rendas = state.periodos[currentPeriod].rendas || [];
-      const despesas = state.periodos[currentPeriod].despesas || [];
-      const cartoes = state.periodos[currentPeriod].cartoes || [];
-      
-      const todas = [
-        ...rendas.map(r => ({ ...r, tipo: 'renda' })),
-        ...despesas.map(d => ({ ...d, tipo: 'despesa' })),
-        ...cartoes.map(c => ({ ...c, tipo: 'cartao', data: c.venc }))
-      ];
-      
-      const recentes = todas
-        .sort((a, b) => new Date(b.data || b.venc) - new Date(a.data || a.venc))
-        .slice(0, 5);
-      
-      const tbody = document.querySelector('#tblRecentes tbody');
-      const emptyState = document.getElementById('emptyRecentes');
-      
-      tbody.innerHTML = '';
-      
-      if (recentes.length === 0) {
-        emptyState.style.display = 'block';
-        return;
-      }
-      
-      emptyState.style.display = 'none';
-      
-      recentes.forEach(item => {
-        const tr = document.createElement('tr');
-        tr.className = 'animate-fade-in';
-        const isRenda = item.tipo === 'renda';
-        const valor = fmtBRL(item.valor);
-        const data = formatDate(item.data || item.venc);
-        
-        tr.innerHTML = `
-          <td>
-            <div class="tag ${isRenda ? 'income' : 'expense'}">
-              <i class="fas fa-${isRenda ? 'arrow-up' : 'arrow-down'}"></i> 
-              ${item.nome}
-            </div>
-          </td>
-          <td>${data}</td>
-          <td class="text-right ${isRenda ? 'text-green-600' : 'text-red-600'}">${valor}</td>
-          <td class="text-right">
-            <button class="btn ghost btn-small danger" onclick="deleteItem('${item.tipo}', ${item.id}, this)" title="Excluir">
-              <i class="fas fa-trash"></i>
-            </button>
-          </td>
-        `;
-        tbody.appendChild(tr);
-      });
     }
 
     // ======= Enhanced Metas =======
@@ -2897,10 +2854,7 @@
       }
     }
 
-    // ======= Enhanced Notas =======
-    let notasRenderizadas = new Map();
-    let notaAtiva = null;
-
+    // ======= Enhanced Notas - CÓDIGO CORRIGIDO =======
     function novaNota() {
       const nota = {
         id: Date.now() + Math.random(),
@@ -3019,12 +2973,9 @@
       const grid = document.getElementById('notesGrid');
       const emptyState = document.getElementById('emptyNotes');
       
-      if (grid.children.length === 0 || state.notas.length === 0) {
+      if (state.notas.length === 0) {
         grid.innerHTML = '';
         notasRenderizadas.clear();
-      }
-      
-      if (state.notas.length === 0) {
         emptyState.style.display = 'block';
         return;
       }
@@ -3050,10 +3001,12 @@
         }
       });
       
+      // Remove notas que não existem mais
       Array.from(grid.children).forEach(child => {
-        if (!state.notas.some(nota => nota.id == child.getAttribute('data-note-id'))) {
+        const noteId = parseFloat(child.getAttribute('data-note-id'));
+        if (!state.notas.some(nota => nota.id === noteId)) {
           child.remove();
-          notasRenderizadas.delete(parseFloat(child.getAttribute('data-note-id')));
+          notasRenderizadas.delete(noteId);
         }
       });
     }
@@ -3185,7 +3138,7 @@
       const url = URL.createObjectURL(dataBlob);
       const link = document.createElement('a');
       link.href = url;
-      link.download = `financeiro-${getPeriod()}.json`;
+      link.download = `financeiro-${getPeriod(todayStr())}.json`;
       link.click();
       URL.revokeObjectURL(url);
       showNotification('Dados exportados com sucesso!', 'success');
@@ -3333,12 +3286,12 @@
       const icon = document.getElementById('themeIcon');
       
       document.body.classList.toggle('light', isLight);
-      toggle.checked = !isLight;
+      toggle.checked = isLight;
       icon.className = isLight ? 'fas fa-moon' : 'fas fa-sun';
     }
 
     document.getElementById('themeToggle').onchange = (e) => {
-      const isLight = !e.target.checked;
+      const isLight = e.target.checked;
       localStorage.setItem('theme', isLight ? 'light' : 'dark');
       applyTheme();
       showNotification(isLight ? 'Tema claro ativado' : 'Tema escuro ativado', 'info');
@@ -3364,7 +3317,7 @@
       }, 1000);
       
       // Set default dates
-      const todayDate = today().toISOString().split('T')[0];
+      const todayDate = todayStr();
       document.getElementById('rendaData').value = todayDate;
       document.getElementById('despData').value = todayDate;
       document.getElementById('ccVenc').value = todayDate;
@@ -3389,7 +3342,7 @@
       // Initialize notes
       if (state.notas && state.notas.length > 0) {
         setTimeout(() => {
-          state.notas.forEach(nota => renderNovaNota(nota));
+          renderNotas();
         }, 100);
       }
     });
