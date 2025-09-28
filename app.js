@@ -365,7 +365,7 @@ document.getElementById('btnAddRenda').onclick = () => {
 
     showNotification(`Renda "${nome}" adicionada com sucesso! 💰`, 'success');
     trackOnboardingProgress('add-renda');
-    saveState();
+    saveState(false);
 };
 
 function renderRenda() {
@@ -424,7 +424,7 @@ document.getElementById('btnAddTipo').onclick = () => {
     if (novoTipo && !state.tipos.includes(novoTipo)) {
         state.tipos.push(novoTipo);
         document.getElementById('novoTipo').value = '';
-        saveState();
+        saveState(false);
         showNotification(`Categoria "${novoTipo}" adicionada`, 'success');
         renderTipos();
     } else if (novoTipo) {
@@ -495,7 +495,7 @@ document.getElementById('btnAddDesp').onclick = () => {
 
     showNotification(`Despesa "${nome}" registrada`, 'warning');
     trackOnboardingProgress('add-despesa');
-    saveState();
+    saveState(false);
 };
 
 function renderDesp() {
@@ -580,7 +580,7 @@ document.getElementById('btnAddCC').onclick = () => {
     document.getElementById('ccVenc').value = todayStr();
 
     showNotification(`Gasto no cartão "${nome}" registrado`, 'warning');
-    saveState();
+    saveState(false);
 };
 
 function renderCC() {
@@ -724,7 +724,7 @@ function addMeta() {
 
     showNotification(`Meta "${desc}" criada! 🎯`, 'success');
     trackOnboardingProgress('add-meta');
-    saveState();
+    saveState(false);
 }
 
 document.getElementById('btnAddMeta').onclick = addMeta;
@@ -811,14 +811,14 @@ function updateMeta(id, isAdd, button) {
     }
 
     input.value = '';
-    saveState();
+    saveState(false);
 }
 
 function deleteMeta(id) {
     const meta = state.metas.find(m => m.id === id);
     if (confirm(`Deseja realmente excluir a meta "${meta.desc}"?`)) {
         state.metas = state.metas.filter(m => m.id !== id);
-        saveState();
+        saveState(false);
         showNotification('Meta excluída', 'warning');
     }
 }
@@ -1017,7 +1017,7 @@ function deleteNote(id) {
         }, 300);
     }
 
-    saveState();
+    saveState(false);
     showNotification('Nota excluída', 'warning');
 
     if (notaAtiva === id) {
@@ -1036,7 +1036,7 @@ window.deleteItem = function (type, id, button) {
         const itemsKey = type === 'cartao' ? 'cartoes' : type + 's';
         const items = state.periodos[currentPeriod][itemsKey];
         state.periodos[currentPeriod][itemsKey] = items.filter(item => item.id !== id);
-        saveState();
+        saveState(false);
         showNotification('Item excluído', 'warning');
         button.closest('tr').style.opacity = '0';
         setTimeout(() => button.closest('tr').remove(), 300);
@@ -1128,7 +1128,7 @@ document.getElementById('fileImport').onchange = (e) => {
             const importedState = JSON.parse(e.target.result);
             if (confirm('Deseja importar estes dados? Isso substituirá os dados atuais.')) {
                 state = { ...state, ...importedState };
-                saveState();
+                saveState(false);
                 showNotification('Dados importados com sucesso!', 'success');
                 renderAll();
             }
