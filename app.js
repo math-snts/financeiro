@@ -30,43 +30,6 @@ const getPeriod = (dateStr) => {
 
 const formatDate = (dateStr) => parseLocalDate(dateStr).toLocaleDateString('pt-BR');
 
-const showNotification = (message, type = 'success') => {
-    const notification = document.createElement('div');
-    notification.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        padding: 1rem 1.5rem;
-        border-radius: ${getComputedStyle(document.documentElement).getPropertyValue('--radius')};
-        color: white;
-        font-weight: 600;
-        z-index: 1000;
-        transform: translateX(400px);
-        transition: transform 0.3s ease;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-      `;
-
-    const colors = {
-        success: '#10b981',
-        error: '#ef4444',
-        warning: '#f59e0b',
-        info: '#3b82f6'
-    };
-
-    notification.style.background = colors[type];
-    notification.textContent = message;
-    document.body.appendChild(notification);
-
-    requestAnimationFrame(() => {
-        notification.style.transform = 'translateX(0)';
-    });
-
-    setTimeout(() => {
-        notification.style.transform = 'translateX(400px)';
-        setTimeout(() => notification.remove(), 300);
-    }, 3000);
-};
-
 // ======= Enhanced State Management =======
 let state = JSON.parse(localStorage.getItem('fin-state-pro') || '{}');
 let currentPeriod = getPeriod(todayStr());
@@ -121,13 +84,9 @@ function saveState(autoSave = true) {
 
         if (state.stats.lastBackup !== getPeriod(todayStr())) {
             state.stats.lastBackup = getPeriod(todayStr());
-            if (!notaAtiva) {
-                showNotification('Dados salvos automaticamente', 'info');
-            }
         }
         renderAll();
     } catch (e) {
-        showNotification('Erro ao salvar dados', 'error');
         console.error('Save error:', e);
     }
 }
@@ -178,7 +137,6 @@ function renderPeriods() {
                 renderPeriods();
                 renderAll();
                 closePeriodList();
-                showNotification(`Período alterado para ${monthName}`, 'info');
             };
             periodList.appendChild(option);
         }
@@ -273,7 +231,6 @@ function showGuidedInput(type) {
             break;
     }
 
-    showNotification(message, 'info');
     setTimeout(() => document.getElementById(focusElement)?.focus(), 500);
 }
 
@@ -285,8 +242,6 @@ function completeOnboarding() {
 
     document.getElementById('welcomeScreen').style.display = 'none';
     navigateToTab('dashboard');
-
-    showNotification('Bem-vindo ao seu dashboard! 🎉 Seus dados estão prontos!', 'success');
 }
 
 function trackOnboardingProgress(action) {
@@ -313,12 +268,10 @@ document.getElementById('btnAddRenda').onclick = () => {
     const meses = parseInt(document.getElementById('rendaRecorrente').value);
 
     if (!nome || !valor || !data) {
-        showNotification('Preencha todos os campos obrigatórios', 'error');
         return;
     }
 
     if (valor <= 0) {
-        showNotification('O valor deve ser maior que zero', 'error');
         return;
     }
 
@@ -354,7 +307,6 @@ document.getElementById('btnAddRenda').onclick = () => {
                 data: futureData
             });
         }
-        showNotification(`Renda recorrente criada por ${meses} meses!`, 'success');
     }
 
     // Clear form
@@ -363,7 +315,6 @@ document.getElementById('btnAddRenda').onclick = () => {
     document.getElementById('rendaData').value = todayStr();
     document.getElementById('rendaRecorrente').value = '0';
 
-    showNotification(`Renda "${nome}" adicionada com sucesso! 💰`, 'success');
     trackOnboardingProgress('add-renda');
     saveState(false);
 };
@@ -425,10 +376,8 @@ document.getElementById('btnAddTipo').onclick = () => {
         state.tipos.push(novoTipo);
         document.getElementById('novoTipo').value = '';
         saveState(false);
-        showNotification(`Categoria "${novoTipo}" adicionada`, 'success');
         renderTipos();
     } else if (novoTipo) {
-        showNotification('Categoria já existe', 'warning');
     }
 };
 
@@ -441,12 +390,10 @@ document.getElementById('btnAddDesp').onclick = () => {
     const meses = parseInt(document.getElementById('despRecorrente').value);
 
     if (!nome || !valor || !data || !tipo) {
-        showNotification('Preencha todos os campos obrigatórios', 'error');
         return;
     }
 
     if (valor <= 0) {
-        showNotification('O valor deve ser maior que zero', 'error');
         return;
     }
 
@@ -483,7 +430,6 @@ document.getElementById('btnAddDesp').onclick = () => {
                 data: futureData
             });
         }
-        showNotification(`Despesa recorrente criada por ${meses} meses!`, 'warning');
     }
 
     // Clear form
@@ -493,7 +439,6 @@ document.getElementById('btnAddDesp').onclick = () => {
     document.getElementById('despRecorrente').value = '0';
     document.getElementById('despTipo').value = '';
 
-    showNotification(`Despesa "${nome}" registrada`, 'warning');
     trackOnboardingProgress('add-despesa');
     saveState(false);
 };
@@ -550,12 +495,10 @@ document.getElementById('btnAddCC').onclick = () => {
     const venc = document.getElementById('ccVenc').value;
 
     if (!nome || !valor || !venc) {
-        showNotification('Preencha todos os campos obrigatórios', 'error');
         return;
     }
 
     if (valor <= 0) {
-        showNotification('O valor deve ser maior que zero', 'error');
         return;
     }
 
@@ -579,7 +522,6 @@ document.getElementById('btnAddCC').onclick = () => {
     document.getElementById('ccValor').value = '';
     document.getElementById('ccVenc').value = todayStr();
 
-    showNotification(`Gasto no cartão "${nome}" registrado`, 'warning');
     saveState(false);
 };
 
@@ -700,12 +642,10 @@ function addMeta() {
     const alvo = parseN(document.getElementById('metaValor').value);
 
     if (!desc || !alvo) {
-        showNotification('Informe descrição e valor da meta', 'error');
         return;
     }
 
     if (alvo <= 0) {
-        showNotification('O valor da meta deve ser maior que zero', 'error');
         return;
     }
 
@@ -722,7 +662,6 @@ function addMeta() {
     document.getElementById('metaDesc').value = '';
     document.getElementById('metaValor').value = '';
 
-    showNotification(`Meta "${desc}" criada! 🎯`, 'success');
     trackOnboardingProgress('add-meta');
     saveState(false);
 }
@@ -798,16 +737,13 @@ function updateMeta(id, isAdd, button) {
     const valor = parseN(input.value);
 
     if (!valor || valor <= 0) {
-        showNotification('Informe um valor válido', 'error');
         return;
     }
 
     if (isAdd) {
         meta.acumulado = Math.min(meta.alvo, meta.acumulado + valor);
-        showNotification(`+${fmtBRL(valor)} adicionado à meta "${meta.desc}"`, 'success');
     } else {
         meta.acumulado = Math.max(0, meta.acumulado - valor);
-        showNotification(`-${fmtBRL(valor)} removido da meta "${meta.desc}"`, 'warning');
     }
 
     input.value = '';
@@ -819,7 +755,6 @@ function deleteMeta(id) {
     if (confirm(`Deseja realmente excluir a meta "${meta.desc}"?`)) {
         state.metas = state.metas.filter(m => m.id !== id);
         saveState(false);
-        showNotification('Meta excluída', 'warning');
     }
 }
 
@@ -835,7 +770,6 @@ function novaNota() {
 
     renderNovaNota(nota);
     debounceSave();
-    showNotification('Nova nota criada! 📝', 'success');
 
     setTimeout(() => {
         const novaTextarea = document.querySelector(`[data-id="${nota.id}"]`);
@@ -926,7 +860,6 @@ function renderNovaNota(nota) {
             targetNota.updated = new Date().toISOString();
             noteCard.classList.toggle('done', targetNota.done);
             debounceSave();
-            showNotification(e.target.checked ? 'Nota marcada como concluída! ✅' : 'Nota reaberta', 'info');
         }
     });
 
@@ -992,7 +925,6 @@ function toggleNote(id, checkbox) {
         }
 
         debounceSave();
-        showNotification(checkbox.checked ? 'Nota marcada como concluída! ✅' : 'Nota reaberta', 'info');
     }
 }
 
@@ -1018,7 +950,6 @@ function deleteNote(id) {
     }
 
     saveState(false);
-    showNotification('Nota excluída', 'warning');
 
     if (notaAtiva === id) {
         notaAtiva = null;
@@ -1037,7 +968,6 @@ window.deleteItem = function (type, id, button) {
         const items = state.periodos[currentPeriod][itemsKey];
         state.periodos[currentPeriod][itemsKey] = items.filter(item => item.id !== id);
         saveState(false);
-        showNotification('Item excluído', 'warning');
         button.closest('tr').style.opacity = '0';
         setTimeout(() => button.closest('tr').remove(), 300);
     }
@@ -1111,7 +1041,6 @@ document.getElementById('btnExport').onclick = () => {
     link.download = `financeiro-${getPeriod(todayStr())}.json`;
     link.click();
     URL.revokeObjectURL(url);
-    showNotification('Dados exportados com sucesso!', 'success');
 };
 
 document.getElementById('btnImport').onclick = () => {
@@ -1129,11 +1058,9 @@ document.getElementById('fileImport').onchange = (e) => {
             if (confirm('Deseja importar estes dados? Isso substituirá os dados atuais.')) {
                 state = { ...state, ...importedState };
                 saveState(false);
-                showNotification('Dados importados com sucesso!', 'success');
                 renderAll();
             }
         } catch (err) {
-            showNotification('Erro ao importar arquivo. Verifique o formato.', 'error');
         }
     };
     reader.readAsText(file);
@@ -1205,8 +1132,6 @@ window.navigateToTab = function (tabId) {
             renderRelatorios();
             break;
     }
-
-    showNotification(`Carregando ${tabId}`, 'info');
 };
 
 function initNavigation() {
@@ -1264,7 +1189,6 @@ document.getElementById('themeToggle').onchange = (e) => {
     const isLight = e.target.checked;
     localStorage.setItem('theme', isLight ? 'light' : 'dark');
     applyTheme();
-    showNotification(isLight ? 'Tema claro ativado' : 'Tema escuro ativado', 'info');
 };
 
 // ======= Main Render =======
@@ -1305,7 +1229,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Welcome message for returning users
     if (onboardingCompleted && !state.stats.firstUse) {
         setTimeout(() => {
-            showNotification('Bem-vindo de volta! 📊 Seus dados estão atualizados.', 'success');
         }, 1500);
     }
 
